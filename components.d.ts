@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    Editor: typeof import('./src/components/Editor.vue')['default']
     Home: typeof import('./src/components/Home.vue')['default']
   }
 }

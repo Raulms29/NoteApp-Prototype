@@ -1,20 +1,23 @@
-import "reflect-metadata"
 import { app, BrowserWindow, powerMonitor } from 'electron';
-import path from 'path';
-
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   console.log('electron-squirrel-startup');
   app.quit();
 }
+import path from 'path';
+import contextMenu from "electron-context-menu";
+
 
 const createWindow = () => {
+
+  contextMenu({
+    showInspectElement: false,
+    showSearchWithGoogle: false,
+  });
 
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     opacity: 1,
-    width: 800,
-    height: 600,
     center: true,
     resizable: true,
     autoHideMenuBar: false,
@@ -24,6 +27,10 @@ const createWindow = () => {
     // have no visual flash (1)
     show: false,
   });
+  mainWindow.maximize();
+
+  mainWindow.webContents.session.setSpellCheckerLanguages(['en-US', 'es'])
+
 
   // and load the index.html of the app.
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
@@ -77,7 +84,7 @@ app.on('activate', () => {
 
 // ============================ //
 // study
-app.on('before-quit', _ => {
+app.on('before-quit', () => {
   console.log('app before-quit');
 });
 

@@ -2,7 +2,7 @@
     <editor-content :editor="editor" />
 </template>
 
-<script>
+<script lang="ts">
 import Highlight from '@tiptap/extension-highlight'
 import Typography from '@tiptap/extension-typography'
 import StarterKit from '@tiptap/starter-kit'
@@ -26,12 +26,12 @@ import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 
 export default {
     components: {
-        EditorContent,
+        EditorContent: EditorContent,
     },
 
     data() {
         return {
-            editor: null,
+            editor: null as Editor | null,
         }
     },
 
@@ -43,9 +43,10 @@ export default {
                 }),
                 Highlight,
                 Typography,
-                Markdown,
+                Markdown.configure({
+                    linkify: false,
+                }),
                 TaskList.configure({
-                    nested: true,
                 }),
                 TaskItem.configure({
                     nested: true,
@@ -53,6 +54,7 @@ export default {
                 CodeBlockLowlight.configure({
                     lowlight: createLowlight(common),
                 }),
+                MarkdownLink
             ],
             editorProps: {
                 attributes: {
@@ -96,10 +98,12 @@ public static void main(String[] args) {
 1. Item 1
 2. Item 2
 3. Item 3
+
+This is a [link](https://example.com) in Markdown.
 `;
 
-import '../styles/editor/task-list.css'
-import '../styles/editor/atom-one-light.css'
+import '../../styles/editor.css';
+import { MarkdownLink } from './extensions/MarkdownLink';
 </script>
 
 <style scoped></style>

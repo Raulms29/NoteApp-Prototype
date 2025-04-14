@@ -1,4 +1,4 @@
-import { app, BrowserWindow, powerMonitor } from 'electron';
+import { app, BrowserWindow, powerMonitor, shell } from 'electron';
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   console.log('electron-squirrel-startup');
@@ -15,6 +15,8 @@ const createWindow = () => {
     showSearchWithGoogle: false,
   });
 
+
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     opacity: 1,
@@ -30,6 +32,11 @@ const createWindow = () => {
   mainWindow.maximize();
 
   mainWindow.webContents.session.setSpellCheckerLanguages(['en-US', 'es'])
+
+  mainWindow.webContents.setWindowOpenHandler((edata) => {
+    shell.openExternal(edata.url);
+    return { action: "deny" };
+  });
 
 
   // and load the index.html of the app.

@@ -10,7 +10,7 @@ export default defineConfig((env) => {
   const config: UserConfig = {
     build: {
       lib: {
-        entry: forgeConfigSelf.entry!,
+        entry: forgeConfigSelf.entry ?? (() => { throw new Error("forgeConfigSelf.entry is undefined"); })(),
         fileName: () => '[name].js',
         formats: ['cjs'],
       },

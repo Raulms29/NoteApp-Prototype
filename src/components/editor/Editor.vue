@@ -1,17 +1,22 @@
 <template>
     <editor-content :editor="editor" />
+    <BubbleMenu v-if="editor" :editor="editor"></BubbleMenu>
 </template>
 
 <script lang="ts">
 import Highlight from '@tiptap/extension-highlight'
 import Typography from '@tiptap/extension-typography'
 import StarterKit from '@tiptap/starter-kit'
+import BubbleMenuExtension from '@tiptap/extension-bubble-menu'
 import { Editor, EditorContent } from '@tiptap/vue-3'
 import { Markdown } from 'tiptap-markdown';
 import { TaskList } from '@tiptap/extension-task-list'
 import { TaskItem } from '@tiptap/extension-task-item'
+import { MarkdownLink } from './extensions/MarkdownLink';
 import { common, createLowlight } from 'lowlight';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+import Underline from '@tiptap/extension-underline'
+
 
 // Markdown.configure({
 //     html: false,                  // Allow HTML input/output
@@ -31,16 +36,17 @@ export default {
 
     data() {
         return {
-            editor: null as Editor | null,
+            editor: Editor,
         }
     },
 
-    mounted() {
+    beforeMount() {
         this.editor = new Editor({
             extensions: [
                 StarterKit.configure({
-                    codeBlock: false,
+                    // codeBlock: false,
                 }),
+                Underline,
                 Highlight,
                 Typography,
                 Markdown.configure({
@@ -54,7 +60,8 @@ export default {
                 CodeBlockLowlight.configure({
                     lowlight: createLowlight(common),
                 }),
-                MarkdownLink
+                MarkdownLink,
+                BubbleMenuExtension,
             ],
             editorProps: {
                 attributes: {
@@ -103,7 +110,6 @@ This is a [link](https://example.com) in Markdown.
 `;
 
 import '../../styles/editor.css';
-import { MarkdownLink } from './extensions/MarkdownLink';
 </script>
 
 <style scoped></style>

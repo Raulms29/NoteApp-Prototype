@@ -79,6 +79,7 @@
     "@tiptap/extension-task-item": "^2.11.7",
     "@tiptap/extension-task-list": "^2.11.7",
     "@tiptap/extension-typography": "^2.11.7",
+    "@tiptap/extension-underline": "^2.11.7",
     "@tiptap/pm": "^2.11.7",
     "@tiptap/starter-kit": "^2.11.7",
     "@tiptap/vue-3": "^2.11.7",
@@ -86,6 +87,7 @@
     "element-plus": "^2.5.6",
     "lowlight": "^3.3.0",
     "tiptap-markdown": "^0.8.10",
-    "vue": "^3.4.19"
+    "vue": "^3.4.19",
+    "vue-material-design-icons": "^5.3.1"
   }
 }

@@ -7,6 +7,8 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    BubbleMenu: typeof import('./src/components/editor/BubbleMenu.vue')['default']
+    Dropdown: typeof import('./src/components/editor/Dropdown.vue')['default']
     Editor: typeof import('./src/components/editor/Editor.vue')['default']
     Home: typeof import('./src/components/Home.vue')['default']
   }

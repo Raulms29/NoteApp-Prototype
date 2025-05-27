@@ -2,12 +2,21 @@ import { Mark, mergeAttributes, InputRule, PasteRule } from '@tiptap/core';
 import { Plugin } from '@tiptap/pm/state';
 import { TextSelection } from 'prosemirror-state';
 import '@tiptap/extension-link';
+import { isAllowedUri } from '../../../utils/urlUtils';
 
+/**
+ * Regular expression to match markdown links in the format [text](url).
+ * Captures the link text and the URL separately for further processing.
+ */
 const markdownLinkRegex = /\[([^\]]+)]\((https?:\/\/[^\s)]+(?:\([^\s)]+\)[^\s)]*)*)\)/g;
 
 export const MarkdownLink = Mark.create({
     name: 'markdownLink',
 
+    /**
+     * Adds options for the markdown link mark, including validation logic and default attributes.
+     * The `isAllowedUri` function ensures that only URLs with allowed protocols are accepted.
+     */
     addOptions() {
         return {
             openOnClick: true,
@@ -16,72 +25,101 @@ export const MarkdownLink = Mark.create({
                 rel: 'noopener noreferrer',
                 class: null as string | null,
             },
+            /**
+             * Validates if a given URL is allowed..
+             */
             isAllowedUri: (url: string) => {
-                const allowedProtocols = ['http', 'https', 'mailto'];
-                return allowedProtocols.some((protocol) => url.startsWith(`${protocol}:`));
+                return isAllowedUri(url);
             },
         };
     },
 
+    /**
+     * Defines the attributes for the markdown link mark.
+     * These attributes include the link's href, target, rel, and optional CSS class.
+     */
     addAttributes() {
         return {
             href: {
-                default: null,
-                parseHTML: (element) => element.getAttribute('href'),
+                default: null, // The URL of the link.
+                parseHTML: (element) => element.getAttribute('href'), // Extracts the href attribute from HTML.
             },
             target: {
-                default: this.options.HTMLAttributes.target,
+                default: this.options.HTMLAttributes.target, // Default target attribute for links.
             },
             rel: {
-                default: this.options.HTMLAttributes.rel,
+                default: this.options.HTMLAttributes.rel, // Default rel attribute for links.
             },
             class: {
-                default: this.options.HTMLAttributes.class,
+                default: this.options.HTMLAttributes.class, // Optional CSS class for styling links.
             },
         };
     },
 
+    /**
+     * Specifies how the markdown link mark is parsed from HTML.
+     * Links with invalid URLs are ignored during parsing.
+     */
     parseHTML() {
         return [
             {
-                tag: 'a[href]',
+                tag: 'a[href]', // Matches anchor tags with an href attribute.
                 getAttrs: (dom) => {
                     const href = (dom as HTMLElement).getAttribute('href');
                     if (!href || !this.options.isAllowedUri(href)) {
                         return false; // Invalid link
                     }
-                    return null;
+                    return null; // Valid link
                 },
             },
         ];
     },
 
+    /**
+     * Specifies how the markdown link mark is rendered to HTML.
+     * Combines the default HTML attributes with any additional attributes provided.
+     */
     renderHTML({ HTMLAttributes }) {
         return ['a', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
     },
 
+    /**
+     * Adds commands for managing the markdown link mark in the editor.
+     * These commands include setting, toggling, and unsetting links.
+     */
     addCommands() {
         return {
+            /**
+             * Sets a markdown link mark with the given attributes.
+             * Validates the URL before applying the mark to ensure it meets the allowed protocols.
+             */
             setLink:
                 (attributes) =>
                     ({ chain }) => {
                         const { href } = attributes;
                         if (!this.options.isAllowedUri(href)) {
-                            return false;
+                            return false; // Invalid URL
                         }
                         return chain().setMark(this.name, attributes).run();
                     },
 
+            /**
+             * Toggles a markdown link mark with the given attributes.
+             * If the mark is already applied, it will be removed; otherwise, it will be added.
+             */
             toggleLink:
                 (attributes) =>
                     ({ chain }) => {
                         const { href } = attributes;
                         if (!this.options.isAllowedUri(href)) {
-                            return false;
+                            return false; // Invalid URL
                         }
                         return chain().toggleMark(this.name, attributes).run();
                     },
 
+            /**
+             * Removes the markdown link mark from the selected text.
+             */
             unsetLink:
                 () =>
                     ({ chain }) => {
@@ -90,6 +128,10 @@ export const MarkdownLink = Mark.create({
         };
     },
 
+    /**
+     * Adds input rules for the creation of the markdown link marks when typing
+     * Typing `[text](url)` will create the link
+     */
     addInputRules() {
         return [
             new InputRule({
@@ -107,9 +149,6 @@ export const MarkdownLink = Mark.create({
                         state.schema.text(text, [mark])
                     );
 
-                    // Finalize the transaction to prevent the mark from extending
-                    tr.removeStoredMark(this.type);
-
                     // Calculate the new position after the replacement
                     const newPos = range.from + text.length;
 
@@ -123,6 +162,10 @@ export const MarkdownLink = Mark.create({
         ];
     },
 
+    /**
+     * Adds paste rules for the creation of the markdown link marks when typing
+     * Pasting `[text](url)` will create the link.
+     */
     addPasteRules() {
         return [
             new PasteRule({
@@ -140,9 +183,6 @@ export const MarkdownLink = Mark.create({
                         state.schema.text(text, [mark])
                     );
 
-                    // Finalize the transaction to prevent the mark from extending
-                    // tr.removeStoredMark(this.type);
-
                     // Calculate the new position after the replacement
                     const newPos = range.from + text.length;
 
@@ -156,6 +196,10 @@ export const MarkdownLink = Mark.create({
         ];
     },
 
+    /**
+     * Adds ProseMirror plugins for additional markdown link functionality.
+     * These plugins handle click and keydown events for links.
+     */
     addProseMirrorPlugins() {
         const plugins: Plugin[] = [];
 
@@ -163,6 +207,10 @@ export const MarkdownLink = Mark.create({
             plugins.push(
                 new Plugin({
                     props: {
+                        /**
+                         * Handles click events on markdown links to open them in the browser, instead of in a 
+                         * tab of the application.
+                         */
                         handleClick: (view, pos) => {
                             const resolvedPos = view.state.doc.resolve(pos);
                             const marks = resolvedPos.marks(); // Get marks at the position
@@ -175,12 +223,16 @@ export const MarkdownLink = Mark.create({
 
                             return false;
                         },
+                        /**
+                         * Handles keydown events so that when spacebar or enter is pressed the link is no longer considered as
+                         * selected, so writing can continue normally.
+                         */
                         handleKeyDown(view, event) {
                             if (event.key === ' ' || event.key === 'Enter') {
                                 const { state, dispatch } = view;
                                 const { selection, schema } = state;
 
-                                // Remove the link mark when spacebar is pressed
+                                // Remove the link
                                 if (selection.empty) {
                                     const { $from } = selection;
                                     const linkMark = schema.marks.markdownLink;

@@ -44,7 +44,7 @@ export default {
         this.editor = new Editor({
             extensions: [
                 StarterKit.configure({
-                    // codeBlock: false,
+                    codeBlock: false,
                 }),
                 Underline,
                 Highlight,

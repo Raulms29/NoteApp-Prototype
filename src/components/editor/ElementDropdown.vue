@@ -119,23 +119,6 @@ function toogleParagraph() {
 </script>
 
 <style scoped>
-.fade-scale-enter-active,
-.fade-scale-leave-active {
-    transition: opacity 0.2s, transform 0.2s;
-}
-
-.fade-scale-enter-from,
-.fade-scale-leave-to {
-    opacity: 0;
-    transform: scale(0.95);
-}
-
-.fade-scale-enter-to,
-.fade-scale-leave-from {
-    opacity: 1;
-    transform: scale(1);
-}
-
 .dropdown-header {
     font-size: 0.875rem;
     font-weight: 600;
@@ -155,7 +138,6 @@ function toogleParagraph() {
     cursor: pointer;
     transition: background 0.2s;
     width: 100%;
-    /* Ensures buttons take all available space */
 }
 
 .dropdown-button:hover {
@@ -164,9 +146,5 @@ function toogleParagraph() {
 
 .dropdown-button.is-active {
     background: #ededed;
-}
-
-.dropdown-container {
-    white-space: nowrap;
 }
 </style>

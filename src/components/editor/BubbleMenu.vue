@@ -1,9 +1,9 @@
 <template>
-    <bubble-menu :editor="editor" :tippy-options="{ duration: 300 }" v-if="editor" class="bubble-menu">
+    <bubble-menu :editor="editor" :tippy-options="{ duration: 300 }" v-if="editor" class="bubble-menu gap-0">
 
         <!-- Dropdown for selecting headings and lists -->
-        <Dropdown :editor="editor" :open="open" @update:open="handleOpenChange" ref="dropdown">
-        </Dropdown>
+        <ElementDropdown :editor="editor" :open="open" @update:open="handleDropdownOpenChange" ref="elementDropdown">
+        </ElementDropdown>
         <div class="separator"></div>
         <div class="button-group">
             <!-- Bold -->
@@ -28,7 +28,11 @@
                 @click="toggleCodeBlock()">
                 <CodeIcon title="Code Block"></CodeIcon>
             </button>
+            <AddLinkDialog :editor="editor" :open="linkDialogOpen" @update:open="handleLinkDialogOpenChange"
+                ref="linkDialog">
+            </AddLinkDialog>
         </div>
+
     </bubble-menu>
 </template>
 
@@ -41,22 +45,6 @@ import ItalicIcon from 'icons/FormatItalic.vue';
 import UnderLineIcon from 'icons/FormatUnderline.vue';
 import StrikeIcon from 'icons/FormatStrikethrough.vue';
 import CodeIcon from 'icons/CodeTags.vue';
-
-const dropdown = ref(null)
-
-function handleClickOutside(event: MouseEvent) {
-    const dropdownElement = dropdown.value?.$el || dropdown.value; // Handle both DOM and component refs
-    if (dropdownElement && !dropdownElement.contains(event.target as Node)) {
-        open.value = false; // Close the dropdown if clicked outside
-    }
-}
-
-
-const props = defineProps({
-    editor: Editor,
-});
-
-const open: Ref<boolean> = ref(false);
 
 function toggleItalic() {
     props.editor.chain().focus().toggleItalic().run();
@@ -74,17 +62,42 @@ function toggleCodeBlock() {
     props.editor.chain().focus().toggleCodeBlock().run();
 }
 
-const handleOpenChange = (newValue: boolean) => {
+const elementDropdown = ref(null)
+
+const linkDialog = ref(null)
+
+const props = defineProps({
+    editor: Editor,
+});
+
+const open: Ref<boolean> = ref(false);
+
+const linkDialogOpen: Ref<boolean> = ref(false);
+
+const handleDropdownOpenChange = (newValue: boolean) => {
     open.value = newValue;
 };
 
+const handleLinkDialogOpenChange = (newValue: boolean) => {
+    linkDialogOpen.value = newValue;
+};
+
+function handleClickOutside(event: MouseEvent, refElement: Ref<HTMLElement | { $el: HTMLElement } | null>, state: Ref<boolean>) {
+    const elementValue = refElement.value instanceof HTMLElement ? refElement.value : refElement.value?.$el; // Handle both DOM and component refs
+    if (elementValue && !elementValue.contains(event.target as Node)) {
+        state.value = false; // Close the dropdown/dialog if clicked outside
+    }
+}
+
 onMounted(() => {
-    document.addEventListener('click', handleClickOutside)
-})
+    document.addEventListener('click', (event) => handleClickOutside(event, elementDropdown, open));
+    document.addEventListener('click', (event) => handleClickOutside(event, linkDialog, linkDialogOpen));
+});
 
 onBeforeUnmount(() => {
-    document.removeEventListener('click', handleClickOutside)
-})
+    document.removeEventListener('click', (event) => handleClickOutside(event, elementDropdown, open));
+    document.removeEventListener('click', (event) => handleClickOutside(event, linkDialog, linkDialogOpen));
+});
 </script>
 
 <style>
@@ -140,5 +153,26 @@ onBeforeUnmount(() => {
     height: 24px;
     background-color: #e0e0e0;
     /* margin: 0 8px; */
+}
+
+.fade-scale-enter-active,
+.fade-scale-leave-active {
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.fade-scale-enter-from,
+.fade-scale-leave-to {
+    opacity: 0;
+    transform: scale(0.95);
+}
+
+.fade-scale-enter-to,
+.fade-scale-leave-from {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.dropdown-container {
+    white-space: nowrap;
 }
 </style>

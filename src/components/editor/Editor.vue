@@ -1,6 +1,8 @@
 <template>
     <editor-content :editor="editor" />
     <BubbleMenu v-if="editor" :editor="editor"></BubbleMenu>
+    <!-- <button @click="saveEditorContent" class="save-button">Save Content</button>
+    <button @click="loadEditorContent" class="load-button">Load Content</button> -->
 </template>
 
 <script lang="ts">
@@ -75,6 +77,39 @@ export default {
     beforeUnmount() {
         this.editor.destroy()
     },
+
+    // methods: {
+    //     saveEditorContent() {
+    //         if (this.editor) {
+    //             const htmlContent = this.editor.getHTML();
+    //             const blob = new Blob([htmlContent], { type: 'text/html' });
+    //             const link = document.createElement('a');
+    //             link.href = URL.createObjectURL(blob);
+    //             link.download = 'editor-content.html';
+    //             link.click();
+    //             URL.revokeObjectURL(link.href);
+    //         }
+    //     },
+
+    //     loadEditorContent() {
+    //         const input = document.createElement('input');
+    //         input.type = 'file';
+    //         input.accept = 'text/html';
+    //         input.addEventListener('change', (event) => {
+    //             const file = (event.target as HTMLInputElement).files?.[0];
+    //             if (file) {
+    //                 const reader = new FileReader();
+    //                 reader.onload = () => {
+    //                     if (this.editor) {
+    //                         this.editor.commands.setContent(reader.result as string);
+    //                     }
+    //                 };
+    //                 reader.readAsText(file);
+    //             }
+    //         });
+    //         input.click();
+    //     },
+    // },
 }
 
 const content = `
@@ -112,4 +147,20 @@ This is a [link](https://example.com) in Markdown.
 import '../../styles/editor.css';
 </script>
 
-<style scoped></style>
+<style scoped>
+.save-button,
+.load-button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.save-button:hover,
+.load-button:hover {
+    background-color: #0056b3;
+}
+</style>

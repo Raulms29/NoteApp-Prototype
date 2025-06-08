@@ -6,6 +6,8 @@
 </template>
 
 <script lang="ts">
+import { watch } from 'vue';
+import { useNotesStore } from '../../stores/useNotesStore';
 import Highlight from '@tiptap/extension-highlight'
 import Typography from '@tiptap/extension-typography'
 import StarterKit from '@tiptap/starter-kit'
@@ -39,6 +41,7 @@ export default {
     data() {
         return {
             editor: Editor,
+            notesStore: useNotesStore(),
         }
     },
 
@@ -67,11 +70,23 @@ export default {
             ],
             editorProps: {
                 attributes: {
-                    class: 'prose w-full border-none max-w-none m-0 outline-none',
+                    class: 'prose w-full border-none max-w-none m-0 outline-none h-full overflow-auto',
                 },
             },
-            content: content,
-        })
+            content: '',
+        });
+
+        // Load the content of the current note
+        watch(
+            () => this.notesStore.currentNote, // Reactive property from the store
+            async (newNote) => {
+                console.log('Current note changed:', newNote);
+                if (newNote && this.editor) {
+                    this.editor.commands.setContent(await this.notesStore.loadCurrentNoteContent());
+                }
+            },
+            { immediate: true } // Load the content immediately if a note is already selected
+        );
     },
 
     beforeUnmount() {

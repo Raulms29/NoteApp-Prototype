@@ -1,4 +1,4 @@
-import { Note } from "./domain/Note";
+import { Note, RawNote } from "./domain/Note";
 import fs from 'fs';
 import { fileExists, getNotePath, readFile, writeFile } from "../utils/fileUtils";
 
@@ -20,33 +20,55 @@ export class NoteRepository {
      * Loads the note structure from the JSON file.
      */
     async loadNoteTree(): Promise<Note[]> {
-        if (!fileExists(this.structurePath)) throw new Error("Note structure file does not exist.");
+        if (!await fileExists(this.structurePath)) {
+            throw new Error("Note structure file does not exist.");
+        }
 
         const json = await readFile(this.structurePath);
         const data = JSON.parse(json);
 
         // Validate the structure of the parsed data
-        if (!Array.isArray(data) || !data.every(this.isValidNote)) {
-            throw new Error("Invalid note structure in JSON file.");
+        if (!Array.isArray(data)) {
+            throw new Error("Invalid note structure: Expected an array.");
         }
 
-        return data as Note[];
+        // Recursively create Note objects from the raw data
+        const createNote = (item: RawNote): Note => {
+            if (!this.isValidNote(item)) {
+                throw new Error(`Invalid note structure for item: ${JSON.stringify(item)}`);
+            }
+
+            // Recursively map children to Note objects
+            const children = item._children
+                ? item._children.map((child: RawNote) => createNote(child))
+                : [];
+
+            return new Note(
+                item._name,
+                children,
+                item._id,
+                new Date(item._createdAt)
+            );
+        };
+
+        const notes: Note[] = data.map(createNote);
+
+        return notes;
     }
 
-    renameNoteFile(note: Note, newTitle: string) {
-        const oldFilePath = getNotePath(this.notesPath, note.name);
-        const newFilePath = getNotePath(this.notesPath, newTitle);
+    async renameNoteFile(oldName: string, newName: string) {
+        const oldFilePath = await getNotePath(this.notesPath, oldName);
+        const newFilePath = await getNotePath(this.notesPath, newName);
 
         if (!fileExists(oldFilePath)) {
             throw new Error(`Note file does not exist: ${oldFilePath}`);
         }
 
         if (fileExists(newFilePath)) {
-            throw new Error(`A note with the name "${newTitle}" already exists.`);
+            throw new Error(`A note with the name "${newName}" already exists.`);
         }
 
         fs.renameSync(oldFilePath, newFilePath);
-        note.name = newTitle; // Update the note's name in memory
     }
 
     /**
@@ -71,23 +93,24 @@ export class NoteRepository {
     * Reads the HTML content of a specific note.
     */
     async readNoteContent(note: Note): Promise<string> {
-        const filePath = getNotePath(this.notesPath, note.name);
+        const filePath = await getNotePath(this.notesPath, note.getFullName());
+        console.log(`Reading note content from: ${filePath}`);
         return await readFile(filePath);
     }
 
     /**
      * Saves the HTML content of a specific note.
      */
-    async writeNoteContent(note: Note, content: string): Promise<void> {
-        const filePath = getNotePath(this.notesPath, note.name);
+    async writeNoteContent(note: Note | null, content: string): Promise<void> {
+        const filePath = await getNotePath(this.notesPath, note.getFullName());
         await writeFile(filePath, content);
     }
 
     /**
      * Deletes a specific note file.
      */
-    deleteNoteFile(note: Note): void {
-        const filePath = getNotePath(this.notesPath, note.name);
+    async deleteNoteFile(note: Note): Promise<void> {
+        const filePath = await getNotePath(this.notesPath, note.getFullName());
         if (fileExists(filePath)) {
             fs.unlinkSync(filePath);
         } else {

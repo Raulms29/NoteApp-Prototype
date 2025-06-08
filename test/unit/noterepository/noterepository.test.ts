@@ -1,4 +1,4 @@
-import { describe, it, beforeEach, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { Note } from '../../../src/services/domain/Note';
 import { NoteRepository } from '../../../src/services/NoteRepository';
 import * as fileUtils from '../../../src/utils/fileUtils';
@@ -38,6 +38,6 @@ describe('GIVEN a NoteRepository', () => {
             await repository.saveNoteTree([parentNote, parentNote2]);
 
             expect(fileUtils.writeFile).toHaveBeenCalledWith(mockStructurePath, JSON.stringify([parentNote, parentNote2], null, 2));
-        })
+        });
     });
 });

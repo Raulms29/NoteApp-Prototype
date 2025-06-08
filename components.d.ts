@@ -12,5 +12,9 @@ declare module 'vue' {
     Editor: typeof import('./src/components/editor/Editor.vue')['default']
     ElementDropdown: typeof import('./src/components/editor/ElementDropdown.vue')['default']
     Home: typeof import('./src/components/Home.vue')['default']
+    RouterLink: typeof import('vue-router')['RouterLink']
+    RouterView: typeof import('vue-router')['RouterView']
+    Sidebar: typeof import('./src/components/sidebar/Sidebar.vue')['default']
+    SidebarItem: typeof import('./src/components/sidebar/SidebarItem.vue')['default']
   }
 }

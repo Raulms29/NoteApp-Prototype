@@ -1,64 +1,82 @@
 // src/stores/useNotesStore.ts
 
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
-import { Note } from '../services/domain/Note'
-import { NoteRepository } from '../services/NoteRepository'
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
+import { Note } from '../services/domain/Note';
+import { NoteRepository } from '../services/NoteRepository';
 
 
 export const useNotesStore = defineStore('notes', () => {
-    const noteTree = ref<Note[]>()
-    const currentNote = ref<Note | null>()
-    let repo: NoteRepository
+    const notes = ref<Note[]>();
+    const currentNote = ref<Note | null>(null);
+    let repo: NoteRepository;
 
     // Initialize the repository with the workspace path
     function init(workSpacePath: string) {
-        repo = new NoteRepository(workSpacePath, `${workSpacePath}/notes.json`)
-        // repo.configureRepository(workSpacePath, `${workSpacePath}/notes.json`)
+        repo = new NoteRepository(workSpacePath, `${workSpacePath}/.notes/notes.json`);
+        loadTree();
     }
 
     function updateNoteTree() {
-        repo.saveNoteTree(noteTree.value)
+        repo.saveNoteTree(notes.value);
     }
 
     async function loadTree(): Promise<void> {
-        noteTree.value = await repo.loadNoteTree()
+        notes.value = await repo.loadNoteTree();
     }
 
     function selectNote(note: Note) {
-        currentNote.value = note
+        console.log(`Selecting note: ${note.getFullName()}`);
+        currentNote.value = note;
     }
 
     function saveCurrentNoteContent(html: string) {
-        if (!currentNote.value) throw new Error('No note selected to save content for.')
-        repo.writeNoteContent(currentNote.value, html)
+        if (!currentNote.value) throw new Error('No note selected to save content for.');
+        repo.writeNoteContent(currentNote.value as Note, html);
     }
 
     async function loadCurrentNoteContent(): Promise<string> {
-        if (!currentNote.value) throw new Error('No note selected to load.')
-        return await repo.readNoteContent(currentNote.value)
+        if (!currentNote.value) throw new Error('No note selected to load.');
+        return await repo.readNoteContent(currentNote.value as Note);
     }
 
-    function renameNote(note: Note, newTitle: string) {
-        repo.renameNoteFile(note, newTitle)
-        updateNoteTree()
+    function renameNote(note: Note, newName: string) {
+        const oldName = note.getFullName();
+        // Update the note's name
+        note.name = newName;
+        // Rename the file
+        repo.renameNoteFile(oldName, note.getFullName());
+        updateNoteTree();
     }
 
     function deleteNote(noteToDelete: Note) {
-        repo.deleteNoteFile(noteToDelete);
+        if (!noteToDelete) {
+            throw new Error('No note provided to delete.');
+        }
 
-        for (const note of noteTree.value) {
+        // Remove the note from the notes tree
+        let removed = false;
+
+        // Delete the note from the current note tree
+        for (const note of notes.value) {
             if (note.hasDescendant(noteToDelete)) {
-                note.removeDescendant(noteToDelete);
-
-                break; // Exit the loop once the descendant is removed
+                removed = note.removeDescendant(noteToDelete);
+                break;
             }
         }
+
+        if (!removed) {
+            throw new Error(`Note with ID ${noteToDelete.id} not found in the note tree.`);
+        }
+
+        // Delete the note file
+        repo.deleteNoteFile(noteToDelete);
+        // Update the note tree after deletion
         updateNoteTree();
     }
 
     return {
-        noteTree,
+        noteTree: notes,
         currentNote,
         init,
         loadTree,
@@ -67,5 +85,5 @@ export const useNotesStore = defineStore('notes', () => {
         loadCurrentNoteContent,
         renameNote,
         deleteNote,
-    }
-})
+    };
+});

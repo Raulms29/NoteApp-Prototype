@@ -28,12 +28,13 @@
 
 import './styles/index.css';
 import { createApp } from 'vue';
-import App from './views/App.vue'
-import ElementPlus from 'element-plus'
+import { createPinia } from 'pinia';
+import App from './views/App.vue';
 
-const app = createApp(App)
+const app = createApp(App);
+const pinia = createPinia();
 
-app.use(ElementPlus)
-app.mount('#app')
+app.use(pinia);
+app.mount('#app');
 
 console.log('👋 This message is being logged by "renderer.ts", included via Vite');

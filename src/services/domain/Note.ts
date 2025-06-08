@@ -1,9 +1,11 @@
 const invalidCharacters = /[\\/:*?"<>|]/; // Regex for invalid note name characters
+export interface RawNote {
+    _name: string;
+    _id: string;
+    _createdAt: string; // Dates are typically stored as strings in JSON
+    _children?: RawNote[]; // Optional array of child notes
+}
 
-/**
- * Represents a hierarchical note with an ID, name, children, and creation date.
- * Provides methods for managing child notes and checking hierarchical relationships.
- */
 export class Note {
     private _id: string;
     private _name: string;
@@ -25,11 +27,14 @@ export class Note {
         this._createdAt = createdAt;
     }
 
+    getFullName(): string {
+        return `${this._name}_${this._id}`;
+    }
+
     /**
      * Sets the ID of the note.
      * @param id - The unique identifier for the note, must be exactly 8 characters long.
      * @throws Will throw an error if the ID is empty, contains invalid characters, or is not exactly 8 characters long.
-     * 
      */
     private set id(id: string) {
         id = id.trim();

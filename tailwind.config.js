@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-import typography from '@tailwindcss/typography'
+import typography from '@tailwindcss/typography';
 module.exports = {
   content: [
     "./index.html",

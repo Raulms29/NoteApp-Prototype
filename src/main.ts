@@ -4,8 +4,11 @@ if (require('electron-squirrel-startup')) {
   console.log('electron-squirrel-startup');
   app.quit();
 }
+
 import path from 'path';
 import contextMenu from "electron-context-menu";
+import { registerNoteHandlers } from './utils/ipc/fileHandler';
+import { registerWorkspaceHandlers } from './utils/ipc/workspaceHandler';
 
 
 const createWindow = () => {
@@ -31,7 +34,7 @@ const createWindow = () => {
   });
   mainWindow.maximize();
 
-  mainWindow.webContents.session.setSpellCheckerLanguages(['en-US', 'es'])
+  mainWindow.webContents.session.setSpellCheckerLanguages(['en-US', 'es']);
 
   mainWindow.webContents.setWindowOpenHandler((edata) => {
     shell.openExternal(edata.url);
@@ -48,16 +51,16 @@ const createWindow = () => {
 
   // have no visual flash (2)
   mainWindow.once('ready-to-show', () => {
-    mainWindow.show()
-  })
+    mainWindow.show();
+  });
 
   powerMonitor.on('resume', () => {
     console.log('powerMonitor resume');
-  })
+  });
 
   powerMonitor.on('suspend', () => {
     console.log('powerMonitor suspend');
-  })
+  });
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
 };
@@ -67,6 +70,9 @@ const createWindow = () => {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   console.log('app ready');
+  // Note file extension and encoding are registered here
+  registerNoteHandlers(".html", 'utf-8');
+  registerWorkspaceHandlers();
   createWindow();
 });
 
@@ -103,5 +109,4 @@ app.on('browser-window-focus', () => {
   console.log('app browser-window-focus');
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
+

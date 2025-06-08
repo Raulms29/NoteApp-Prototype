@@ -17,10 +17,11 @@
     ],
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "types": ["element-plus/global",
-            "@wdio/globals",
-            "@wdio/mocha-framework",
-            "expect-webdriverio",
-          "vitest/globals"],
+    "types": [
+      "@wdio/globals",
+      "@wdio/mocha-framework",
+      "expect-webdriverio",
+      "vitest/globals"
+    ],
   },
 }

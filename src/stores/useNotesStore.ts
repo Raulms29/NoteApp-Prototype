@@ -4,6 +4,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { Note } from '../services/domain/Note';
 import { NoteRepository } from '../services/NoteRepository';
+import { WorkspaceI } from '../services/domain/Workspace';
 
 
 export const useNotesStore = defineStore('notes', () => {
@@ -12,8 +13,8 @@ export const useNotesStore = defineStore('notes', () => {
     let repo: NoteRepository;
 
     // Initialize the repository with the workspace path
-    function init(workSpacePath: string) {
-        repo = new NoteRepository(workSpacePath, `${workSpacePath}/.notes/notes.json`);
+    function init(workspace: WorkspaceI) {
+        repo = new NoteRepository(workspace.path, `${workspace.path}/.notes/notes.json`);
         loadTree();
     }
 

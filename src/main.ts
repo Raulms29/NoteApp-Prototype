@@ -7,9 +7,9 @@ if (require('electron-squirrel-startup')) {
 
 import path from 'path';
 import contextMenu from "electron-context-menu";
-import { registerNoteHandlers } from './utils/ipc/fileHandler';
+import { registerNoteHandlers, registerFileHandlers } from './utils/ipc/fileHandler';
 import { registerWorkspaceHandlers } from './utils/ipc/workspaceHandler';
-
+import { registerWindowHandlers } from './utils/ipc/windowHandler';
 
 const createWindow = () => {
 
@@ -18,24 +18,24 @@ const createWindow = () => {
     showSearchWithGoogle: false,
   });
 
-
-
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     opacity: 1,
     center: true,
     resizable: true,
-    autoHideMenuBar: false,
+    width: 800,
+    height: 600,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
     // have no visual flash (1)
     show: false,
   });
-  mainWindow.maximize();
 
   mainWindow.webContents.session.setSpellCheckerLanguages(['en-US', 'es']);
 
+  // Prevent opening links in the appplication itself
   mainWindow.webContents.setWindowOpenHandler((edata) => {
     shell.openExternal(edata.url);
     return { action: "deny" };
@@ -61,19 +61,25 @@ const createWindow = () => {
   powerMonitor.on('suspend', () => {
     console.log('powerMonitor suspend');
   });
+
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
+
+  return mainWindow;
 };
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
-  console.log('app ready');
+  console.log('App is ready');
+
   // Note file extension and encoding are registered here
-  registerNoteHandlers(".html", 'utf-8');
+  registerNoteHandlers(".html");
   registerWorkspaceHandlers();
-  createWindow();
+  registerFileHandlers('utf-8');
+  // Register window handlers and create the browser window
+  registerWindowHandlers(createWindow());
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

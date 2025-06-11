@@ -3,6 +3,7 @@
 console.log('Preload script is being loaded...');
 
 import { contextBridge, shell, ipcRenderer } from 'electron';
+import { WorkspaceI } from './services/domain/Workspace';
 
 contextBridge.exposeInMainWorld('fileAPI', {
     openExternal: (url: string) => shell.openExternal(url),
@@ -15,6 +16,26 @@ contextBridge.exposeInMainWorld('fileAPI', {
         ipcRenderer.invoke('read-file', filePath),
     writeFile: (filePath: string, content: string) =>
         ipcRenderer.invoke('write-file', filePath, content),
+    selectFolder: async () =>
+        await ipcRenderer.invoke('dialog:selectFolder'),
+    createFolder: (path: string) =>
+        ipcRenderer.invoke('create-folder', path),
+    folderExists: (folderPath: string) =>
+        ipcRenderer.invoke('folder-exists', folderPath),
+});
+
+contextBridge.exposeInMainWorld('workspaceAPI', {
+    getWorkspaces: () => ipcRenderer.invoke('get-workspaces'),
+    setWorkspaces: (workspaces: WorkspaceI[]) => ipcRenderer.invoke('set-workspaces', workspaces),
+});
+
+contextBridge.exposeInMainWorld('windowAPI', {
+    setResizable: (resizable: boolean) => ipcRenderer.invoke('set-resizable', resizable),
+    maximizeWindow: () => ipcRenderer.invoke('maximize-window'),
+    unmaximizeWindow: () => ipcRenderer.invoke('unmaximize-window'),
+    minimizeWindow: () => ipcRenderer.invoke('minimize-window'),
+    changeWindowSize: (height: number, width: number) => ipcRenderer.invoke('change-window-size', height, width),
+    isMaximized: () => ipcRenderer.invoke('is-maximized'),
 });
 
 console.log('Preload script loaded successfully');

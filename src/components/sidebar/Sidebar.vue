@@ -9,6 +9,7 @@ import { useNotesStore } from '../../stores/useNotesStore'
 import { Note } from '../../services/domain/Note'
 
 const store = useNotesStore()
+console.log('Note tree:', store.noteTree)
 
 // Set of expanded note IDs
 const expanded = ref<Set<string>>(new Set())

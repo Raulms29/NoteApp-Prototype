@@ -1,14 +1,36 @@
-import { ipcMain } from 'electron';
+import { ipcMain, dialog } from 'electron';
 import fs from 'fs';
 import path from 'path';
 
-export function registerNoteHandlers(noteFileExtension: string, fileEncoding: BufferEncoding = 'utf-8') {
-    ipcMain.handle('get-note-path', (_, notesPath: string, noteName: string) => {
+export function registerNoteHandlers(noteFileExtension: string) {
+    ipcMain.handle('get-note-path', async (_, notesPath: string, noteName: string) => {
         return path.join(notesPath, noteName + noteFileExtension);
     });
+}
 
-    ipcMain.handle('file-exists', (_, filePath: string) => {
-        return fs.existsSync(filePath);
+export function registerFileHandlers(fileEncoding: BufferEncoding = 'utf-8') {
+    ipcMain.handle('dialog:selectFolder', async () => {
+        const result = await dialog.showOpenDialog({
+            properties: ['openDirectory']
+        });
+        if (result.canceled || result.filePaths.length === 0) return null;
+        return result.filePaths[0];
+    });
+
+    ipcMain.handle('create-folder', async (_, path: string) => {
+        if (!fs.existsSync(path)) {
+            await fs.promises.mkdir(path, { recursive: false });
+        } else {
+            throw new Error(`Folder already exists: ${path}`);
+        }
+    });
+
+    ipcMain.handle('file-exists', async (_, filePath: string) => {
+        return fs.existsSync(filePath) && fs.lstatSync(filePath).isFile();
+    });
+
+    ipcMain.handle('folder-exists', async (_, folderPath: string) => {
+        return fs.existsSync(folderPath) && fs.lstatSync(folderPath).isDirectory();
     });
 
     ipcMain.handle('read-file', async (_, filePath: string) => {

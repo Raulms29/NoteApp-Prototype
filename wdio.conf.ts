@@ -300,4 +300,4 @@ export const config: WebdriverIO.Config = {
     */
     // afterAssertion: function(params) {
     // }
-}
+};

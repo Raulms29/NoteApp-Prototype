@@ -2,11 +2,11 @@ import { ipcMain } from 'electron';
 import Store from 'electron-store';
 import { Workspace } from '../../services/domain/Workspace';
 
-type WorkspaceSchema = {
+export type WorkspacesSchema = {
     workspaces: Workspace[];
 };
 
-const workspaceStore = new Store<WorkspaceSchema>({
+const workspaceStore = new Store<WorkspacesSchema>({
     name: 'workspaces',
     defaults: { workspaces: [] },
 });
@@ -19,6 +19,5 @@ export function registerWorkspaceHandlers() {
 
     ipcMain.handle('set-workspaces', (_event, workspaces) => {
         workspaceStore.set('workspaces', workspaces);
-        return true;
     });
 }

@@ -28,3 +28,27 @@ export const writeFile = async (filePath: string, content: string): Promise<void
         throw new Error(`Failed to write file: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 };
+
+export const selectFolder = async (): Promise<string | null> => {
+    try {
+        return await window.fileAPI.selectFolder();
+    } catch (error) {
+        throw new Error(`Failed to select folder: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+};
+
+export const createFolder = async (path: string): Promise<void> => {
+    try {
+        await window.fileAPI.createFolder(path);
+    } catch (error) {
+        throw new Error(`Failed to create folder: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+};
+
+export const folderExists = async (folderPath: string): Promise<boolean> => {
+    try {
+        return await window.fileAPI.folderExists(folderPath);
+    } catch (error) {
+        throw new Error(`Failed to check if folder exists: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+};

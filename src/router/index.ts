@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import Workspace from '../views/Workspace.vue';
 import NoteSpace from '../views/NoteSpace.vue';
 import NewWorkspace from '../views/NewWorkspace.vue';
@@ -10,7 +10,7 @@ const routes = [
 ];
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes,
 });
 

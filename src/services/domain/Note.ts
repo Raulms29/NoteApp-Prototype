@@ -91,7 +91,7 @@ export class Note {
      * @returns An array of child notes.
      */
     get children(): Note[] {
-        return [...this._children];
+        return this._children;
     }
 
     /**

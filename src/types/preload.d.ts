@@ -1,6 +1,6 @@
 export { };
 
-import { WorkspaceI } from '../src/services/domain/Workspace';
+import { WorkspaceI } from '../services/domain/Workspace';
 
 declare global {
     interface Window {

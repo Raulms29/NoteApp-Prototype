@@ -29,7 +29,7 @@ defineProps<{
 }
 
 .generic-btn.primary {
-    background: #6366f1;
+    background: #1976d2;
     color: #fff;
 }
 

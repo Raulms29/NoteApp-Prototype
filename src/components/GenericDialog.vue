@@ -73,7 +73,6 @@ defineProps<{
     border-radius: 0.5rem;
     font-size: 1rem;
     background: #f8fafc;
-    color: #222;
     outline: none;
     transition: border-color 0.2s;
     margin-top: 0.5rem;
@@ -81,7 +80,7 @@ defineProps<{
 }
 
 .generic-dialog-input:focus {
-    border-color: #6366f1;
+    border-color: #1976d2;
     background: #fff;
 }
 </style>

@@ -166,7 +166,7 @@ function goBacktoWorkspaces() {
 }
 
 .form-input:focus {
-    border: 2px solid #7c3aed;
+    border: 2px solid #1976d2;
 }
 
 .location-row {

@@ -27,6 +27,7 @@
  */
 
 import './styles/index.css';
+import './styles/colors.css';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import App from './views/App.vue';

@@ -3,47 +3,35 @@ import typography from '@tailwindcss/typography';
 module.exports = {
   content: [
     "./index.html",
-    "./src/**/*.{vue,js,ts,jsx,tsx}",
+    "./src/**/**/*.{vue,js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
-      typography: (theme) => ({
+      typography: ({ theme }) => ({
         DEFAULT: {
           css: {
-            '--tw-prose-body': theme(''),
-            '--tw-prose-headings': theme(''),
-            '--tw-prose-lead': theme(''),
-            '--tw-prose-links': theme(''),
-            '--tw-prose-bold': theme(''),
-            '--tw-prose-counters': theme(''),
-            '--tw-prose-bullets': theme(''),
-            '--tw-prose-hr': theme(''),
-            '--tw-prose-quotes': theme(''),
-            '--tw-prose-quote-borders': theme(''),
-            '--tw-prose-captions': theme(''),
-            '--tw-prose-code': theme(''),
-            // '--tw-prose-pre-code': theme('colors.black'),
-            // '--tw-prose-pre-bg': theme('colors.gray.100'),
-            '--tw-prose-th-borders': theme(''),
-            '--tw-prose-td-borders': theme(''),
-            '--tw-prose-invert-body': theme(''),
-            '--tw-prose-invert-headings': theme(''),
-            '--tw-prose-invert-lead': theme(''),
-            '--tw-prose-invert-links': theme(''),
-            '--tw-prose-invert-bold': theme(''),
-            '--tw-prose-invert-counters': theme(''),
-            '--tw-prose-invert-bullets': theme(''),
-            '--tw-prose-invert-hr': theme(''),
-            '--tw-prose-invert-quotes': theme(''),
-            '--tw-prose-invert-quote-borders': theme(''),
-            '--tw-prose-invert-captions': theme(''),
-            '--tw-prose-invert-code': theme(''),
-            '--tw-prose-invert-pre-code': theme(''),
-            '--tw-prose-invert-pre-bg': theme(''),
-            '--tw-prose-invert-th-borders': theme(''),
-            '--tw-prose-invert-td-borders': theme(''),
-          }
+            // '--tw-prose-body': theme(''),
+            // '--tw-prose-headings': theme(''),
+            // '--tw-prose-lead': theme(''),
+            // '--tw-prose-links': theme(''),
+            // '--tw-prose-bold': theme(''),
+            // '--tw-prose-counters': theme(''),
+            // '--tw-prose-bullets': theme('colors.pink.500'),
+            // '--tw-prose-hr': theme(''),
+            // '--tw-prose-quotes': theme('colors.pink.200'),
+            // '--tw-prose-quote-borders': theme('colors.pink.200'),
+            // '--tw-prose-captions': theme('colors.pink.200'),
 
+            '--tw-prose-body': theme('colors.slate.900'),           // Main text
+            // '--tw-prose-headings': theme('colors.slate.900'),       // Headings (neutral, dark)
+            // '--tw-prose-lead': theme('colors.slate.800'),           // Lead text
+            // '--tw-prose-links': theme('colors.sky.600'),            // Links (blue for contrast)
+            // '--tw-prose-bold': theme('colors.slate.900'),           // Bold text
+            '--tw-prose-counters': theme('colors.slate.800'),       // Ordered list numbers
+            '--tw-prose-bullets': theme('colors.slate.800'),        // Unordered list bullets
+            '--tw-prose-hr': theme('colors.slate.200'),             // Horizontal rule
+            '--tw-prose-quote-borders': theme('colors.blue.200'),   // Blockquote border
+          }
           ,
         },
       }),

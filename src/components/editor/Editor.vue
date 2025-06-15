@@ -1,8 +1,11 @@
 <template>
     <editor-content :editor="editor" />
     <BubbleMenu v-if="editor" :editor="editor"></BubbleMenu>
-    <!-- <button @click="saveEditorContent" class="save-button">Save Content</button>
-    <button @click="loadEditorContent" class="load-button">Load Content</button> -->
+
+    <div class="editor-info">
+        <span>{{ editor.storage.characterCount.words() }} words</span>
+        <span>{{ editor.storage.characterCount.characters() }} characters</span>
+    </div>
 </template>
 
 <script lang="ts">
@@ -20,6 +23,7 @@ import { MarkdownLink } from './extensions/MarkdownLink';
 import { common, createLowlight } from 'lowlight';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import Underline from '@tiptap/extension-underline'
+import CharacterCount from '@tiptap/extension-character-count';
 
 
 // Markdown.configure({
@@ -34,15 +38,22 @@ import Underline from '@tiptap/extension-underline'
 // })
 
 export default {
+    emits: ['note-change'],
     components: {
         EditorContent: EditorContent,
     },
 
-    data() {
+    data(): { editor: any, notesStore: ReturnType<typeof useNotesStore> } {
         return {
-            editor: Editor,
+            editor: null,
             notesStore: useNotesStore(),
         }
+    },
+
+    methods: {
+        emitNoteChange() {
+            this.$emit('note-change', this.editor?.getJSON?.());
+        },
     },
 
     beforeMount() {
@@ -67,6 +78,7 @@ export default {
                 }),
                 MarkdownLink,
                 BubbleMenuExtension,
+                CharacterCount,
             ],
             editorProps: {
                 attributes: {
@@ -83,6 +95,7 @@ export default {
                 console.log('Current note changed:', newNote);
                 if (newNote && this.editor) {
                     this.editor.commands.setContent(await this.notesStore.loadCurrentNoteContent());
+                    this.emitNoteChange();
                 }
             },
             { immediate: true } // Load the content immediately if a note is already selected
@@ -105,26 +118,6 @@ export default {
     //             URL.revokeObjectURL(link.href);
     //         }
     //     },
-
-    //     loadEditorContent() {
-    //         const input = document.createElement('input');
-    //         input.type = 'file';
-    //         input.accept = 'text/html';
-    //         input.addEventListener('change', (event) => {
-    //             const file = (event.target as HTMLInputElement).files?.[0];
-    //             if (file) {
-    //                 const reader = new FileReader();
-    //                 reader.onload = () => {
-    //                     if (this.editor) {
-    //                         this.editor.commands.setContent(reader.result as string);
-    //                     }
-    //                 };
-    //                 reader.readAsText(file);
-    //             }
-    //         });
-    //         input.click();
-    //     },
-    // },
 }
 
 const content = `
@@ -159,23 +152,6 @@ public static void main(String[] args) {
 This is a [link](https://example.com) in Markdown.
 `;
 
-import '../../styles/editor.css';
 </script>
 
-<style scoped>
-.save-button,
-.load-button {
-    margin-top: 10px;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.save-button:hover,
-.load-button:hover {
-    background-color: #0056b3;
-}
-</style>
+<style scoped></style>

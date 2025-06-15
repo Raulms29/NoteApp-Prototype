@@ -180,8 +180,4 @@ function renderSwitcherIcon({ option }: { option: TreeOption }) {
 ::v-deep(.n-tree-node-switcher__icon) {
     color: black !important;
 }
-
-/* ::v-deep(.n-tree-node-switcher__icon:hover) {
-    color: #1976d2;
-} */
 </style>

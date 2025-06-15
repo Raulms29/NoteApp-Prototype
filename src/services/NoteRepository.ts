@@ -57,15 +57,15 @@ export class NoteRepository {
     }
 
     async renameNoteFile(oldName: string, newName: string) {
-        const oldFilePath = await getNotePath(this.notesPath, oldName);
-        const newFilePath = await getNotePath(this.notesPath, newName);
+        const oldFilePath = await getNotePath(this.notesPath, oldName.trim());
+        const newFilePath = await getNotePath(this.notesPath, newName.trim());
 
         if (!fileExists(oldFilePath)) {
             throw new Error(`Note file does not exist: ${oldFilePath}`);
         }
 
         if (fileExists(newFilePath)) {
-            throw new Error(`A note with the name "${newName}" already exists.`);
+            return; // If the new file already exists, do nothing
         }
 
         fs.renameSync(oldFilePath, newFilePath);

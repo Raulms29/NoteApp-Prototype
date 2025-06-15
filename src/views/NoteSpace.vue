@@ -2,13 +2,18 @@
     <div class="note-space-container">
         <splitpanes class="split-theme">
             <pane min-size="12.5" max-size="60" size="15">
+                <div class="flex-1 truncate pl-3 text-xl font-bold workspace-title select-none m-1">
+                    <VectorTriangle class="mr-2" />
+                    {{ workspaceStore.currentWorkspace.name }}
+                </div>
+                <hr class="sidebar-separator" />
                 <div class="sidebar-pane">
                     <Sidebar />
                 </div>
             </pane>
             <pane>
                 <div class="editor-pane">
-                    <Editor />
+                    <EditorView />
                 </div>
             </pane>
         </splitpanes>
@@ -19,7 +24,10 @@
 import 'splitpanes/dist/splitpanes.css';
 import '../styles/splitpanes.css';
 import { Splitpanes, Pane } from 'splitpanes';
+import { useWorkspaceStore } from '../stores/useWorkspaceStore';
+import VectorTriangle from 'icons/VectorTriangle.vue';
 
+const workspaceStore = useWorkspaceStore();
 </script>
 
 <style scoped>
@@ -28,16 +36,27 @@ import { Splitpanes, Pane } from 'splitpanes';
     overflow: hidden;
 }
 
-.sidebar-pane {
-    background-color: #fff;
-    overflow-y: auto;
-    height: 100%;
-}
-
 .editor-pane {
     overflow-y: auto;
-    background-color: #fff;
-    height: 100%;
-    margin: 0.5rem;
+    background-color: var(--background-color);
+    height: 98vh;
+    overflow: none;
+}
+
+.sidebar-pane {
+    background-color: var(--background-color);
+    overflow-y: auto;
+    max-height: 96vh;
+}
+
+.sidebar-separator {
+    border-top: 2px solid var(--sidebar-text-separator-color);
+    border-radius: 6px;
+}
+
+.workspace-title {
+    color: var(--sidebar-text-separator-color);
+    display: flex;
+    align-items: start;
 }
 </style>

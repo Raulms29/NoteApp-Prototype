@@ -152,7 +152,6 @@ onBeforeUnmount(() => {
     width: 1px;
     height: 24px;
     background-color: #e0e0e0;
-    /* margin: 0 8px; */
 }
 
 .fade-scale-enter-active,

@@ -76,6 +76,7 @@
   "license": "MIT",
   "dependencies": {
     "@tiptap/extension-bubble-menu": "^2.11.7",
+    "@tiptap/extension-character-count": "^2.14.0",
     "@tiptap/extension-code-block-lowlight": "^2.11.7",
     "@tiptap/extension-highlight": "^2.11.7",
     "@tiptap/extension-link": "^2.11.7",

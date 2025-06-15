@@ -119,6 +119,13 @@ function toogleParagraph() {
 </script>
 
 <style scoped>
+.dropdown-container,
+.dropdown-header,
+.dropdown-button {
+    font-size: 0.92em;
+    font-weight: 700;
+}
+
 .dropdown-header {
     font-size: 0.875rem;
     font-weight: 600;

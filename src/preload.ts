@@ -22,6 +22,8 @@ contextBridge.exposeInMainWorld('fileAPI', {
         ipcRenderer.invoke('create-folder', path),
     folderExists: (folderPath: string) =>
         ipcRenderer.invoke('folder-exists', folderPath),
+    renameFile: (oldPath: string, newPath: string) =>
+        ipcRenderer.invoke('rename-file', oldPath, newPath),
 });
 
 contextBridge.exposeInMainWorld('workspaceAPI', {

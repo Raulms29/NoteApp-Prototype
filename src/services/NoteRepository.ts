@@ -1,6 +1,6 @@
 import { Note, RawNote } from "./domain/Note";
 import fs from 'fs';
-import { fileExists, getNotePath, readFile, writeFile } from "../utils/fileUtils";
+import { fileExists, getNotePath, readFile, writeFile, renameFile } from "../utils/fileUtils";
 
 export class NoteRepository {
 
@@ -59,16 +59,18 @@ export class NoteRepository {
     async renameNoteFile(oldName: string, newName: string) {
         const oldFilePath = await getNotePath(this.notesPath, oldName.trim());
         const newFilePath = await getNotePath(this.notesPath, newName.trim());
+        console.log(`Renaming note file from ${oldFilePath} to ${newFilePath}`);
 
-        if (!fileExists(oldFilePath)) {
+        if (!await fileExists(oldFilePath)) {
             throw new Error(`Note file does not exist: ${oldFilePath}`);
         }
 
-        if (fileExists(newFilePath)) {
+        if (await fileExists(newFilePath)) {
             return; // If the new file already exists, do nothing
         }
+        console.log(`Renaming note file from ${oldFilePath} to ${newFilePath}`);
 
-        fs.renameSync(oldFilePath, newFilePath);
+        await renameFile(oldFilePath, newFilePath);
     }
 
     /**

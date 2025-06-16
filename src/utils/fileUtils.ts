@@ -52,3 +52,11 @@ export const folderExists = async (folderPath: string): Promise<boolean> => {
         throw new Error(`Failed to check if folder exists: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 };
+
+export const renameFile = async (oldPath: string, newPath: string): Promise<void> => {
+    try {
+        await window.fileAPI.renameFile(oldPath, newPath);
+    } catch (error) {
+        throw new Error(`Failed to rename file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+};

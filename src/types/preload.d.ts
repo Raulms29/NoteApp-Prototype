@@ -8,6 +8,7 @@ declare global {
             getNotePath: (notesPath: string, noteName: string) => Promise<string>;
             fileExists: (filePath: string) => Promise<boolean>;
             readFile: (filePath: string) => Promise<string>;
+            renameFile(oldPath: string, newPath: string): Promise<void>;
             writeFile: (filePath: string, content: string) => Promise<void>;
             selectFolder: () => Promise<string | null>;
             createFolder: (path: string) => Promise<void>;

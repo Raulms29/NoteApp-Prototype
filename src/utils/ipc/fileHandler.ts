@@ -43,4 +43,8 @@ export function registerFileHandlers(fileEncoding: BufferEncoding = 'utf-8') {
     ipcMain.handle('write-file', async (_, filePath: string, content: string) => {
         await fs.promises.writeFile(filePath, content, fileEncoding);
     });
+
+    ipcMain.handle('rename-file', async (_, oldPath: string, newPath: string) => {
+        await fs.promises.rename(oldPath, newPath);
+    });
 }

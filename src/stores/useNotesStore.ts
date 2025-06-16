@@ -41,12 +41,13 @@ export const useNotesStore = defineStore('notes', () => {
         return await repo.readNoteContent(currentNote.value as Note);
     }
 
-    function renameNote(note: Note, newName: string) {
+    async function renameNote(note: Note, newName: string) {
         const oldName = note.getFullName();
         // Update the note's name
         note.name = newName;
         // Rename the file
-        repo.renameNoteFile(oldName, note.getFullName());
+        console.log(`Renaming note from ${oldName} to ${note.getFullName()}`);
+        await repo.renameNoteFile(oldName, note.getFullName());
         updateNoteTree();
     }
 

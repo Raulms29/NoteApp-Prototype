@@ -13,6 +13,7 @@ declare global {
             selectFolder: () => Promise<string | null>;
             createFolder: (path: string) => Promise<void>;
             folderExists: (folderPath: string) => Promise<boolean>;
+            joinPaths: (...args: string[]) => string;
         },
         workspaceAPI: {
             getWorkspaces: () => Promise<WorkspaceI[]>;

@@ -60,3 +60,7 @@ export const renameFile = async (oldPath: string, newPath: string): Promise<void
         throw new Error(`Failed to rename file: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 };
+
+export const joinPaths = (...paths: string[]): string => {
+    return window.fileAPI.joinPaths(...paths);
+};

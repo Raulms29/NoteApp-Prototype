@@ -33,6 +33,8 @@ const createWindow = () => {
     show: false,
   });
 
+  mainWindow.setMinimumSize(800, 600);
+
   mainWindow.webContents.session.setSpellCheckerLanguages(['en-US', 'es']);
 
   // Prevent opening links in the appplication itself
@@ -102,7 +104,6 @@ app.on('activate', () => {
 });
 
 // ============================ //
-// study
 app.on('before-quit', () => {
   console.log('app before-quit');
 });

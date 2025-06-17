@@ -59,7 +59,6 @@ export class NoteRepository {
     async renameNoteFile(oldName: string, newName: string) {
         const oldFilePath = await getNotePath(this.notesPath, oldName.trim());
         const newFilePath = await getNotePath(this.notesPath, newName.trim());
-        console.log(`Renaming note file from ${oldFilePath} to ${newFilePath}`);
 
         if (!await fileExists(oldFilePath)) {
             throw new Error(`Note file does not exist: ${oldFilePath}`);
@@ -68,7 +67,6 @@ export class NoteRepository {
         if (await fileExists(newFilePath)) {
             return; // If the new file already exists, do nothing
         }
-        console.log(`Renaming note file from ${oldFilePath} to ${newFilePath}`);
 
         await renameFile(oldFilePath, newFilePath);
     }
@@ -96,7 +94,6 @@ export class NoteRepository {
     */
     async readNoteContent(note: Note): Promise<string> {
         const filePath = await getNotePath(this.notesPath, note.getFullName());
-        console.log(`Reading note content from: ${filePath}`);
         return await readFile(filePath);
     }
 

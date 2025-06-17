@@ -1,8 +1,21 @@
 <template>
-    <n-tree block-line draggable :data="data" :render-label="renderLabel" :expanded-keys="expandedKeys"
-        @drop="handleDrop" @update:expanded-keys="handleExpandedKeysChange"
-        :override-default-node-click-behavior="selectNote" :render-switcher-icon="renderSwitcherIcon"
-        style="--n-drop-mark-color: #1976d2;" />
+    <div class="sidebar-container">
+        <SidebarButtons @search="toggleSearch" />
+
+        <transition name="fade-slide">
+            <div v-if="showSearch" class="ml-2 mr-2">
+                <n-input v-model:value="pattern" placeholder="Search" style="--n-border-hover: 1px solid #1976d2; --n-border-focus: 1px solid #1976d2; --n-caret-color: #1976d2; --n-loading-color: #1976d2;
+                --n-box-shadow-focus: 0 0 0 2px rgba(25, 118, 210, 0.2);" />
+            </div>
+        </transition>
+
+        <div class="sidebar-tree-scroll">
+            <n-tree block-line draggable :data="data" :render-label="renderLabel" :expanded-keys="expandedKeys"
+                @drop="handleDrop" @update:expanded-keys="handleExpandedKeysChange"
+                :override-default-node-click-behavior="selectNote" :render-switcher-icon="renderSwitcherIcon"
+                :pattern="pattern" :show-irrelevant-nodes="false" style="--n-drop-mark-color: #1976d2;" />
+        </div>
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -17,6 +30,13 @@ const store = useNotesStore()
 
 const expandedKeys = ref<string[]>([])
 const data = ref<TreeOption[]>([])
+const pattern = ref<string>('')
+const showSearch = ref(false)
+
+function toggleSearch() {
+    showSearch.value = !showSearch.value
+    pattern.value = ''
+}
 
 function noteToTreeOption(note: Note): TreeOption {
     let noteChildren = note.children?.map(noteToTreeOption)
@@ -141,6 +161,20 @@ function renderSwitcherIcon({ option }: { option: TreeOption }) {
 </script>
 
 <style scoped>
+.sidebar-container {
+    display: flex;
+    flex-direction: column;
+    /* height: 100%; */
+    height: auto;
+}
+
+.sidebar-tree-scroll {
+    flex: 1 1 0%;
+    min-height: 0;
+    overflow-y: auto;
+    max-height: 90vh;
+}
+
 ::v-deep(.n-tree-node) {
     border: 1.5px solid transparent;
     border-radius: 0.375rem;
@@ -179,5 +213,22 @@ function renderSwitcherIcon({ option }: { option: TreeOption }) {
 
 ::v-deep(.n-tree-node-switcher__icon) {
     color: black !important;
+}
+
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+    transition: opacity 0.25s, transform 0.25s;
+}
+
+.fade-slide-enter-from,
+.fade-slide-leave-to {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.fade-slide-enter-to,
+.fade-slide-leave-from {
+    opacity: 1;
+    transform: translateY(0);
 }
 </style>

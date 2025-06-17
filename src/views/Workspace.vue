@@ -50,7 +50,6 @@ function removeWorkspace(workspace: WorkspaceI) {
 
 async function setWindowSize() {
     const isMaximized = await window.windowAPI.isMaximized();
-    console.log('isMaximized', isMaximized);
     if (isMaximized) {
         await window.windowAPI.unmaximizeWindow();
     }

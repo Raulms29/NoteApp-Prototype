@@ -46,7 +46,6 @@ export const useNotesStore = defineStore('notes', () => {
         // Update the note's name
         note.name = newName;
         // Rename the file
-        console.log(`Renaming note from ${oldName} to ${note.getFullName()}`);
         await repo.renameNoteFile(oldName, note.getFullName());
         updateNoteTree();
     }
@@ -88,10 +87,8 @@ export const useNotesStore = defineStore('notes', () => {
         // Perform note removal from the tree
         preMoveNote(noteToMove);
 
-        console.log(`Moving note ${noteToMove.getFullName()} to ${targetNote.getFullName()}`);
         // Add the note to the new parent
         targetNote.addChild(noteToMove);
-
 
         updateNoteTree();
     }
@@ -139,6 +136,46 @@ export const useNotesStore = defineStore('notes', () => {
         }
     }
 
+    async function createNote(parent?: Note): Promise<Note> {
+
+        function getNewNoteName(): string {
+            let index = 1;
+            let newName = 'New Note';
+            const notesFlat = flattenNotes(notes.value);
+            while (notesFlat.some(n => n.name === newName)) {
+                newName = `New Note ${index++}`;
+            }
+            return newName;
+        }
+
+        const newNote = new Note(getNewNoteName());
+        if (parent) {
+            parent.addChild(newNote);
+        }
+        else {
+
+            notes.value.push(newNote);
+        }
+
+        await repo.writeNoteContent(newNote, ''); // Initialize with empty content
+
+        updateNoteTree();
+        return newNote;
+    }
+
+    function flattenNotes(notes: Note[]): Note[] {
+        const result: Note[] = [];
+
+        for (const note of notes) {
+            result.push(note);
+            if (note.children && note.children.length > 0) {
+                result.push(...flattenNotes(note.children));
+            }
+        }
+        return result;
+    }
+
+
     return {
         noteTree: notes,
         currentNote,
@@ -147,6 +184,7 @@ export const useNotesStore = defineStore('notes', () => {
         selectNote,
         saveCurrentNoteContent,
         loadCurrentNoteContent,
+        createNote,
         renameNote,
         deleteNote,
         moveNoteTo,

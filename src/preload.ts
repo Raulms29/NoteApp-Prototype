@@ -2,11 +2,10 @@
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 console.log('Preload script is being loaded...');
 
-import { contextBridge, shell, ipcRenderer } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
 import { WorkspaceI } from './services/domain/Workspace';
 
 contextBridge.exposeInMainWorld('fileAPI', {
-    openExternal: (url: string) => shell.openExternal(url),
     // This needs to be done since the filesystem cannot be accessed directly from the renderer process
     getNotePath: (notesPath: string, noteName: string) =>
         ipcRenderer.invoke('get-note-path', notesPath, noteName),
@@ -24,6 +23,7 @@ contextBridge.exposeInMainWorld('fileAPI', {
         ipcRenderer.invoke('folder-exists', folderPath),
     renameFile: (oldPath: string, newPath: string) =>
         ipcRenderer.invoke('rename-file', oldPath, newPath),
+    joinPaths: (...args: string[]) => ipcRenderer.invoke('join-paths', args),
 });
 
 contextBridge.exposeInMainWorld('workspaceAPI', {

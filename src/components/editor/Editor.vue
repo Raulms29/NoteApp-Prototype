@@ -92,7 +92,7 @@ export default {
         watch(
             () => this.notesStore.currentNote, // Reactive property from the store
             async (newNote) => {
-                console.log('Current note changed:', newNote);
+                console.log('Current note changed:', newNote.name);
                 if (newNote && this.editor) {
                     this.editor.commands.setContent(await this.notesStore.loadCurrentNoteContent());
                     this.emitNoteChange();

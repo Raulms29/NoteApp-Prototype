@@ -1,10 +1,10 @@
 <template>
     <div class="note-space-container">
         <splitpanes class="split-theme">
-            <pane min-size="12.5" max-size="60" size="15">
+            <pane min-size="12.5" max-size="50" size="14.5">
                 <div class="flex-1 truncate pl-3 text-xl font-bold workspace-title select-none m-1">
                     <VectorTriangle class="mr-2" />
-                    {{ workspaceStore.currentWorkspace.name }}
+                    {{ workspaceStore.currentWorkspace?.name }}
                 </div>
                 <hr class="sidebar-separator" />
                 <div class="sidebar-pane">
@@ -45,8 +45,7 @@ const workspaceStore = useWorkspaceStore();
 
 .sidebar-pane {
     background-color: var(--background-color);
-    overflow-y: auto;
-    max-height: 96vh;
+    height: 100%;
 }
 
 .sidebar-separator {

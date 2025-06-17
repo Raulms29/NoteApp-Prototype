@@ -23,7 +23,7 @@ contextBridge.exposeInMainWorld('fileAPI', {
         ipcRenderer.invoke('folder-exists', folderPath),
     renameFile: (oldPath: string, newPath: string) =>
         ipcRenderer.invoke('rename-file', oldPath, newPath),
-    joinPaths: (...args: string[]) => ipcRenderer.invoke('join-paths', args),
+    joinPaths: (...args: string[]) => ipcRenderer.invoke('join-paths', ...args),
 });
 
 contextBridge.exposeInMainWorld('workspaceAPI', {

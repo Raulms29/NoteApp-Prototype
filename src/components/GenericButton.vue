@@ -47,7 +47,7 @@ defineProps<{
     filter: brightness(0.97);
 }
 
-.generic-btn:focus {
-    box-shadow: 0 0 0 2px #6366f1aa;
+.generic-btn:hover {
+    box-shadow: 0 0 0 1.5px #1976d2aa;
 }
 </style>

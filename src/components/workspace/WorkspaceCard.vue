@@ -34,7 +34,6 @@
             <RemoveDialog v-if="showDelete" :name="workspace.name" @cancel="showDelete = false"
                 @remove="handleDelete" />
         </teleport>
-
     </div>
 </template>
 

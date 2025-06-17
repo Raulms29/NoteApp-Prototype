@@ -34,9 +34,6 @@ export class NoteRepository {
 
         // Recursively create Note objects from the raw data
         const createNote = (item: RawNote): Note => {
-            if (!this.isValidNote(item)) {
-                throw new Error(`Invalid note structure for item: ${JSON.stringify(item)}`);
-            }
 
             // Recursively map children to Note objects
             const children = item._children
@@ -76,11 +73,6 @@ export class NoteRepository {
     * @param notes The note structure to save.
     */
     async saveNoteTree(notes: Note[]): Promise<void> {
-        // TODO revise if this is needed
-        if (!Array.isArray(notes) || !notes.every(this.isValidNote)) {
-            throw new Error("Invalid note structure provided for saving.");
-        }
-
         try {
             const json = JSON.stringify(notes, null, 2);
             await writeFile(this.structurePath, json);
@@ -115,14 +107,5 @@ export class NoteRepository {
         } else {
             throw new Error(`Note file does not exist: ${filePath}`);
         }
-    }
-
-    /**
-    * Validates if an object matches the Note structure..
-    * Should be moved to utils???
-    */
-    private isValidNote(note: unknown): boolean {
-        // TODO
-        return note !== undefined; // Placeholder for actual validation logic
     }
 }

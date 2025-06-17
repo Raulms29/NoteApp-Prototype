@@ -48,7 +48,7 @@ export function registerFileHandlers(fileEncoding: BufferEncoding = 'utf-8') {
         await fs.promises.rename(oldPath, newPath);
     });
 
-    ipcMain.handle('join-paths', (_, ...args: string[]) => {
+    ipcMain.handle('join-paths', async (_, ...args: string[]) => {
         return path.join(...args);
     });
 }

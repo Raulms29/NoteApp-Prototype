@@ -2,9 +2,8 @@
     <div class="editor-wrapper">
         <div class="editor-container" v-if="notesStore.currentNote">
             <div class="note-name">
-                <div v-if="renameError" class="rename-error-message">
-                    {{ renameError }}
-                </div>
+                <GenericErrorMessage v-if="renameError" :message="renameError" />
+
                 <input v-model="noteName" @focusout="handleNoteRename" class="note-name-input" spellcheck="true"
                     autocapitalize="on" @focus="isFocused = true" @blur="isFocused = false" />
                 <span class="note-name-underline" :class="{ active: isFocused }"></span>
@@ -66,24 +65,11 @@ import '../../styles/editor.css';
     flex-direction: column;
 }
 
-.rename-error-message {
+.generic-error-message {
     position: absolute;
     top: -2.25rem;
     left: 0;
     right: 0;
-    margin: 0 auto;
-    background: #e74c3c;
-    color: #fff;
-    padding: 0.375rem 0.75rem;
-    border-radius: 0.375rem;
-    font-size: 0.75rem;
-    font-weight: 500;
-    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.08);
-    max-width: 26.25rem;
-    z-index: 100;
-    text-align: center;
-    animation: fadeIn 0.2s;
-    pointer-events: none;
 }
 
 .note-name-input {

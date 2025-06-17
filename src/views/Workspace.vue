@@ -12,6 +12,7 @@
                 @removeWorkspace="removeWorkspace" />
         </div>
         <NewWorkspaceCard @click="newWorkspace" />
+        <GenericErrorMessage v-if="errorMessage" :message="errorMessage" />
     </main>
 </template>
 
@@ -20,11 +21,13 @@
 import { useRouter } from 'vue-router';
 import { WorkspaceI } from '../services/domain/Workspace';
 import { useWorkspaceStore } from '../stores/useWorkspaceStore';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const router = useRouter();
 
 const workspaceStore = useWorkspaceStore();
+const errorMessage = ref<string>(null);
+
 workspaceStore.init()
 
 function selectWorkspace(workspace: WorkspaceI) {
@@ -41,7 +44,15 @@ function newWorkspace() {
 }
 
 function renameWorkspace(workspace: WorkspaceI, newName: string) {
-    workspaceStore.renameWorkspace(workspace.id, newName);
+    try {
+        workspaceStore.renameWorkspace(workspace.id, newName);
+    } catch (e) {
+        errorMessage.value = e.message;
+        setTimeout(() => {
+            errorMessage.value = null;
+        }, 3000);
+        return;
+    }
 }
 
 function removeWorkspace(workspace: WorkspaceI) {

@@ -6,7 +6,7 @@ export interface WorkspaceI {
 }
 
 export class Workspace implements WorkspaceI {
-    name: string;
+    _name: string;
     path: string;
     _id: string;
 
@@ -27,5 +27,20 @@ export class Workspace implements WorkspaceI {
 
     get id(): string {
         return this._id;
+    }
+
+    get name(): string {
+        return this._name;
+    }
+
+    set name(newName: string) {
+        newName = newName.trim();
+        if (newName.length === 0) {
+            throw new Error('Workspace name cannot be empty');
+        }
+        if (newName.length > 25) {
+            throw new Error('Workspace name cannot exceed 25 characters');
+        }
+        this._name = newName;
     }
 }

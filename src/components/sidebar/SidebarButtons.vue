@@ -3,7 +3,7 @@
         <button class="sidebar-btn" title="Search" @click="emit('search')">
             <Magnify width="48" height="48" />
         </button>
-        <button class="sidebar-btn" title="Change workspace" @click.stop="router.replace({ name: 'workspace' })">
+        <button class="sidebar-btn" title="Change workspace" @click.stop="handleChangeWorkspace">
             <FolderSwapOutline width="48" height="48" />
         </button>
         <button class="sidebar-btn" title="New Note" @click="handleNewNote">
@@ -30,6 +30,11 @@ async function handleNewNote() {
     if (newNote) {
         notesStore.selectNote(newNote);
     }
+}
+
+function handleChangeWorkspace() {
+    notesStore.reset();
+    router.replace({ name: 'workspace' })
 }
 
 </script>

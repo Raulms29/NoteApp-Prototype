@@ -37,8 +37,8 @@ defineProps<{
     border-radius: 0.75rem;
     box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.18);
     min-width: 22rem;
-    max-width: 90vw;
-    padding: 2rem 2rem 1.5rem 2rem;
+    max-width: 40vw;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
@@ -48,6 +48,7 @@ defineProps<{
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 0.25rem;
+    user-select: none;
 }
 
 .generic-dialog-text {
@@ -62,7 +63,7 @@ defineProps<{
 
 .generic-dialog-actions {
     display: flex;
-    gap: 1rem;
+    gap: 0.75rem;
     justify-content: flex-end;
 }
 

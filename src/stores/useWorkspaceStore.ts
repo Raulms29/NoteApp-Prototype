@@ -35,9 +35,9 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     }
 
     function renameWorkspace(id: string, newName: string) {
-        const idx = workspaces.value.findIndex(ws => ws.id === id);
-        if (idx !== -1) {
-            workspaces.value[idx].name = newName;
+        const index = workspaces.value.findIndex(ws => ws.id === id);
+        if (index !== -1) {
+            workspaces.value[index].name = newName;
         }
         persistWorkspaces();
     }

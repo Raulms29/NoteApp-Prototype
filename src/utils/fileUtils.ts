@@ -61,6 +61,6 @@ export const renameFile = async (oldPath: string, newPath: string): Promise<void
     }
 };
 
-export const joinPaths = (...paths: string[]): string => {
-    return window.fileAPI.joinPaths(...paths);
+export const joinPaths = async (...paths: string[]): Promise<string> => {
+    return await window.fileAPI.joinPaths(...paths);
 };

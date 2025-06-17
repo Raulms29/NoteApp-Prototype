@@ -20,8 +20,8 @@ export class WorkspaceRepository {
     }
 
     async createWorkspace(workspace: WorkspaceI) {
-        const notesFolder = fileUtils.joinPaths(workspace.path, '.notes');
-        const structureFile = fileUtils.joinPaths(notesFolder, 'notes.json');
+        const notesFolder = await fileUtils.joinPaths(workspace.path, '.notes');
+        const structureFile = await fileUtils.joinPaths(notesFolder, 'notes.json');
 
         // Only create the folder and file if they do not exist
         if (!await fileUtils.folderExists(notesFolder)) {

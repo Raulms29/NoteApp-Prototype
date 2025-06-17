@@ -179,6 +179,12 @@ export const useNotesStore = defineStore('notes', () => {
         return result;
     }
 
+    function reset() {
+        notes.value = [];
+        currentNote.value = null;
+        repo = null;
+    }
+
 
     return {
         noteTree: notes,
@@ -194,5 +200,6 @@ export const useNotesStore = defineStore('notes', () => {
         moveNoteTo,
         moveNoteBefore,
         moveNoteAfter,
+        reset,
     };
 });

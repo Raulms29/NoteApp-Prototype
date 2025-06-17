@@ -27,10 +27,6 @@ export class Note {
         this._createdAt = createdAt;
     }
 
-    getFullName(): string {
-        return `${this._name}_${this._id}`;
-    }
-
     /**
      * Sets the ID of the note.
      * @param id - The unique identifier for the note, must be exactly 8 characters long.
@@ -66,7 +62,7 @@ export class Note {
     /**
      * Sets the name of the note.
      * @param newName - The new name for the note
-     * @throws Will throw an error if the name is empty, exceeds 100 characters, or contains invalid characters.
+     * @throws Will throw an error if the name is empty, exceeds 30 characters, or contains invalid characters.
      */
     set name(newName: string) {
         newName = newName.trim();
@@ -79,8 +75,8 @@ export class Note {
             throw new Error('Note name cannot be empty.');
         }
 
-        if (newName.length > 50) {
-            throw new Error('Note name cannot exceed 100 characters.');
+        if (newName.length > 30) {
+            throw new Error('Note name cannot exceed 30 characters.');
         }
 
         this._name = newName;

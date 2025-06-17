@@ -27,13 +27,14 @@ export const useNotesStore = defineStore('notes', () => {
     }
 
     function selectNote(note: Note) {
-        console.log(`Selecting note: ${note.getFullName()}`);
+        console.log(`Selecting note: ${note.name}`);
         currentNote.value = note;
     }
 
-    function saveCurrentNoteContent(html: string) {
+    async function saveNoteContent(note: Note, html: string) {
         if (!currentNote.value) throw new Error('No note selected to save content for.');
-        repo.writeNoteContent(currentNote.value as Note, html);
+        console.log(`Saving content for note: ${note.name}`);
+        await repo.writeNoteContent(note, html);
     }
 
     async function loadCurrentNoteContent(): Promise<string> {
@@ -42,11 +43,14 @@ export const useNotesStore = defineStore('notes', () => {
     }
 
     async function renameNote(note: Note, newName: string) {
-        const oldName = note.getFullName();
+        if (flattenNotes(notes.value).some(n => n.name === newName)) {
+            throw new Error(`A note with the name "${newName}" already exists.`);
+        }
+        const oldName = note.name;
         // Update the note's name
         note.name = newName;
         // Rename the file
-        await repo.renameNoteFile(oldName, note.getFullName());
+        await repo.renameNoteFile(oldName, note.name);
         updateNoteTree();
     }
 
@@ -182,7 +186,7 @@ export const useNotesStore = defineStore('notes', () => {
         init,
         loadTree,
         selectNote,
-        saveCurrentNoteContent,
+        saveNoteContent,
         loadCurrentNoteContent,
         createNote,
         renameNote,

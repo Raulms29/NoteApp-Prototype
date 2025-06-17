@@ -93,7 +93,7 @@ export class NoteRepository {
     * Reads the HTML content of a specific note.
     */
     async readNoteContent(note: Note): Promise<string> {
-        const filePath = await getNotePath(this.notesPath, note.getFullName());
+        const filePath = await getNotePath(this.notesPath, note.name);
         return await readFile(filePath);
     }
 
@@ -101,7 +101,7 @@ export class NoteRepository {
      * Saves the HTML content of a specific note.
      */
     async writeNoteContent(note: Note | null, content: string): Promise<void> {
-        const filePath = await getNotePath(this.notesPath, note.getFullName());
+        const filePath = await getNotePath(this.notesPath, note.name);
         await writeFile(filePath, content);
     }
 
@@ -109,7 +109,7 @@ export class NoteRepository {
      * Deletes a specific note file.
      */
     async deleteNoteFile(note: Note): Promise<void> {
-        const filePath = await getNotePath(this.notesPath, note.getFullName());
+        const filePath = await getNotePath(this.notesPath, note.name);
         if (fileExists(filePath)) {
             fs.unlinkSync(filePath);
         } else {

@@ -1,15 +1,16 @@
 <template>
     <div class="editor-wrapper">
-        <div class="editor-container">
-            <div class="note-title-underline-wrapper">
-                <input v-if="notesStore.currentNote" v-model="noteName" @focusout="handleNoteRename"
-                    class="note-title-input" spellcheck="true" autocapitalize="on" @focus="isFocused = true"
-                    @blur="isFocused = false" />
-                <span class="note-title-underline" :class="{ active: isFocused }"></span>
+        <div class="editor-container" v-if="notesStore.currentNote">
+            <div class="note-name">
+                <div v-if="renameError" class="rename-error-message">
+                    {{ renameError }}
+                </div>
+                <input v-model="noteName" @focusout="handleNoteRename" class="note-name-input" spellcheck="true"
+                    autocapitalize="on" @focus="isFocused = true" @blur="isFocused = false" />
+                <span class="note-name-underline" :class="{ active: isFocused }"></span>
             </div>
-            <div class="editor-pane" v-if="notesStore.currentNote">
-                <Editor @note-change="handleNoteChange" />
-            </div>
+
+            <Editor @note-change="handleNoteChange" @note-content-update="handleNoteContentChange" />
         </div>
     </div>
 </template>
@@ -18,40 +19,74 @@
 import { useNotesStore } from '../../stores/useNotesStore';
 import { Note } from '../../services/domain/Note';
 import { ref } from 'vue';
+import debounce from 'debounce';
+
 const notesStore = useNotesStore();
 
 const noteName = ref<string>(notesStore.currentNote ? notesStore.currentNote.name : '');
 const isFocused = ref(false);
+const renameError = ref<string | null>(null);
 
-function handleNoteRename() {
+const debouncedSave = debounce(async (content: string) => {
+    notesStore.saveNoteContent(notesStore.currentNote as Note, content);
+}, 500);
+
+async function handleNoteRename() {
     noteName.value = noteName.value.trim();
-    if (noteName.value === notesStore.currentNote?.name) {
-        return;
+    if (noteName.value != notesStore.currentNote.name) {
+        try {
+            await notesStore.renameNote(notesStore.currentNote as Note, noteName.value);
+        } catch (e) {
+            renameError.value = e.message;
+            setTimeout(() => { renameError.value = null; }, 3000);
+        }
     }
-    notesStore.renameNote(notesStore.currentNote as Note, noteName.value);
 }
 
-function handleNoteChange() {
-    if (notesStore.currentNote) {
-        noteName.value = notesStore.currentNote.name;
+async function handleNoteChange(previousNote: Note, previousNoteContent: string) {
+    if (previousNote != null) {
+        debouncedSave.clear();
+        await notesStore.saveNoteContent(previousNote, previousNoteContent);
     }
-    else {
-        noteName.value = '';
-    }
+    noteName.value = notesStore.currentNote.name;
 };
+
+function handleNoteContentChange(content: string) {
+    debouncedSave(content);
+}
 
 import '../../styles/editor.css';
 </script>
 
 <style scoped>
-.note-title-underline-wrapper {
+.note-name {
     position: relative;
     width: 100%;
     display: flex;
     flex-direction: column;
 }
 
-.note-title-input {
+.rename-error-message {
+    position: absolute;
+    top: -2.25rem;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    background: #e74c3c;
+    color: #fff;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.08);
+    max-width: 26.25rem;
+    z-index: 100;
+    text-align: center;
+    animation: fadeIn 0.2s;
+    pointer-events: none;
+}
+
+.note-name-input {
     border: none;
     outline: none;
     width: 100%;
@@ -61,7 +96,7 @@ import '../../styles/editor.css';
     padding-bottom: 4px;
 }
 
-.note-title-underline {
+.note-name-underline {
     content: '';
     position: absolute;
     left: 0;
@@ -76,7 +111,19 @@ import '../../styles/editor.css';
     pointer-events: none;
 }
 
-.note-title-underline.active {
+.note-name-underline.active {
     transform: scaleX(1);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-0.625rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 </style>

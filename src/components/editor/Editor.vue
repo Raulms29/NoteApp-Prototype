@@ -24,6 +24,7 @@ import { common, createLowlight } from 'lowlight';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import Underline from '@tiptap/extension-underline'
 import CharacterCount from '@tiptap/extension-character-count';
+import { Note } from '../../services/domain/Note';
 
 
 // Markdown.configure({
@@ -38,21 +39,28 @@ import CharacterCount from '@tiptap/extension-character-count';
 // })
 
 export default {
-    emits: ['note-change'],
+    emits: [
+        'note-change',
+        'note-content-update'
+    ],
     components: {
         EditorContent: EditorContent,
     },
 
-    data(): { editor: any, notesStore: ReturnType<typeof useNotesStore> } {
+    data(): { editor: any, notesStore: ReturnType<typeof useNotesStore>, currentNote: Note } {
         return {
             editor: null,
             notesStore: useNotesStore(),
+            currentNote: null,
         }
     },
 
     methods: {
-        emitNoteChange() {
-            this.$emit('note-change', this.editor?.getJSON?.());
+        emitNoteChange(previousNote: Note, previousNoteContent: string) {
+            this.$emit('note-change', previousNote, previousNoteContent);
+        },
+        emitNoteContentUpdate() {
+            this.$emit('note-content-update', this.editor?.getHTML?.());
         },
     },
 
@@ -67,6 +75,8 @@ export default {
                 Typography,
                 Markdown.configure({
                     linkify: false,
+                    transformCopiedText: true,
+                    transformPastedText: true,
                 }),
                 TaskList.configure({
                 }),
@@ -86,6 +96,9 @@ export default {
                 },
             },
             content: '',
+            onUpdate: () => {
+                this.emitNoteContentUpdate();
+            },
         });
 
         // Load the content of the current note
@@ -94,30 +107,19 @@ export default {
             async (newNote) => {
                 console.log('Current note changed:', newNote.name);
                 if (newNote && this.editor) {
+                    const content = this.editor.getHTML();
                     this.editor.commands.setContent(await this.notesStore.loadCurrentNoteContent());
-                    this.emitNoteChange();
+                    this.emitNoteChange(this.currentNote, content);
+                    this.currentNote = newNote;
                 }
             },
-            { immediate: true } // Load the content immediately if a note is already selected
+            { immediate: true, } // Load the content immediately if a note is already selected
         );
     },
 
     beforeUnmount() {
         this.editor.destroy()
     },
-
-    // methods: {
-    //     saveEditorContent() {
-    //         if (this.editor) {
-    //             const htmlContent = this.editor.getHTML();
-    //             const blob = new Blob([htmlContent], { type: 'text/html' });
-    //             const link = document.createElement('a');
-    //             link.href = URL.createObjectURL(blob);
-    //             link.download = 'editor-content.html';
-    //             link.click();
-    //             URL.revokeObjectURL(link.href);
-    //         }
-    //     },
 }
 
 const content = `

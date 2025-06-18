@@ -140,16 +140,17 @@ export const useNotesStore = defineStore('notes', () => {
         }
     }
 
-    async function createNote(parent?: Note): Promise<Note> {
+    async function createNote(newName = 'New Note', parent?: Note): Promise<Note> {
+        newName = newName.trim();
 
         function getNewNoteName(): string {
             let index = 1;
-            let newName = 'New Note';
+            let newNoteName = newName;
             const notesFlat = flattenNotes(notes.value);
-            while (notesFlat.some(n => n.name === newName)) {
-                newName = `New Note ${index++}`;
+            while (notesFlat.some(n => n.name === newNoteName)) {
+                newNoteName = `${newName} ${index++}`;
             }
-            return newName;
+            return newNoteName;
         }
 
         const newNote = new Note(getNewNoteName());
@@ -185,6 +186,17 @@ export const useNotesStore = defineStore('notes', () => {
         repo = null;
     }
 
+    function getNoteByName(name: string): Note {
+        if (!notes.value) return null;
+        const flatNotes = flattenNotes(notes.value);
+        return flatNotes.find(note => note.name === name) || null;
+    }
+
+    function getNoteById(id: string): Note {
+        if (!notes.value) return null;
+        const flatNotes = flattenNotes(notes.value);
+        return flatNotes.find(note => note.id === id) || null;
+    }
 
     return {
         noteTree: notes,
@@ -201,5 +213,7 @@ export const useNotesStore = defineStore('notes', () => {
         moveNoteBefore,
         moveNoteAfter,
         reset,
+        getNoteByName,
+        getNoteById,
     };
 });

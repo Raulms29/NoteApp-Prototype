@@ -20,23 +20,12 @@ import { Markdown } from 'tiptap-markdown';
 import { TaskList } from '@tiptap/extension-task-list'
 import { TaskItem } from '@tiptap/extension-task-item'
 import { MarkdownLink } from './extensions/MarkdownLink';
+import { NoteLink } from './extensions/NoteLink';
 import { common, createLowlight } from 'lowlight';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import Underline from '@tiptap/extension-underline'
 import CharacterCount from '@tiptap/extension-character-count';
 import { Note } from '../../services/domain/Note';
-
-
-// Markdown.configure({
-//     html: false,                  // Allow HTML input/output
-//     tightLists: true,            // No <p> inside <li> in markdown output
-//     tightListClass: 'tight',     // Add class to <ul> allowing you to remove <p> margins when tight
-//     bulletListMarker: '-',       // <li> prefix in markdown output
-//     linkify: true,              // Create links from "https://..." text
-//     breaks: false,               // New lines (\n) in markdown input are converted to <br>
-//     transformPastedText: true,  // Allow to paste markdown text in the editor
-//     transformCopiedText: true,  // Copied text is transformed to markdown
-// })
 
 export default {
     emits: [
@@ -89,6 +78,22 @@ export default {
                 MarkdownLink,
                 BubbleMenuExtension,
                 CharacterCount,
+                NoteLink.configure({
+                    onSelectNote: (noteID: string) => {
+                        const note = this.notesStore.getNoteById(noteID);
+                        this.notesStore.selectNote(note);
+                    },
+                    onNonExistingId: async (noteName: string) => {
+                        console.log('Creating new note:', noteName);
+                        await this.notesStore.createNote(noteName);
+                    },
+                    getNoteIdFromName: (noteName: string): string => {
+                        return this.notesStore.getNoteByName(noteName)?.id || null;
+                    },
+                    getNoteFromId: (noteId: string): Note => {
+                        return this.notesStore.getNoteById(noteId);
+                    },
+                }),
             ],
             editorProps: {
                 attributes: {

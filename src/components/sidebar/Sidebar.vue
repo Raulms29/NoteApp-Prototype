@@ -13,7 +13,8 @@
             <n-tree block-line draggable :data="data" :render-label="renderLabel" :expanded-keys="expandedKeys"
                 @drop="handleDrop" @update:expanded-keys="handleExpandedKeysChange"
                 :override-default-node-click-behavior="selectNote" :render-switcher-icon="renderSwitcherIcon"
-                :pattern="pattern" :show-irrelevant-nodes="false" style="--n-drop-mark-color: #1976d2;" />
+                :pattern="pattern" :selected-keys="selectedKeys" :show-irrelevant-nodes="false"
+                style="--n-drop-mark-color: #1976d2;" />
         </div>
     </div>
 </template>
@@ -32,6 +33,7 @@ const expandedKeys = ref<string[]>([])
 const data = ref<TreeOption[]>([])
 const pattern = ref<string>('')
 const showSearch = ref(false)
+const selectedKeys = ref<string[]>([])
 
 function toggleSearch() {
     showSearch.value = !showSearch.value
@@ -59,6 +61,19 @@ watch(
         data.value = (noteTree || []).map(noteToTreeOption)
     },
     { immediate: true, deep: true }
+)
+
+// Watch for changes in the selected note and update selectedKeys
+watch(
+    () => store.currentNote,
+    (currentNote) => {
+        if (currentNote) {
+            selectedKeys.value = [currentNote.id]
+        } else {
+            selectedKeys.value = []
+        }
+    },
+    { immediate: true }
 )
 
 function handleExpandedKeysChange(keys: string[]) {

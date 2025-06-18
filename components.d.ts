@@ -17,7 +17,6 @@ declare module 'vue' {
     GenericErrorMessage: typeof import('./src/components/GenericErrorMessage.vue')['default']
     LoadingOverlay: typeof import('./src/components/LoadingOverlay.vue')['default']
     NewWorkspaceCard: typeof import('./src/components/workspace/NewWorkspaceCard.vue')['default']
-    NoteSpace: typeof import('./src/components/NoteSpace.vue')['default']
     RemoveDialog: typeof import('./src/components/workspace/dialog/RemoveDialog.vue')['default']
     RenameDialog: typeof import('./src/components/workspace/dialog/RenameDialog.vue')['default']
     RenameErrorMessage: typeof import('./src/components/RenameErrorMessage.vue')['default']

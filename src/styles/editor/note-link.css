@@ -1,0 +1,13 @@
+.note-link {
+    color: #2563eb;
+    border-radius: 0.35em;
+    padding: 0.1em 0.4em;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: underline double #2563eb;
+}
+
+.note-link:hover {
+    color: #1e40af;
+    text-decoration: none;
+}

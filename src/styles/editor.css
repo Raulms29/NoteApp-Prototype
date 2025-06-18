@@ -1,6 +1,7 @@
 @import './editor/atom-one-light.css';
 @import './editor/link.css';
 @import './editor/task-list.css';
+@import './editor/note-link.css';
 
 .editor-wrapper {
     display: flex;

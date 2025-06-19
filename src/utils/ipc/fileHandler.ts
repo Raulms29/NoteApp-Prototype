@@ -51,4 +51,16 @@ export function registerFileHandlers(fileEncoding: BufferEncoding = 'utf-8') {
     ipcMain.handle('join-paths', async (_, ...args: string[]) => {
         return path.join(...args);
     });
+
+    ipcMain.handle('copy-file-to-folder', async (_, sourcePath: string, destinationPath: string) => {
+        await fs.promises.copyFile(sourcePath, destinationPath);
+    });
+
+    ipcMain.handle('get-filename-from-path', async (_, filePath: string) => {
+        return path.basename(filePath);
+    });
+
+    ipcMain.handle('get-extension-from-path', async (_, filePath: string) => {
+        return path.extname(filePath);
+    });
 }

@@ -1,19 +1,21 @@
 import { Note, RawNote } from "./domain/Note";
 import fs from 'fs';
-import { fileExists, getNotePath, readFile, writeFile, renameFile } from "../utils/fileUtils";
+import { fileExists, getNotePath, readFile, writeFile, renameFile, getRandomFileName, joinPaths, getFilenameFromPath, getExtensionFromPath, copyFileToFolder } from "../utils/fileUtils";
 
 export class NoteRepository {
 
     private notesPath: string;
     private structurePath: string;
+    private filesPath: string;
 
-    constructor(notesPath: string, structurePath: string) {
-        this.configureRepository(notesPath, structurePath);
+    constructor(notesPath: string, structurePath: string, filesPath: string) {
+        this.configureRepository(notesPath, structurePath, filesPath);
     }
 
-    configureRepository(notesPath: string, structurePath: string) {
+    configureRepository(notesPath: string, structurePath: string, filesPath: string) {
         this.notesPath = notesPath;
         this.structurePath = structurePath;
+        this.filesPath = filesPath;
     }
 
     /**
@@ -107,5 +109,32 @@ export class NoteRepository {
         } else {
             throw new Error(`Note file does not exist: ${filePath}`);
         }
+    }
+
+    /**
+     * Saves an image by copying it from a source path to the files folder and returns the new filename.
+     * Handles name collisions by generating a random name using getRandomFileName.
+     * The actual copy is delegated to fileAPI.copyImageToFolder.
+     */
+    async saveImage(sourcePath: string): Promise<string> {
+        console.log('Reached NoteRepository.saveImage');
+        let filename = await getFilenameFromPath(sourcePath);
+        const ext = await getExtensionFromPath(sourcePath);
+        let destination = await joinPaths(this.filesPath, filename);
+
+        // Check for name collisions and generate random name if needed
+        while (await fileExists(destination)) {
+            const randomBase = getRandomFileName();
+            console.log(`File name collision detected: ${filename} already exists. Generating a new name.`);
+            console.log(`Random base name: ${randomBase}`);
+            filename = `${randomBase}${ext}`;
+            destination = await joinPaths(this.filesPath, filename);
+        }
+
+        console.log(`Saving image to: ${destination}`);
+        // Delegate the copy to fileUtils
+        await copyFileToFolder(sourcePath, destination);
+
+        return destination; // Return the full path of the saved image
     }
 }

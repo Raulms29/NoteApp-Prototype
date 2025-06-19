@@ -1,4 +1,4 @@
-import { app, BrowserWindow, powerMonitor, shell } from 'electron';
+import { app, BrowserWindow, powerMonitor, protocol, shell } from 'electron';
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   console.log('electron-squirrel-startup');
@@ -10,6 +10,7 @@ import contextMenu from "electron-context-menu";
 import { registerNoteHandlers, registerFileHandlers } from './utils/ipc/fileHandler';
 import { registerWorkspaceHandlers } from './utils/ipc/workspaceHandler';
 import { registerWindowHandlers } from './utils/ipc/windowHandler';
+import fs from 'fs';
 
 const createWindow = () => {
 
@@ -82,6 +83,41 @@ app.on('ready', () => {
   registerFileHandlers('utf-8');
   // Register window handlers and create the browser window
   registerWindowHandlers(createWindow());
+  // Register file protocol handler
+  protocol.handle('mifp', async (request) => { // mifp stands for "My Image File Protocol"
+    const url = new URL(request.url);
+    let filePath = decodeURIComponent(url.pathname);
+
+    if (process.platform === 'win32' && filePath.startsWith('/')) {
+      filePath = filePath.slice(1);
+    }
+
+    // Optional: sanitize or restrict allowed file paths
+    if (!fs.existsSync(filePath)) {
+      return new Response('File not found', { status: 404 });
+    }
+
+    const data = fs.readFileSync(filePath);
+    const ext = path.extname(filePath).toLowerCase().slice(1);
+
+    const mimeTypes = {
+      png: 'image/png',
+      jpg: 'image/jpeg',
+      jpeg: 'image/jpeg',
+      gif: 'image/gif',
+      svg: 'image/svg+xml',
+      webp: 'image/webp'
+    };
+
+    const mimeType: string = mimeTypes[ext as keyof typeof mimeTypes] || 'application/octet-stream';
+
+    return new Response(data, {
+      status: 200,
+      headers: {
+        'Content-Type': mimeType
+      }
+    });
+  });
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

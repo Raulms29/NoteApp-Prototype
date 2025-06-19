@@ -64,3 +64,31 @@ export const renameFile = async (oldPath: string, newPath: string): Promise<void
 export const joinPaths = async (...paths: string[]): Promise<string> => {
     return await window.fileAPI.joinPaths(...paths);
 };
+
+export function getRandomFileName(): string {
+    return Math.random().toString(36);
+}
+
+export const copyFileToFolder = async (sourcePath: string, destinationFolder: string): Promise<void> => {
+    try {
+        await window.fileAPI.copyFileToFolder(sourcePath, destinationFolder);
+    } catch (error) {
+        throw new Error(`Failed to copy file to folder: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+};
+
+export const getFilenameFromPath = async (filePath: string): Promise<string> => {
+    try {
+        return await window.fileAPI.getFilenameFromPath(filePath);
+    } catch (error) {
+        throw new Error(`Failed to get filename from path: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+};
+
+export const getExtensionFromPath = async (filePath: string): Promise<string> => {
+    try {
+        return await window.fileAPI.getExtensionFromPath(filePath);
+    } catch (error) {
+        throw new Error(`Failed to get extension from path: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+};

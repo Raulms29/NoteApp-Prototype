@@ -1,20 +1,20 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { WorkspaceI } from '../services/domain/Workspace';
+import { Workspace } from '../services/domain/Workspace';
 import { WorkspaceRepository } from '../services/WorkspaceRepository';
 import { useNotesStore } from './useNotesStore';
 
 export const useWorkspaceStore = defineStore('workspace', () => {
     const repo = new WorkspaceRepository();
-    const workspaces = ref<WorkspaceI[]>([]);
-    const currentWorkspace = ref<WorkspaceI | null>(null);
+    const workspaces = ref<Workspace[]>([]);
+    const currentWorkspace = ref<Workspace | null>(null);
     const notesStore = useNotesStore();
 
     async function init() {
         workspaces.value = await repo.getWorkspaces();
     }
 
-    function addWorkspace(workspace: WorkspaceI) {
+    function addWorkspace(workspace: Workspace) {
         repo.createWorkspace(workspace);
         workspaces.value = [...workspaces.value, workspace];
         persistWorkspaces();
@@ -63,6 +63,14 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         }
     }
 
+    /**
+     * Returns the current files path for the selected workspace.
+     */
+    function getCurrentFilesPath(): string | null {
+        if (!currentWorkspace.value) return null;
+        return `${currentWorkspace.value.path}/.files`;
+    }
+
     return {
         workspaces,
         currentWorkspace,
@@ -72,6 +80,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         selectWorkspace,
         renameWorkspace,
         validateWorkspace,
-        persistWorkspaces
+        persistWorkspaces,
+        getCurrentFilesPath
     };
 });

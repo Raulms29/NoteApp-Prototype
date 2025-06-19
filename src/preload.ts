@@ -24,6 +24,12 @@ contextBridge.exposeInMainWorld('fileAPI', {
     renameFile: (oldPath: string, newPath: string) =>
         ipcRenderer.invoke('rename-file', oldPath, newPath),
     joinPaths: (...args: string[]) => ipcRenderer.invoke('join-paths', ...args),
+    copyFileToFolder: (sourcePath: string, destinationFolder: string) =>
+        ipcRenderer.invoke('copy-file-to-folder', sourcePath, destinationFolder),
+    getFilenameFromPath: (filePath: string) =>
+        ipcRenderer.invoke('get-filename-from-path', filePath),
+    getExtensionFromPath: (filePath: string) =>
+        ipcRenderer.invoke('get-extension-from-path', filePath),
 });
 
 contextBridge.exposeInMainWorld('workspaceAPI', {

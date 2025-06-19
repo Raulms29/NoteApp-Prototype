@@ -4,7 +4,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { Note } from '../services/domain/Note';
 import { NoteRepository } from '../services/NoteRepository';
-import { WorkspaceI } from '../services/domain/Workspace';
+import { Workspace } from '../services/domain/Workspace';
 
 
 export const useNotesStore = defineStore('notes', () => {
@@ -12,9 +12,13 @@ export const useNotesStore = defineStore('notes', () => {
     const currentNote = ref<Note | null>(null);
     let repo: NoteRepository;
 
-    // Initialize the repository with the workspace path
-    function init(workspace: WorkspaceI) {
-        repo = new NoteRepository(workspace.path, `${workspace.path}/.notes/notes.json`);
+    // Initialize the repository
+    async function init(workspace: Workspace) {
+        repo = new NoteRepository(
+            workspace.path,
+            await workspace.notesStructureFilePath(),
+            await workspace.filesPath()
+        );
         loadTree();
     }
 
@@ -198,6 +202,19 @@ export const useNotesStore = defineStore('notes', () => {
         return flatNotes.find(note => note.id === id) || null;
     }
 
+    /**
+     * Saves an image by copying it from a source path to the files folder and returns the new filename.
+     */
+    async function saveImage(sourcePath: string): Promise<string> {
+        // Replace all \ with / in the returned path
+        let filePath = await repo.saveImage(sourcePath);
+        filePath = filePath.replace(/\\/g, '/'); // Ensure the path uses forward slashes
+        filePath = filePath.startsWith('/') ? filePath : '/' + filePath;
+
+        filePath = 'mifp://' + filePath; // Prepend the mifp:// protocol
+        return filePath;
+    }
+
     return {
         noteTree: notes,
         currentNote,
@@ -215,5 +232,6 @@ export const useNotesStore = defineStore('notes', () => {
         reset,
         getNoteByName,
         getNoteById,
+        saveImage,
     };
 });

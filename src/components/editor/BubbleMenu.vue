@@ -28,9 +28,11 @@
                 @click="toggleCodeBlock()">
                 <CodeIcon title="Code Block"></CodeIcon>
             </button>
-            <AddLinkDialog :editor="editor" :open="linkDialogOpen" @update:open="handleLinkDialogOpenChange"
-                ref="linkDialog">
-            </AddLinkDialog>
+            <!-- Add Image Button -->
+            <button class="bubble-button" @click="triggerImageInput">
+                <ImageIcon title="Image"></ImageIcon>
+                <input ref="imageInput" type="file" accept="image/*" style="display:none" @change="handleImageUpload" />
+            </button>
         </div>
 
     </bubble-menu>
@@ -45,6 +47,9 @@ import ItalicIcon from 'icons/FormatItalic.vue';
 import UnderLineIcon from 'icons/FormatUnderline.vue';
 import StrikeIcon from 'icons/FormatStrikethrough.vue';
 import CodeIcon from 'icons/CodeTags.vue';
+import ImageIcon from 'icons/ImageOutline.vue';
+
+const emit = defineEmits(['image-upload']);
 
 function toggleItalic() {
     props.editor.chain().focus().toggleItalic().run();
@@ -64,7 +69,6 @@ function toggleCodeBlock() {
 
 const elementDropdown = ref(null)
 
-const linkDialog = ref(null)
 
 const props = defineProps({
     editor: Editor,
@@ -72,14 +76,10 @@ const props = defineProps({
 
 const open: Ref<boolean> = ref(false);
 
-const linkDialogOpen: Ref<boolean> = ref(false);
+const imageInput = ref<HTMLInputElement | null>(null);
 
 const handleDropdownOpenChange = (newValue: boolean) => {
     open.value = newValue;
-};
-
-const handleLinkDialogOpenChange = (newValue: boolean) => {
-    linkDialogOpen.value = newValue;
 };
 
 function handleClickOutside(event: MouseEvent, refElement: Ref<HTMLElement | { $el: HTMLElement } | null>, state: Ref<boolean>) {
@@ -91,13 +91,24 @@ function handleClickOutside(event: MouseEvent, refElement: Ref<HTMLElement | { $
 
 onMounted(() => {
     document.addEventListener('click', (event) => handleClickOutside(event, elementDropdown, open));
-    document.addEventListener('click', (event) => handleClickOutside(event, linkDialog, linkDialogOpen));
 });
 
 onBeforeUnmount(() => {
     document.removeEventListener('click', (event) => handleClickOutside(event, elementDropdown, open));
-    document.removeEventListener('click', (event) => handleClickOutside(event, linkDialog, linkDialogOpen));
 });
+
+function triggerImageInput() {
+    imageInput.value?.click();
+}
+
+function handleImageUpload(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    emit('image-upload', file.path);
+    // Reset the input so selecting the same file again will trigger the change event
+    input.value = '';
+}
 </script>
 
 <style>

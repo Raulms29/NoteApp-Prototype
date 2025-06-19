@@ -1,8 +1,9 @@
+import * as fileUtils from '../../utils/fileUtils';
+
 export interface WorkspaceI {
     name: string;
     path: string;
     id: string;
-
 }
 
 export class Workspace implements WorkspaceI {
@@ -15,6 +16,19 @@ export class Workspace implements WorkspaceI {
         this.name = name;
         this.path = path;
         this.id = id;
+    }
+
+    async notesStructurePath(): Promise<string> {
+        return await fileUtils.joinPaths(this.path, '.notes');
+    }
+
+    async notesStructureFilePath(): Promise<string> {
+        const notesPath = await this.notesStructurePath();
+        return await fileUtils.joinPaths(notesPath, 'notes.json');
+    }
+
+    async filesPath(): Promise<string> {
+        return await fileUtils.joinPaths(this.path, '.files');
     }
 
     set id(id: string) {

@@ -5,7 +5,7 @@ import { createPinia } from 'pinia';
 import App from './views/App.vue';
 import router from './router';
 import naive from "naive-ui";
-import { useGlobalError } from './stores/globalError';
+// import { useGlobalError } from './stores/globalError';
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -15,24 +15,24 @@ app.use(router);
 app.use(naive);
 
 // Global error store
-const errorStore = useGlobalError();
+// const errorStore = useGlobalError();
 
-app.config.errorHandler = (error: Error) => {
-    errorStore.setError(error);
-    console.error('Global error handler:', error);
-};
+// app.config.errorHandler = (error: Error) => {
+//     errorStore.setError(error);
+//     console.error('Global error handler:', error);
+// };
 
-window.addEventListener('error', (event) => {
-    // Only show dialog for non-split errors, since there is no way to avoid them
-    if (!event.filename.includes('split'))
-        errorStore.setError(event.error || event.message);
-    console.error('Window error event:', event);
-    console.error('Error filename:', event.filename);
-});
+// window.addEventListener('error', (event) => {
+//     // Only show dialog for non-split errors, since there is no way to avoid them
+//     if (!event.filename.includes('split'))
+//         errorStore.setError(event.error || event.message);
+//     console.error('Window error event:', event);
+//     console.error('Error filename:', event.filename);
+// });
 
-window.addEventListener('unhandledrejection', (event) => {
-    errorStore.setError(event.reason);
-});
+// window.addEventListener('unhandledrejection', (event) => {
+//     errorStore.setError(event.reason);
+// });
 
 // Mounting the main app
 app.mount('#app');

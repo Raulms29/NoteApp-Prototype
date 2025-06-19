@@ -1,16 +1,17 @@
 <template>
     <editor-content :editor="editor" />
-    <BubbleMenu v-if="editor" :editor="editor"></BubbleMenu>
+    <BubbleMenu v-if="editor" :editor="editor" @image-upload="handleImageUpload"></BubbleMenu>
 
     <div class="editor-info">
-        <span>{{ editor.storage.characterCount.words() }} words</span>
-        <span>{{ editor.storage.characterCount.characters() }} characters</span>
+        <span>{{ editor?.storage?.characterCount?.words() || 0 }} words</span>
+        <span>{{ editor?.storage?.characterCount?.characters() || 0 }} characters</span>
     </div>
 </template>
 
 <script lang="ts">
 import { watch } from 'vue';
 import { useNotesStore } from '../../stores/useNotesStore';
+import { useWorkspaceStore } from '../../stores/useWorkspaceStore';
 import Highlight from '@tiptap/extension-highlight'
 import Typography from '@tiptap/extension-typography'
 import StarterKit from '@tiptap/starter-kit'
@@ -26,6 +27,7 @@ import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import Underline from '@tiptap/extension-underline'
 import CharacterCount from '@tiptap/extension-character-count';
 import { Note } from '../../services/domain/Note';
+import Image from '@tiptap/extension-image';
 
 export default {
     emits: [
@@ -36,11 +38,13 @@ export default {
         EditorContent: EditorContent,
     },
 
-    data(): { editor: any, notesStore: ReturnType<typeof useNotesStore>, currentNote: Note } {
+    data(): { editor: any, notesStore: ReturnType<typeof useNotesStore>, workspaceStore: ReturnType<typeof useWorkspaceStore>, currentNote: Note, imageUrl: string } {
         return {
             editor: null,
             notesStore: useNotesStore(),
+            workspaceStore: useWorkspaceStore(),
             currentNote: null,
+            imageUrl: '',
         }
     },
 
@@ -50,6 +54,19 @@ export default {
         },
         emitNoteContentUpdate() {
             this.$emit('note-content-update', this.editor?.getHTML?.());
+        },
+        /**
+         * Handles image upload from BubbleMenu. Receives the file path, saves the image, and inserts it into the editor.
+         */
+        async handleImageUpload(filePath: string) {
+            const imagePath = await this.notesStore.saveImage(filePath);
+            // Insert image after the current selection
+            const { state } = this.editor;
+            const { to } = state.selection;
+            // Move the cursor to the end of the selection
+            this.editor.commands.setTextSelection(to);
+            // Insert the image at the new cursor position
+            this.editor.chain().focus().insertContent({ type: 'image', attrs: { src: imagePath } }).run();
         },
     },
 
@@ -94,6 +111,13 @@ export default {
                         return this.notesStore.getNoteById(noteId);
                     },
                 }),
+                Image.configure({
+                    inline: true,
+                    allowBase64: true,
+                    HTMLAttributes: {
+                        class: 'max-w-full h-auto',
+                    },
+                }),
             ],
             editorProps: {
                 attributes: {
@@ -126,39 +150,6 @@ export default {
         this.editor.destroy()
     },
 }
-
-const content = `
-# A Heading
-
-### Another Smaller Heading
-
-This is just a Test Note, containing some Markdown elements:
-
-- **Task Lists**
-  - [ ] Pending Task 1
-  - [ ] Pending Task 2
-  - [x] Completed Task
-
-- **Some Java Code**
-\`\`\`java
-public static void main(String[] args) {
-    String hello = "Hello World!";
-    System.out.println(hello);
-}
-\`\`\`
-- **A Quote**
-
-> "This is an example of a blockquote in Markdown."
-> 
-> — Unknown Author
-
-1. Item 1
-2. Item 2
-3. Item 3
-
-This is a [link](https://example.com) in Markdown.
-`;
-
 </script>
 
 <style scoped></style>

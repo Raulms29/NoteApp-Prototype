@@ -7,6 +7,7 @@ export interface RawNote {
 }
 
 export class Note {
+
     private _id: string;
     private _name: string;
     private _children: Note[];
@@ -185,5 +186,13 @@ export class Note {
             return false; // Note was not found in any child
         }
         return true; // Note was found and removed directly
+    }
+
+    getDescendants(): Note[] {
+        const descendants: Note[] = [];
+        for (const child of this._children) {
+            descendants.push(...[child, ...child.getDescendants()]);
+        }
+        return descendants;
     }
 }

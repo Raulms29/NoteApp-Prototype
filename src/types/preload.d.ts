@@ -18,6 +18,7 @@ declare global {
             joinPaths: (...args: string[]) => string;
             getFilenameFromPath: (filePath: string) => Promise<string>;
             getExtensionFromPath: (filePath: string) => Promise<string>;
+            deleteFile: (filePath: string) => Promise<void>;
         },
         workspaceAPI: {
             getWorkspaces: () => Promise<WorkspaceI[]>;

@@ -21,11 +21,13 @@
 
 <script lang="ts" setup>
 import type { TreeDropInfo, TreeOption } from 'naive-ui'
-import { NIcon } from 'naive-ui'
+import { NIcon, NDropdown, NButton } from 'naive-ui'
 import { h, ref, watch } from 'vue'
 import { useNotesStore } from '../../stores/useNotesStore'
 import { Note } from '../../services/domain/Note'
 import ChevronRight from 'icons/ChevronRight.vue'
+import Delete from 'icons/Delete.vue'
+import DotsHorizontal from 'icons/DotsHorizontal.vue'
 
 const store = useNotesStore()
 
@@ -34,25 +36,6 @@ const data = ref<TreeOption[]>([])
 const pattern = ref<string>('')
 const showSearch = ref(false)
 const selectedKeys = ref<string[]>([])
-
-function toggleSearch() {
-    showSearch.value = !showSearch.value
-    pattern.value = ''
-}
-
-function noteToTreeOption(note: Note): TreeOption {
-    let noteChildren = note.children?.map(noteToTreeOption)
-    if (noteChildren && noteChildren.length === 0) {
-        noteChildren = []
-    }
-
-    return {
-        key: note.id,
-        label: note.name,
-        children: noteChildren,
-        rawNote: note
-    }
-}
 
 // Watch for changes in the note tree and update data
 watch(
@@ -76,12 +59,41 @@ watch(
     { immediate: true }
 )
 
+// --- Icon helpers ---
+function getNIcon(icon: any) {
+    return () => h(NIcon, null, { default: () => h(icon) })
+}
+
+// --- Tree option helpers ---
+function noteToTreeOption(note: Note): TreeOption {
+    let noteChildren = note.children?.map(noteToTreeOption)
+    if (noteChildren && noteChildren.length === 0) {
+        noteChildren = []
+    }
+    return {
+        key: note.id,
+        label: note.name,
+        children: noteChildren,
+        rawNote: note
+    }
+}
+
+function getMenuOptions(option: TreeOption) {
+    return [
+        {
+            label: 'Delete',
+            key: 'delete',
+            icon: getNIcon(Delete)
+        }
+    ]
+}
+
+// --- Tree event handlers ---
 function handleExpandedKeysChange(keys: string[]) {
     expandedKeys.value = keys;
 }
 
 function handleDrop({ node, dragNode, dropPosition }: TreeDropInfo) {
-    // Managing the drop of the elment
     const [dragNodeSiblings, dragNodeIndex] = findSiblingsAndIndex(
         dragNode,
         data.value
@@ -127,11 +139,75 @@ function handleDrop({ node, dragNode, dropPosition }: TreeDropInfo) {
             node.rawNote as Note
         );
     }
-    // Update the view data
     data.value = Array.from(data.value)
-
 }
 
+function handleMenuSelect(option: TreeOption) {
+    return (key: string) => {
+        if (key === 'delete' && option.rawNote) {
+            store.deleteNote(option.rawNote as Note)
+        }
+    }
+}
+
+function selectNote({ option }: { option: TreeOption }) {
+    if (option.rawNote) {
+        store.selectNote(option.rawNote as Note)
+    }
+}
+
+// --- Tree rendering ---
+function renderLabel({ option }: { option: TreeOption }) {
+    return h(
+        'div',
+        {
+            class: 'sidebar-label-row',
+            style: {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                width: '100%',
+                position: 'relative'
+            }
+        },
+        [
+            h('span', { class: 'truncate' }, typeof option.label === 'string' && option.label.length > 0 ? option.label : 'Untitled'),
+            h(NDropdown, {
+                options: getMenuOptions(option),
+                trigger: 'click',
+                onSelect: handleMenuSelect(option),
+                placement: 'bottom-end',
+                onClick: (e: MouseEvent) => e.stopPropagation()
+            }, {
+                default: () =>
+                    h(
+                        NButton,
+                        {
+                            class: 'sidebar-action-btn',
+                            size: 'tiny',
+                            quaternary: true,
+                            style: 'margin-left: 8px;',
+                            onClick: (e: MouseEvent) => e.stopPropagation()
+                        },
+                        { default: getNIcon(DotsHorizontal) }
+                    )
+            })
+        ]
+    )
+}
+
+function renderSwitcherIcon({ option }: { option: TreeOption }) {
+    return h(NIcon, null, {
+        default: () => {
+            const rawNote = option.rawNote as Note;
+            if (rawNote.children.length == 0)
+                return h('span');
+            return h(ChevronRight)
+        }
+    })
+}
+
+// --- Utility ---
 function findSiblingsAndIndex(
     node: TreeOption,
     nodes?: TreeOption[]
@@ -149,29 +225,9 @@ function findSiblingsAndIndex(
     return [null, null]
 }
 
-function renderLabel({ option }: { option: TreeOption }) {
-    return h(
-        'div',
-        { class: 'flex-1 truncate' },
-        typeof option.label === 'string' && option.label.length > 0 ? option.label : 'Untitled'
-    )
-}
-
-function selectNote({ option }: { option: TreeOption }) {
-    if (option.rawNote) {
-        store.selectNote(option.rawNote as Note)
-    }
-}
-
-function renderSwitcherIcon({ option }: { option: TreeOption }) {
-    return h(NIcon, null, {
-        default: () => {
-            const rawNote = option.rawNote as Note;
-            if (rawNote.children.length == 0)
-                return h('span');
-            return h(ChevronRight)
-        }
-    })
+function toggleSearch() {
+    showSearch.value = !showSearch.value
+    pattern.value = ''
 }
 </script>
 
@@ -213,6 +269,14 @@ function renderSwitcherIcon({ option }: { option: TreeOption }) {
     box-shadow: 0 1px 4px 0 rgba(30, 136, 229, 0.07) !important;
 }
 
+::v-deep(.n-tree-node-content .sidebar-action-btn) {
+    visibility: hidden;
+}
+
+::v-deep(.n-tree-node:hover .sidebar-action-btn) {
+    visibility: visible;
+}
+
 ::v-deep(.n-tree-node-content) {
     font-weight: 500;
     padding: 0.125rem 0.5rem;
@@ -245,5 +309,16 @@ function renderSwitcherIcon({ option }: { option: TreeOption }) {
 .fade-slide-leave-from {
     opacity: 1;
     transform: translateY(0);
+}
+
+.sidebar-label-row {
+    position: relative;
+}
+
+.sidebar-label-row .n-dropdown {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
 }
 </style>

@@ -1,6 +1,5 @@
 import { Note, RawNote } from "./domain/Note";
-import fs from 'fs';
-import { fileExists, getNotePath, readFile, writeFile, renameFile, getRandomFileName, joinPaths, getFilenameFromPath, getExtensionFromPath, copyFileToFolder } from "../utils/fileUtils";
+import { fileExists, getNotePath, readFile, writeFile, renameFile, getRandomFileName, joinPaths, getFilenameFromPath, getExtensionFromPath, copyFileToFolder, deleteFile } from "../utils/fileUtils";
 
 export class NoteRepository {
 
@@ -102,12 +101,12 @@ export class NoteRepository {
     /**
      * Deletes a specific note file.
      */
-    async deleteNoteFile(note: Note): Promise<void> {
-        const filePath = await getNotePath(this.notesPath, note.name);
-        if (fileExists(filePath)) {
-            fs.unlinkSync(filePath);
-        } else {
-            throw new Error(`Note file does not exist: ${filePath}`);
+    async deleteNoteFiles(notes: Note[]): Promise<void> {
+        for (const note of notes) {
+            const filePath = await getNotePath(this.notesPath, note.name);
+            if (await fileExists(filePath)) {
+                await deleteFile(filePath);
+            }
         }
     }
 

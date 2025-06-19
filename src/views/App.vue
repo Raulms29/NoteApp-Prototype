@@ -12,7 +12,7 @@
 import { RouterView } from 'vue-router';
 import GenericDialog from '../components/GenericDialog.vue';
 import GenericButton from '../components/GenericButton.vue';
-import { useGlobalError } from '../stores/globalError';
+import { useGlobalError } from '../stores/useGlobalError';
 import { computed } from 'vue';
 const errorStore = useGlobalError();
 const globalError = computed(() => errorStore.globalError);

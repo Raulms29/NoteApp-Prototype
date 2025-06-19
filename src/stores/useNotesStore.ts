@@ -85,8 +85,13 @@ export const useNotesStore = defineStore('notes', () => {
             throw new Error(`Note with ID ${noteToDelete.id} not found in the note tree.`);
         }
 
+        const descendants = noteToDelete.getDescendants();
+
         // Delete the note file
-        repo.deleteNoteFile(noteToDelete);
+        repo.deleteNoteFiles([noteToDelete, ...descendants]);
+        if (currentNote.value?.id === noteToDelete.id) {
+            currentNote.value = null; // Clear current note if it was the one deleted
+        }
         // Update the note tree after deletion
         updateNoteTree();
     }

@@ -92,3 +92,11 @@ export const getExtensionFromPath = async (filePath: string): Promise<string> =>
         throw new Error(`Failed to get extension from path: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 };
+
+export const deleteFile = async (filePath: string): Promise<void> => {
+    try {
+        await window.fileAPI.deleteFile(filePath);
+    } catch (error) {
+        return;
+    }
+};

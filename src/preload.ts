@@ -30,6 +30,8 @@ contextBridge.exposeInMainWorld('fileAPI', {
         ipcRenderer.invoke('get-filename-from-path', filePath),
     getExtensionFromPath: (filePath: string) =>
         ipcRenderer.invoke('get-extension-from-path', filePath),
+    deleteFile: (filePath: string) =>
+        ipcRenderer.invoke('delete-file', filePath),
 });
 
 contextBridge.exposeInMainWorld('workspaceAPI', {

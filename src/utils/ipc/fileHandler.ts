@@ -63,4 +63,8 @@ export function registerFileHandlers(fileEncoding: BufferEncoding = 'utf-8') {
     ipcMain.handle('get-extension-from-path', async (_, filePath: string) => {
         return path.extname(filePath);
     });
+
+    ipcMain.handle('delete-file', async (_, filePath: string) => {
+        fs.promises.unlink(filePath);
+    });
 }

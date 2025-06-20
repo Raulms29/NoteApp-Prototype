@@ -101,7 +101,6 @@ export default {
                         this.notesStore.selectNote(note);
                     },
                     onNonExistingId: async (noteName: string) => {
-                        console.log('Creating new note:', noteName);
                         await this.notesStore.createNote(noteName);
                     },
                     getNoteIdFromName: (noteName: string): string => {

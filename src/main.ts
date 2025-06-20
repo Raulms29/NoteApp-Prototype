@@ -1,4 +1,4 @@
-import { app, BrowserWindow, powerMonitor, protocol, shell } from 'electron';
+import { app, BrowserWindow, powerMonitor, protocol, shell, ipcMain, session } from 'electron';
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   console.log('electron-squirrel-startup');
@@ -83,20 +83,31 @@ app.on('ready', () => {
   registerFileHandlers('utf-8');
   // Register window handlers and create the browser window
   registerWindowHandlers(createWindow());
+  let workspaceRoot: string | null = null;
+
+  ipcMain.handle('set-workspace-root', (_, rootPath: string) => {
+    workspaceRoot = rootPath;
+    console.log('Workspace root set to:', workspaceRoot);
+  });
+
   // Register file protocol handler
-  protocol.handle('mifp', async (request) => { // mifp stands for "My Image File Protocol"
+  protocol.handle('mifp', async (request) => {
+    if (!workspaceRoot) {
+      return new Response('Workspace root not set', { status: 500 });
+    }
+    console.log('Handling file protocol request:', request.url);
     const url = new URL(request.url);
+    console.log('Decoded URL pathname:', url.pathname);
     let filePath = decodeURIComponent(url.pathname);
+    console.log('Relative path:', filePath);
 
     if (process.platform === 'win32' && filePath.startsWith('/')) {
       filePath = filePath.slice(1);
     }
 
-    // Optional: sanitize or restrict allowed file paths
     if (!fs.existsSync(filePath)) {
       return new Response('File not found', { status: 404 });
     }
-
     const data = fs.readFileSync(filePath);
     const ext = path.extname(filePath).toLowerCase().slice(1);
 
@@ -117,6 +128,16 @@ app.on('ready', () => {
         'Content-Type': mimeType
       }
     });
+  });
+
+  session.defaultSession.webRequest.onBeforeRequest((details, callback) => {
+    if (details.url.includes('.files') && !details.url.startsWith('mifp://')) { // Filter for .files URLs and avoid infinite redirects
+      callback({
+        redirectURL: 'mifp:///' + workspaceRoot.replace(/\\/g, '/') + new URL(details.url).pathname
+      });
+    }
+    else
+      callback({});
   });
 });
 

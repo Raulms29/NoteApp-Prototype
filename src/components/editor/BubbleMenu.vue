@@ -106,7 +106,7 @@ function handleImageUpload(event: Event) {
     const file = input.files?.[0];
     if (!file) return;
     emit('image-upload', file.path);
-    // Reset the input so selecting the same file again will trigger the change event
+    // Reset the input so if the same file is selected again it will trigger the change event
     input.value = '';
 }
 </script>

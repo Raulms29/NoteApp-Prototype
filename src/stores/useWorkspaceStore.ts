@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { Workspace } from '../services/domain/Workspace';
 import { WorkspaceRepository } from '../services/WorkspaceRepository';
 import { useNotesStore } from './useNotesStore';
+import { setWorkspaceRoot } from '../utils/fileUtils';
 
 export const useWorkspaceStore = defineStore('workspace', () => {
     const repo = new WorkspaceRepository();
@@ -31,6 +32,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     function selectWorkspace(id: string) {
         const ws = workspaces.value.find(ws => ws.id === id) || null;
         currentWorkspace.value = ws;
+        setWorkspaceRoot(ws.path);
         notesStore.init(ws);
     }
 

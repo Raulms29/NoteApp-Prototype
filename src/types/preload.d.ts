@@ -23,6 +23,7 @@ declare global {
         workspaceAPI: {
             getWorkspaces: () => Promise<WorkspaceI[]>;
             setWorkspaces: (workspaces: WorkspaceI[]) => Promise<void>;
+            setWorkspaceRoot: (rootPath: string) => Promise<void>;
         },
         windowAPI: {
             setResizable: (resizable: boolean) => Promise<void>;

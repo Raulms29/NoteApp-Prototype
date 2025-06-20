@@ -119,7 +119,7 @@ export class NoteRepository {
         console.log('Reached NoteRepository.saveImage');
         let filename = await getFilenameFromPath(sourcePath);
         const ext = await getExtensionFromPath(sourcePath);
-        let destination = await joinPaths(this.filesPath, filename);
+        let destination = await joinPaths(this.notesPath, this.filesPath, filename);
 
         // Check for name collisions and generate random name if needed
         while (await fileExists(destination)) {
@@ -127,13 +127,16 @@ export class NoteRepository {
             console.log(`File name collision detected: ${filename} already exists. Generating a new name.`);
             console.log(`Random base name: ${randomBase}`);
             filename = `${randomBase}${ext}`;
-            destination = await joinPaths(this.filesPath, filename);
+            destination = await joinPaths(this.notesPath, this.filesPath, filename);
         }
 
-        console.log(`Saving image to: ${destination}`);
+        console.log('Files path:', this.filesPath);
+        console.log(`Source path: ${sourcePath}`);
+        console.log(`Destination path: ${destination}`);
+
         // Delegate the copy to fileUtils
         await copyFileToFolder(sourcePath, destination);
 
-        return destination; // Return the full path of the saved image
+        return await joinPaths(this.filesPath, filename); // Return the full path of the saved image
     }
 }

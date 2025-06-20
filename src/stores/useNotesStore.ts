@@ -17,7 +17,7 @@ export const useNotesStore = defineStore('notes', () => {
         repo = new NoteRepository(
             workspace.path,
             await workspace.notesStructureFilePath(),
-            await workspace.filesPath()
+            workspace.filesPath()
         );
         loadTree();
     }
@@ -214,9 +214,8 @@ export const useNotesStore = defineStore('notes', () => {
         // Replace all \ with / in the returned path
         let filePath = await repo.saveImage(sourcePath);
         filePath = filePath.replace(/\\/g, '/'); // Ensure the path uses forward slashes
-        filePath = filePath.startsWith('/') ? filePath : '/' + filePath;
+        filePath = filePath.startsWith('/') ? filePath.slice(1) : filePath;
 
-        filePath = 'mifp://' + filePath; // Prepend the mifp:// protocol
         return filePath;
     }
 

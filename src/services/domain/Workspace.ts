@@ -27,8 +27,8 @@ export class Workspace implements WorkspaceI {
         return await fileUtils.joinPaths(notesPath, 'notes.json');
     }
 
-    async filesPath(): Promise<string> {
-        return await fileUtils.joinPaths(this.path, '.files');
+    filesPath(): string {
+        return '.files';
     }
 
     set id(id: string) {

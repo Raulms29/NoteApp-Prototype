@@ -100,3 +100,11 @@ export const deleteFile = async (filePath: string): Promise<void> => {
         return;
     }
 };
+
+export const setWorkspaceRoot = async (rootPath: string): Promise<void> => {
+    try {
+        await window.workspaceAPI.setWorkspaceRoot(rootPath);
+    } catch (error) {
+        throw new Error(`Failed to set workspace root: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+};

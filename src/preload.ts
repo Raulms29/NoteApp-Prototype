@@ -35,17 +35,27 @@ contextBridge.exposeInMainWorld('fileAPI', {
 });
 
 contextBridge.exposeInMainWorld('workspaceAPI', {
-    getWorkspaces: () => ipcRenderer.invoke('get-workspaces'),
-    setWorkspaces: (workspaces: WorkspaceI[]) => ipcRenderer.invoke('set-workspaces', workspaces),
+    getWorkspaces: () =>
+        ipcRenderer.invoke('get-workspaces'),
+    setWorkspaces: (workspaces: WorkspaceI[]) =>
+        ipcRenderer.invoke('set-workspaces', workspaces),
+    setWorkspaceRoot: (rootPath: string) =>
+        ipcRenderer.invoke('set-workspace-root', rootPath),
 });
 
 contextBridge.exposeInMainWorld('windowAPI', {
-    setResizable: (resizable: boolean) => ipcRenderer.invoke('set-resizable', resizable),
-    maximizeWindow: () => ipcRenderer.invoke('maximize-window'),
-    unmaximizeWindow: () => ipcRenderer.invoke('unmaximize-window'),
-    minimizeWindow: () => ipcRenderer.invoke('minimize-window'),
-    changeWindowSize: (height: number, width: number) => ipcRenderer.invoke('change-window-size', height, width),
-    isMaximized: () => ipcRenderer.invoke('is-maximized'),
+    setResizable: (resizable: boolean) =>
+        ipcRenderer.invoke('set-resizable', resizable),
+    maximizeWindow: () =>
+        ipcRenderer.invoke('maximize-window'),
+    unmaximizeWindow: () =>
+        ipcRenderer.invoke('unmaximize-window'),
+    minimizeWindow: () =>
+        ipcRenderer.invoke('minimize-window'),
+    changeWindowSize: (height: number, width: number) =>
+        ipcRenderer.invoke('change-window-size', height, width),
+    isMaximized: () =>
+        ipcRenderer.invoke('is-maximized'),
 });
 
 console.log('Preload script loaded successfully');

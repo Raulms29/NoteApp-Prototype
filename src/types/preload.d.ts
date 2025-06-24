@@ -1,6 +1,7 @@
 export { };
 
 import { WorkspaceI } from '../services/domain/Workspace';
+import { Settings } from '../services/domain/Settings';
 
 declare global {
     interface Window {
@@ -32,6 +33,11 @@ declare global {
             minimizeWindow: () => Promise<void>;
             changeWindowSize: (height = 800, width = 600) => Promise<void>;
             isMaximized: () => Promise<boolean>;
+        },
+        settingsAPI: {
+            getSettings: () => Promise<Settings>;
+            setSettings: (settings: Settings) => Promise<void>;
+            updateSetting: <K extends keyof Settings>(key: K, value: Settings[K]) => Promise<void>;
         }
     }
 }

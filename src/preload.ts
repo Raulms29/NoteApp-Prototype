@@ -58,5 +58,11 @@ contextBridge.exposeInMainWorld('windowAPI', {
         ipcRenderer.invoke('is-maximized'),
 });
 
+contextBridge.exposeInMainWorld('settingsAPI', {
+    getSettings: () => ipcRenderer.invoke('get-settings'),
+    setSettings: (settings: { theme: string; language: string }) => ipcRenderer.invoke('set-settings', settings),
+    updateSetting: (key: string, value: string) => ipcRenderer.invoke('update-setting', key, value),
+});
+
 console.log('Preload script loaded successfully');
 

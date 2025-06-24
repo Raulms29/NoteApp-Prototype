@@ -66,7 +66,7 @@ export const joinPaths = async (...paths: string[]): Promise<string> => {
 };
 
 export function getRandomFileName(): string {
-    return Math.random().toString(36);
+    return Math.random().toString(36).slice(2, 10);
 }
 
 export const copyFileToFolder = async (sourcePath: string, destinationFolder: string): Promise<void> => {

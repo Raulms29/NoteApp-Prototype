@@ -1,5 +1,10 @@
 <template>
     <div class="editor-wrapper">
+        <button class="focus-mode-icon-btn" @click.stop="toggleFocusMode" v-if="notesStore.currentNote"
+            :title="settingsStore.settings.focusMode ? 'Exit Focus Mode' : 'Enter Focus Mode'">
+            <BullseyeIcon v-if="!settingsStore.settings.focusMode" :size="20" />
+            <BullseyeArrowIcon v-else :size="20" />
+        </button>
         <div class="editor-container" v-if="notesStore.currentNote">
             <div class="note-name">
                 <GenericErrorMessage v-if="renameError" :message="renameError" />
@@ -16,11 +21,15 @@
 
 <script lang="ts" setup>
 import { useNotesStore } from '../../stores/useNotesStore';
+import { useSettingsStore } from '../../stores/useSettingsStore';
 import { Note } from '../../services/domain/Note';
 import { ref } from 'vue';
 import debounce from 'debounce';
+import BullseyeIcon from 'icons/Bullseye.vue';
+import BullseyeArrowIcon from 'icons/BullseyeArrow.vue';
 
 const notesStore = useNotesStore();
+const settingsStore = useSettingsStore();
 
 const noteName = ref<string>(notesStore.currentNote ? notesStore.currentNote.name : '');
 const isFocused = ref(false);
@@ -54,10 +63,45 @@ function handleNoteContentChange(content: string) {
     debouncedSave(content);
 }
 
+function toggleFocusMode() {
+    settingsStore.updateSetting('focusMode', !settingsStore.settings.focusMode);
+}
+
 import '../../styles/editor.css';
 </script>
 
 <style scoped>
+.editor-wrapper {
+    position: relative;
+}
+
+.focus-mode-icon-btn {
+    position: absolute;
+    top: 18px;
+    right: 32px;
+    z-index: 10;
+    background: var(--background-color, #fff);
+    color: var(--primary-color, #007bff);
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    transition: background 0.2s, color 0.2s;
+}
+
+.focus-mode-icon-btn:hover {
+    background: var(--primary-color, #007bff);
+    color: #fff;
+}
+
+.focus-mode-icon-btn svg {
+    display: block;
+}
+
 .note-name {
     position: relative;
     width: 100%;

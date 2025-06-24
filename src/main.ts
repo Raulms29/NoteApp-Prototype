@@ -150,7 +150,7 @@ if (!gotTheLock) {
     });
 
     session.defaultSession.webRequest.onBeforeRequest((details, callback) => {
-      if (details.url.includes('.files') && !details.url.startsWith('mifp://')) { // Filter for .files URLs and avoid infinite redirects
+      if (details.url.includes('.files') && !details.url.startsWith('mfp://')) { // Filter for .files URLs and avoid infinite redirects
         callback({
           redirectURL: 'mfp:///' + workspaceRoot.replace(/\\/g, '/') + new URL(details.url).pathname
         });

@@ -2,7 +2,6 @@ import { Note, RawNote } from "./domain/Note";
 import { fileExists, getNotePath, readFile, writeFile, renameFile, getRandomFileName, joinPaths, getFilenameFromPath, getExtensionFromPath, copyFileToFolder, deleteFile } from "../utils/fileUtils";
 
 export class NoteRepository {
-
     private notesPath: string;
     private structurePath: string;
     private filesPath: string;
@@ -111,12 +110,10 @@ export class NoteRepository {
     }
 
     /**
-     * Saves an image by copying it from a source path to the files folder and returns the new filename.
+     * Internal helper to save a file (image, PDF, etc.) by copying it from a source path to the files folder and returns the new filename.
      * Handles name collisions by generating a random name using getRandomFileName.
-     * The actual copy is delegated to fileAPI.copyImageToFolder.
      */
-    async saveImage(sourcePath: string): Promise<string> {
-        console.log('Reached NoteRepository.saveImage');
+    private async saveFileToFilesFolder(sourcePath: string): Promise<string[]> {
         let filename = await getFilenameFromPath(sourcePath);
         const ext = await getExtensionFromPath(sourcePath);
         let destination = await joinPaths(this.notesPath, this.filesPath, filename);
@@ -124,19 +121,31 @@ export class NoteRepository {
         // Check for name collisions and generate random name if needed
         while (await fileExists(destination)) {
             const randomBase = getRandomFileName();
-            console.log(`File name collision detected: ${filename} already exists. Generating a new name.`);
-            console.log(`Random base name: ${randomBase}`);
             filename = `${randomBase}${ext}`;
             destination = await joinPaths(this.notesPath, this.filesPath, filename);
         }
 
-        console.log('Files path:', this.filesPath);
-        console.log(`Source path: ${sourcePath}`);
-        console.log(`Destination path: ${destination}`);
-
-        // Delegate the copy to fileUtils
         await copyFileToFolder(sourcePath, destination);
+        return [await joinPaths(this.filesPath, filename), filename]; // Return the relative path of the saved file
+    }
 
-        return await joinPaths(this.filesPath, filename); // Return the full path of the saved image
+    /**
+     * Saves an image by copying it from a source path to the files folder and returns the new filename.
+     * Handles name collisions by generating a random name using getRandomFileName.
+     * The actual copy is delegated to fileUtils.copyImageToFolder.
+     */
+    async saveImage(sourcePath: string): Promise<string[]> {
+        console.log('Reached NoteRepository.saveImage');
+        return this.saveFileToFilesFolder(sourcePath);
+    }
+
+    /**
+     * Saves a PDF by copying it from a source path to the files folder and returns the new filename.
+     * Handles name collisions by generating a random name using getRandomFileName.
+     * The actual copy is delegated to fileUtils.copyFileToFolder.
+     */
+    async savePDF(sourcePath: string): Promise<string[]> {
+        console.log('Reached NoteRepository.savePDF');
+        return this.saveFileToFilesFolder(sourcePath);
     }
 }

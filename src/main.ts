@@ -109,7 +109,7 @@ if (!gotTheLock) {
     });
 
     // Register file protocol handler
-    protocol.handle('mifp', async (request) => {
+    protocol.handle('mfp', async (request) => {
       if (!workspaceRoot) {
         return new Response('Workspace root not set', { status: 500 });
       }
@@ -135,7 +135,8 @@ if (!gotTheLock) {
         jpeg: 'image/jpeg',
         gif: 'image/gif',
         svg: 'image/svg+xml',
-        webp: 'image/webp'
+        webp: 'image/webp',
+        pdf: 'application/pdf',
       };
 
       const mimeType: string = mimeTypes[ext as keyof typeof mimeTypes] || 'application/octet-stream';
@@ -151,7 +152,7 @@ if (!gotTheLock) {
     session.defaultSession.webRequest.onBeforeRequest((details, callback) => {
       if (details.url.includes('.files') && !details.url.startsWith('mifp://')) { // Filter for .files URLs and avoid infinite redirects
         callback({
-          redirectURL: 'mifp:///' + workspaceRoot.replace(/\\/g, '/') + new URL(details.url).pathname
+          redirectURL: 'mfp:///' + workspaceRoot.replace(/\\/g, '/') + new URL(details.url).pathname
         });
       }
       else

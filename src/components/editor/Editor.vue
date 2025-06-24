@@ -1,6 +1,7 @@
 <template>
     <editor-content :editor="editor" />
-    <BubbleMenu v-if="editor" :editor="editor" @image-upload="handleImageUpload"></BubbleMenu>
+    <BubbleMenu v-if="editor" :editor="editor" @image-upload="handleImageUpload" @pdf-upload="handlePdfUpload">
+    </BubbleMenu>
 
     <div class="editor-info">
         <span>{{ editor?.storage?.characterCount?.words() || 0 }} words</span>
@@ -28,6 +29,8 @@ import Underline from '@tiptap/extension-underline'
 import CharacterCount from '@tiptap/extension-character-count';
 import { Note } from '../../services/domain/Note';
 import Image from '@tiptap/extension-image';
+import { Pdf } from './extensions/PDF';
+import { title } from 'process';
 
 export default {
     emits: [
@@ -59,14 +62,24 @@ export default {
          * Handles image upload from BubbleMenu. Receives the file path, saves the image, and inserts it into the editor.
          */
         async handleImageUpload(filePath: string) {
-            const imagePath = await this.notesStore.saveImage(filePath);
+            const [imagePath, imageName] = await this.notesStore.saveImage(filePath);
             // Insert image after the current selection
             const { state } = this.editor;
             const { to } = state.selection;
             // Move the cursor to the end of the selection
             this.editor.commands.setTextSelection(to);
             // Insert the image at the new cursor position
-            this.editor.chain().focus().insertContent({ type: 'image', attrs: { src: imagePath } }).run();
+            this.editor.chain().focus().insertContent({ type: 'image', attrs: { src: imagePath, alt: imageName } }).run();
+        },
+        /**
+         * Handles PDF upload from BubbleMenu. Receives the file path, saves the PDF, and inserts it into the editor.
+         */
+        async handlePdfUpload(filePath: string) {
+            const [pdfPath, pdfName] = await this.notesStore.savePDF(filePath);
+            const { state } = this.editor;
+            const { to } = state.selection;
+            this.editor.commands.setTextSelection(to);
+            this.editor.chain().focus().insertContent({ type: 'pdf', attrs: { src: pdfPath, alt: pdfName } }).run();
         },
     },
 
@@ -117,6 +130,7 @@ export default {
                         class: 'max-w-full h-auto',
                     },
                 }),
+                Pdf,
             ],
             editorProps: {
                 attributes: {

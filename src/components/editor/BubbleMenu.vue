@@ -33,6 +33,11 @@
                 <ImageIcon title="Image"></ImageIcon>
                 <input ref="imageInput" type="file" accept="image/*" style="display:none" @change="handleImageUpload" />
             </button>
+            <!-- Add PDF Button -->
+            <button class="bubble-button" @click="triggerPdfInput">
+                <PDFIcon title="PDF"></PDFIcon>
+                <input ref="pdfInput" type="file" accept=".pdf" style="display:none" @change="handlePdfUpload" />
+            </button>
         </div>
 
     </bubble-menu>
@@ -48,8 +53,9 @@ import UnderLineIcon from 'icons/FormatUnderline.vue';
 import StrikeIcon from 'icons/FormatStrikethrough.vue';
 import CodeIcon from 'icons/CodeTags.vue';
 import ImageIcon from 'icons/ImageOutline.vue';
+import PDFIcon from 'icons/FilePdfBox.vue';
 
-const emit = defineEmits(['image-upload']);
+const emit = defineEmits(['image-upload', 'pdf-upload']);
 
 function toggleItalic() {
     props.editor.chain().focus().toggleItalic().run();
@@ -77,6 +83,7 @@ const props = defineProps({
 const open: Ref<boolean> = ref(false);
 
 const imageInput = ref<HTMLInputElement | null>(null);
+const pdfInput = ref<HTMLInputElement | null>(null);
 
 const handleDropdownOpenChange = (newValue: boolean) => {
     open.value = newValue;
@@ -102,12 +109,26 @@ function triggerImageInput() {
 }
 
 function handleImageUpload(event: Event) {
+    emitFileUpload(event, 'image');
+}
+
+function triggerPdfInput() {
+    pdfInput.value?.click();
+}
+
+function handlePdfUpload(event: Event) {
+    emitFileUpload(event, 'pdf');
+}
+
+function emitFileUpload(event: Event, type: 'image' | 'pdf') {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
-    emit('image-upload', file.path);
-    // Reset the input so if the same file is selected again it will trigger the change event
-    input.value = '';
+    if (type === 'image') {
+        emit('image-upload', file.path);
+    } else if (type === 'pdf') {
+        emit('pdf-upload', file.path);
+    }
 }
 </script>
 

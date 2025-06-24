@@ -210,13 +210,25 @@ export const useNotesStore = defineStore('notes', () => {
     /**
      * Saves an image by copying it from a source path to the files folder and returns the new filename.
      */
-    async function saveImage(sourcePath: string): Promise<string> {
-        // Replace all \ with / in the returned path
-        let filePath = await repo.saveImage(sourcePath);
-        filePath = filePath.replace(/\\/g, '/'); // Ensure the path uses forward slashes
-        filePath = filePath.startsWith('/') ? filePath.slice(1) : filePath;
+    async function saveImage(sourcePath: string): Promise<string[]> {
+        const [filePath, fileName] = await repo.saveImage(sourcePath);
+        const filePathC = preparePath(filePath);
 
-        return filePath;
+        return [filePathC, fileName];
+    }
+
+    async function savePDF(sourcePath: string): Promise<string[]> {
+        const [filePath, fileName] = await repo.savePDF(sourcePath);
+        const filePathC = preparePath(filePath);
+
+        return [filePathC, fileName];
+    }
+
+    function preparePath(path: string): string {
+        // Ensure the path uses forward slashes and remove leading slash if present
+        let cleanedPath = path.replace(/\\/g, '/'); // Replace backslashes with forward slashes
+        cleanedPath = cleanedPath.startsWith('/') ? cleanedPath.slice(1) : cleanedPath; // Remove leading slash if present
+        return cleanedPath;
     }
 
     return {
@@ -237,5 +249,6 @@ export const useNotesStore = defineStore('notes', () => {
         getNoteByName,
         getNoteById,
         saveImage,
+        savePDF,
     };
 });

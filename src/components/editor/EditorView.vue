@@ -1,10 +1,15 @@
 <template>
     <div class="editor-wrapper">
-        <button class="focus-mode-icon-btn" @click.stop="toggleFocusMode" v-if="notesStore.currentNote"
-            :title="settingsStore.settings.focusMode ? 'Exit Focus Mode' : 'Enter Focus Mode'">
-            <BullseyeIcon v-if="!settingsStore.settings.focusMode" :size="20" />
-            <BullseyeArrowIcon v-else :size="20" />
-        </button>
+        <div class="options">
+            <button class="focus-mode-icon-btn" @click.stop="toggleFocusMode" v-if="notesStore.currentNote"
+                :title="settingsStore.settings.focusMode ? 'Exit Focus Mode' : 'Enter Focus Mode'">
+                <BullseyeIcon v-if="!settingsStore.settings.focusMode" :size="20" />
+                <BullseyeArrowIcon v-else :size="20" />
+            </button>
+
+            <EditorOptions v-if="notesStore.currentNote && editor" :editor="editor.editor" />
+        </div>
+
         <div class="editor-container" v-if="notesStore.currentNote">
             <div class="note-name">
                 <GenericErrorMessage v-if="renameError" :message="renameError" />
@@ -14,7 +19,7 @@
                 <span class="note-name-underline" :class="{ active: isFocused }"></span>
             </div>
 
-            <Editor @note-change="handleNoteChange" @note-content-update="handleNoteContentChange" />
+            <Editor ref="editor" @note-change="handleNoteChange" @note-content-update="handleNoteContentChange" />
         </div>
     </div>
 </template>
@@ -27,13 +32,16 @@ import { ref } from 'vue';
 import debounce from 'debounce';
 import BullseyeIcon from 'icons/Bullseye.vue';
 import BullseyeArrowIcon from 'icons/BullseyeArrow.vue';
+import Editor from './Editor.vue';
 
 const notesStore = useNotesStore();
 const settingsStore = useSettingsStore();
+const editor = ref<typeof Editor | null>(null);
 
 const noteName = ref<string>(notesStore.currentNote ? notesStore.currentNote.name : '');
 const isFocused = ref(false);
 const renameError = ref<string | null>(null);
+
 
 const debouncedSave = debounce(async (content: string) => {
     notesStore.saveNoteContent(notesStore.currentNote as Note, content);
@@ -75,10 +83,16 @@ import '../../styles/editor.css';
     position: relative;
 }
 
+.options {
+    position: fixed;
+    top: 0.75rem;
+    right: 1.5rem;
+    display: flex;
+    background: transparent;
+    gap: 0.25rem;
+}
+
 .focus-mode-icon-btn {
-    position: absolute;
-    top: 18px;
-    right: 32px;
     z-index: 10;
     background: var(--background-color, #fff);
     color: var(--primary-color, #007bff);

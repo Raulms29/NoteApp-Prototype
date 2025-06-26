@@ -126,7 +126,7 @@ export class NoteRepository {
         }
 
         await copyFileToFolder(sourcePath, destination);
-        return [await joinPaths(this.filesPath, filename), filename]; // Return the relative path of the saved file
+        return [await joinPaths(this.filesPath, filename), filename.replace(/\.[^/.]+$/, "")]; // Return the relative path and filename without extension
     }
 
     /**

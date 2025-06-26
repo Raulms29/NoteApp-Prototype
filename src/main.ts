@@ -6,11 +6,11 @@ if (require('electron-squirrel-startup')) {
 }
 
 import path from 'path';
+import fs from 'fs';
 import contextMenu from "electron-context-menu";
 import { registerNoteHandlers, registerFileHandlers } from './utils/ipc/fileHandler';
 import { registerWorkspaceHandlers } from './utils/ipc/workspaceHandler';
 import { registerWindowHandlers } from './utils/ipc/windowHandler';
-import fs from 'fs';
 import { registerSettingsHandlers } from './utils/ipc/settingsHandler';
 
 // Ensure only one instance of the app is running

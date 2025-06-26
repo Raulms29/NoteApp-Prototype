@@ -10,6 +10,7 @@ declare module 'vue' {
     AddLinkDialog: typeof import('./src/components/editor/AddLinkDialog.vue')['default']
     BubbleMenu: typeof import('./src/components/editor/BubbleMenu.vue')['default']
     Editor: typeof import('./src/components/editor/Editor.vue')['default']
+    EditorOptions: typeof import('./src/components/editor/EditorOptions.vue')['default']
     EditorView: typeof import('./src/components/editor/EditorView.vue')['default']
     ElementDropdown: typeof import('./src/components/editor/ElementDropdown.vue')['default']
     GenericButton: typeof import('./src/components/GenericButton.vue')['default']

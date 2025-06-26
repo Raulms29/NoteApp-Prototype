@@ -11,7 +11,18 @@ import { isAllowedUri } from '../../../utils/urlUtils';
 const markdownLinkRegex = /\[([^\]]+)]\((https?:\/\/[^\s)]+(?:\([^\s)]+\)[^\s)]*)*)\)/g;
 
 export const MarkdownLink = Mark.create({
-    name: 'markdownLink',
+    name: 'link',
+
+    addStorage() {
+        return {
+            markdown: {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+                open: (state: any, mark: any) => '[',
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                close: (state: any, mark: any) => `](${mark.attrs.href})`,
+            }
+        };
+    },
 
     /**
      * Adds options for the markdown link mark, including validation logic and default attributes.

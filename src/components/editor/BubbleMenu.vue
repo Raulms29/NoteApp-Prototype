@@ -1,5 +1,6 @@
 <template>
-    <bubble-menu :editor="editor" :tippy-options="{ duration: 300 }" v-if="editor" class="bubble-menu gap-0">
+    <bubble-menu :editor="editor" :tippy-options="{ duration: 300, maxWidth: 800 }" v-if="editor"
+        class="bubble-menu gap-0">
 
         <!-- Dropdown for selecting headings and lists -->
         <ElementDropdown :editor="editor" :open="open" @update:open="handleDropdownOpenChange" ref="elementDropdown">
@@ -38,6 +39,10 @@
                 <PDFIcon title="PDF"></PDFIcon>
                 <input ref="pdfInput" type="file" accept=".pdf" style="display:none" @change="handlePdfUpload" />
             </button>
+            <!-- Link -->
+            <AddLinkDialog :editor="editor" :open="linkDialogOpen" @update:open="handleLinkDialogOpenChange"
+                ref="linkDialog">
+            </AddLinkDialog>
         </div>
 
     </bubble-menu>
@@ -81,6 +86,8 @@ const props = defineProps({
 });
 
 const open: Ref<boolean> = ref(false);
+const linkDialogOpen = ref(false);
+const linkDialog = ref(null);
 
 const imageInput = ref<HTMLInputElement | null>(null);
 const pdfInput = ref<HTMLInputElement | null>(null);
@@ -98,10 +105,12 @@ function handleClickOutside(event: MouseEvent, refElement: Ref<HTMLElement | { $
 
 onMounted(() => {
     document.addEventListener('click', (event) => handleClickOutside(event, elementDropdown, open));
+    document.addEventListener('click', (event) => handleClickOutside(event, linkDialog, linkDialogOpen));
 });
 
 onBeforeUnmount(() => {
     document.removeEventListener('click', (event) => handleClickOutside(event, elementDropdown, open));
+    document.removeEventListener('click', (event) => handleClickOutside(event, linkDialog, linkDialogOpen));
 });
 
 function triggerImageInput() {
@@ -130,13 +139,17 @@ function emitFileUpload(event: Event, type: 'image' | 'pdf') {
         emit('pdf-upload', file.path);
     }
 }
+
+const handleLinkDialogOpenChange = (newValue: boolean) => {
+    linkDialogOpen.value = newValue;
+};
 </script>
 
 <style>
 .bubble-menu {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 2px;
     background: #fff;
     border: 1px solid #e0e0e0;
     border-radius: 8px;

@@ -1,5 +1,5 @@
 import { Note, RawNote } from "./domain/Note";
-import { fileExists, getNotePath, readFile, writeFile, renameFile, getRandomFileName, joinPaths, getFilenameFromPath, getExtensionFromPath, copyFileToFolder, deleteFile } from "../utils/fileUtils";
+import { fileExists, getNotePath, readTextFile, writeFile, renameFile, getRandomFileName, joinPaths, getFilenameFromPath, getExtensionFromPath, copyFileToFolder, deleteFile } from "../utils/fileUtils";
 
 export class NoteRepository {
     private notesPath: string;
@@ -24,7 +24,7 @@ export class NoteRepository {
             throw new Error("Note structure file does not exist.");
         }
 
-        const json = await readFile(this.structurePath);
+        const json = await readTextFile(this.structurePath);
         const data = JSON.parse(json);
 
         // Validate the structure of the parsed data
@@ -86,7 +86,7 @@ export class NoteRepository {
     */
     async readNoteContent(note: Note): Promise<string> {
         const filePath = await getNotePath(this.notesPath, note.name);
-        return await readFile(filePath);
+        return await readTextFile(filePath);
     }
 
     /**

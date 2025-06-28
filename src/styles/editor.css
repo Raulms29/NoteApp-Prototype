@@ -2,6 +2,7 @@
 @import './editor/link.css';
 @import './editor/task-list.css';
 @import './editor/note-link.css';
+@import './editor/image.css';
 
 .editor-wrapper {
     display: flex;

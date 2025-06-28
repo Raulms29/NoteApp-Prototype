@@ -33,11 +33,18 @@ export function registerFileHandlers(fileEncoding: BufferEncoding = 'utf-8') {
         return fs.existsSync(folderPath) && fs.lstatSync(folderPath).isDirectory();
     });
 
-    ipcMain.handle('read-file', async (_, filePath: string) => {
+    ipcMain.handle('read-text-file', async (_, filePath: string) => {
         if (!fs.existsSync(filePath)) {
             throw new Error(`File does not exist: ${filePath}`);
         }
         return await fs.promises.readFile(filePath, fileEncoding);
+    });
+
+    ipcMain.handle('read-binary-file', async (_, filePath: string) => {
+        if (!fs.existsSync(filePath)) {
+            throw new Error(`File does not exist: ${filePath}`);
+        }
+        return await fs.promises.readFile(filePath);
     });
 
     ipcMain.handle('write-file', async (_, filePath: string, content: string) => {

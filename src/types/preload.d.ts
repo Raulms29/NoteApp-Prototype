@@ -9,7 +9,8 @@ declare global {
             copyFileToFolder(sourcePath: string, destinationFolder: string): Promise<void>;
             getNotePath: (notesPath: string, noteName: string) => Promise<string>;
             fileExists: (filePath: string) => Promise<boolean>;
-            readFile: (filePath: string) => Promise<string>;
+            readTextFile: (filePath: string) => Promise<string>;
+            readBinaryFile: (filePath: string) => Promise<string>;
             renameFile(oldPath: string, newPath: string): Promise<void>;
             writeFile: (filePath: string, content: string) => Promise<void>;
             writeFileBinary: (filePath: string, content: string) => Promise<void>;

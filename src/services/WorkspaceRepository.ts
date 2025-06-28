@@ -22,7 +22,7 @@ export class WorkspaceRepository {
     async createWorkspace(workspace: Workspace) {
         const notesFolder = await workspace.notesStructurePath();
         const structureFile = await workspace.notesStructureFilePath();
-        const filesFolder = await workspace.filesPath();
+        const filesFolder = workspace.filesPath();
 
         // Only create the folders and file if they do not exist
         if (!await fileUtils.folderExists(notesFolder)) {

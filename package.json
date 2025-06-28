@@ -90,6 +90,7 @@
     "debounce": "^2.2.0",
     "electron-squirrel-startup": "^1.0.1",
     "electron-store": "^8.2.0",
+    "jszip": "^3.10.1",
     "lowlight": "^3.3.0",
     "naive-ui": "^2.41.1",
     "pinia": "^3.0.2",

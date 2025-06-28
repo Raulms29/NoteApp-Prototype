@@ -14,14 +14,18 @@ import { NDropdown } from 'naive-ui';
 import { useNotesStore } from '../../stores/useNotesStore';
 import DotsHorizontal from 'icons/DotsHorizontal.vue';
 import { Editor } from '@tiptap/vue-3';
-import { exportNoteAsText, exportNoteAsMarkdown } from '../../services/ExportService';
+import ExportService from '../../services/ExportService';
+import { useWorkspaceStore } from '../../stores/useWorkspaceStore';
 
 const props = defineProps<{ editor: Editor }>();
 const notesStore = useNotesStore();
+const workspaceStore = useWorkspaceStore();
+const exportService = new ExportService();
 
 const dropdownOptions = [
     { label: 'Export as Text', key: 'export-text' },
     { label: 'Export as Markdown', key: 'export-markdown' },
+    { label: 'Export as HTML', key: 'export-html' }
 ];
 
 function handleDropdownSelect(key: string) {
@@ -31,18 +35,26 @@ function handleDropdownSelect(key: string) {
     if (key === 'export-markdown') {
         exportAsMarkdown();
     }
+    if (key === 'export-html') {
+        exportAsHTML();
+    }
 }
 
 console.log('EditorOptions component initialized.', props.editor);
 
 function exportAsText() {
     const currentNote = notesStore.currentNote;
-    exportNoteAsText(props.editor, currentNote.name);
+    exportService.exportNoteAsText(props.editor, currentNote.name);
 }
 
 function exportAsMarkdown() {
     const currentNote = notesStore.currentNote;
-    exportNoteAsMarkdown(props.editor, currentNote.name);
+    exportService.exportNoteAsMarkdown(props.editor, currentNote.name, workspaceStore.currentWorkspace);
+}
+
+function exportAsHTML() {
+    const currentNote = notesStore.currentNote;
+    exportService.exportNoteAsHtml(props.editor, currentNote.name, workspaceStore.currentWorkspace);
 }
 </script>
 

@@ -1,0 +1,181 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    line-height: 1.75;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 120ch;
+    font-size: 1rem;
+    padding: 2rem 1rem;
+}
+
+h1 {
+    font-size: 2.25rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    font-weight: 800;
+    line-height: 2.5rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    line-height: 2rem;
+}
+
+h3 {
+    font-size: 1.25rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    line-height: 1.75rem;
+}
+
+h1,
+h2,
+h3 {
+    letter-spacing: -0.01em;
+}
+
+p {
+    margin-top: 1.25em;
+    margin-bottom: 1.25em;
+}
+
+/* List styles */
+ul,
+ol {
+    padding: 0 1rem;
+    margin: 1.25rem 1rem 1.25rem 0.4rem;
+
+    li p {
+        margin-top: 0.25em;
+        margin-bottom: 0.25em;
+    }
+}
+
+/* Task list specific styles */
+ul[data-type="taskList"] {
+    list-style: none;
+    margin-left: 0;
+    padding: 0;
+
+    li {
+        align-items: center;
+        display: flex;
+
+        >label {
+            flex: 0 0 auto;
+            margin-right: 0.5rem;
+            user-select: none;
+            align-items: center;
+        }
+
+        >div {
+            flex: 1 1 auto;
+        }
+    }
+
+    input[type="checkbox"] {
+        cursor: pointer;
+    }
+
+    ul[data-type="taskList"] {
+        margin: 0;
+    }
+}
+
+a {
+    color: #2563eb;
+    text-decoration: underline;
+    transition: color 0.2s ease, text-decoration 0.2s ease;
+}
+
+a:hover {
+    color: #1e40af;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+code {
+    background: #f3f4f6;
+    color: #111827;
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+    font-size: 0.95em;
+}
+
+pre {
+    background: #f3f4f6;
+    color: #111827;
+    padding: 1em;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1.5em 0;
+}
+
+blockquote {
+    border-left: 4px solid #d1d5db;
+    padding-left: 1em;
+    color: #6b7280;
+    font-style: italic;
+    margin: 1.5em 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+}
+
+th,
+td {
+    border: 1px solid #d1d5db;
+    padding: 0.5em 1em;
+}
+
+th {
+    background: #f9fafb;
+    font-weight: 600;
+}
+
+.editor-image {
+    max-height: 60vh;
+    max-width: 100%;
+}
+
+.note-link {
+    color: #2563eb;
+    border-radius: 0.35em;
+    padding: 0.1em 0.4em;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: underline double #2563eb;
+}
+
+.note-link:hover {
+    color: #1e40af;
+    text-decoration: none;
+}
+
+
+.note-name {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0 0 2rem 0;
+    line-height: 1.1;
+}
+
+.note {
+    width: 100%;
+    max-width: 52rem;
+    margin: 0 auto;
+    height: auto;
+}

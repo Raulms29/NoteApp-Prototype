@@ -47,7 +47,7 @@ async function handleImageUpload(filePath: string) {
     const { state } = editor.value!;
     const { to } = state.selection;
     editor.value!.commands.setTextSelection(to);
-    editor.value!.chain().focus().insertContent({ type: 'image', attrs: { src: imagePath, alt: imageName } }).run();
+    editor.value!.chain().focus().insertContent({ type: 'image', attrs: { src: imagePath, alt: imageName, title: imageName } }).run();
 }
 
 async function handlePdfUpload(filePath: string) {
@@ -94,6 +94,9 @@ onBeforeMount(() => {
             CustomImage.configure({
                 inline: false,
                 allowBase64: true,
+                HTMLAttributes: {
+                    class: 'editor-image',
+                },
             }),
             Pdf,
         ],

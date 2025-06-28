@@ -13,11 +13,19 @@ export const fileExists = async (filePath: string): Promise<boolean> => {
     }
 };
 
-export const readFile = async (filePath: string): Promise<string> => {
+export const readTextFile = async (filePath: string): Promise<string> => {
     try {
-        return await window.fileAPI.readFile(filePath);
+        return await window.fileAPI.readTextFile(filePath);
     } catch (error) {
         throw new Error(`Failed to read file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+};
+
+export const readBinaryFile = async (filePath: string): Promise<string> => {
+    try {
+        return await window.fileAPI.readBinaryFile(filePath);
+    } catch (error) {
+        throw new Error(`Failed to read binary file: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 };
 
@@ -107,4 +115,15 @@ export const setWorkspaceRoot = async (rootPath: string): Promise<void> => {
     } catch (error) {
         throw new Error(`Failed to set workspace root: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
+};
+
+export const downloadFile = (content: Blob, fileName: string): void => {
+    const url = URL.createObjectURL(content);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 };

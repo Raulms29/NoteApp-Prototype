@@ -23,13 +23,14 @@
         padding: 0;
 
         li {
-            align-items: flex-start;
+            align-items: center;
             display: flex;
 
             >label {
                 flex: 0 0 auto;
                 margin-right: 0.5rem;
                 user-select: none;
+                align-items: center;
             }
 
             >div {

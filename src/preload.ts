@@ -11,8 +11,10 @@ contextBridge.exposeInMainWorld('fileAPI', {
         ipcRenderer.invoke('get-note-path', notesPath, noteName),
     fileExists: (filePath: string) =>
         ipcRenderer.invoke('file-exists', filePath),
-    readFile: (filePath: string) =>
-        ipcRenderer.invoke('read-file', filePath),
+    readTextFile: (filePath: string) =>
+        ipcRenderer.invoke('read-text-file', filePath),
+    readBinaryFile: (filePath: string) =>
+        ipcRenderer.invoke('read-binary-file', filePath),
     writeFile: (filePath: string, content: string) =>
         ipcRenderer.invoke('write-file', filePath, content),
     selectFolder: async () =>

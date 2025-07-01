@@ -25,7 +25,8 @@ const exportService = new ExportService();
 const dropdownOptions = [
     { label: 'Export as Text', key: 'export-text' },
     { label: 'Export as Markdown', key: 'export-markdown' },
-    { label: 'Export as HTML', key: 'export-html' }
+    { label: 'Export as HTML', key: 'export-html' },
+    { label: 'Export as PDF', key: 'export-pdf' }
 ];
 
 function handleDropdownSelect(key: string) {
@@ -37,6 +38,9 @@ function handleDropdownSelect(key: string) {
     }
     if (key === 'export-html') {
         exportAsHTML();
+    }
+    if (key === 'export-pdf') {
+        exportAsPDF();
     }
 }
 
@@ -55,6 +59,11 @@ function exportAsMarkdown() {
 function exportAsHTML() {
     const currentNote = notesStore.currentNote;
     exportService.exportNoteAsHtml(props.editor, currentNote.name, workspaceStore.currentWorkspace);
+}
+
+function exportAsPDF() {
+    const currentNote = notesStore.currentNote;
+    exportService.exportNoteAsPDF(props.editor, currentNote.name, workspaceStore.currentWorkspace);
 }
 </script>
 

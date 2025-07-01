@@ -8,8 +8,8 @@
 </template>
 
 <script setup lang="ts">
-import GenericDialog from '../../GenericDialog.vue'
-import GenericButton from '../../GenericButton.vue'
+import GenericDialog from '../../generic/GenericDialog.vue'
+import GenericButton from '../../generic/GenericButton.vue'
 
 const props = defineProps<{
     name: string

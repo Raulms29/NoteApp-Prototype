@@ -1,9 +1,9 @@
 import { Editor, JSONContent } from '@tiptap/vue-3';
 import JSZip from 'jszip';
-import { downloadFile, getFilenameFromPath, joinPaths, readBinaryFile, readTextFile } from '../utils/fileUtils';
+import { downloadFile, getFilenameFromPath, joinPaths, readBinaryFile, readTextFile, fileExists, getExtensionFromPath } from '../utils/fileUtils';
 import { Workspace } from './domain/Workspace';
 import HtmlConverter from './domain/HtmlConverter';
-
+import { Buffer } from 'buffer';
 interface ImageType {
   src: string;
   title?: string;
@@ -53,6 +53,18 @@ export default class ExportService {
     downloadFile(content, `${noteName}.zip`);
   }
 
+  async exportNoteAsPDF(editor: Editor, noteName: string, currentWorkspace: Workspace): Promise<void> {
+    let htmlContent = editor.getHTML();
+    const htmlStyles = await readTextFile('src/styles/export/exportPDF.css');
+
+    htmlContent = HtmlConverter.convertToHtml(htmlContent, noteName, htmlStyles);
+
+    // Replace images with base64 data URLs
+    htmlContent = await this.replaceImagesWithBase64(htmlContent, currentWorkspace);
+
+    await window.exportAPI.exportAsPDF(htmlContent, noteName);
+  }
+
   private async lookForFiles(node: JSONContent, zip: JSZip, currentWorkspace: Workspace): Promise<void> {
     if (!node) return;
     // Process current node
@@ -91,5 +103,41 @@ export default class ExportService {
     const path = await joinPaths(currentWorkspaceFilePath, filePath);
     const fileContent = await readBinaryFile(path);
     return [await getFilenameFromPath(path), fileContent];
+  }
+
+  private async replaceImagesWithBase64(htmlContent: string, currentWorkspace: Workspace): Promise<string> {
+    const baseDir = currentWorkspace.path;
+    const filesPath = currentWorkspace.filesFolder;
+
+    // Regex to match <img> tags and capture the src attribute
+    const imgTagRegex = /<img\s+[^>]*src=["']([^"']+)["'][^>]*>/gi;
+
+    const matches = [...htmlContent.matchAll(imgTagRegex)];
+
+    let newHtml = htmlContent;
+
+    // Iterate over all matches and replace the src with base64 data URL
+    for (const match of matches) {
+      const imgTag = match[0];
+      const src = match[1];
+      if (src.startsWith(filesPath)) {
+        const imgPath = await joinPaths(baseDir, src);
+        if (await fileExists(imgPath)) {
+          const ext = (await getExtensionFromPath(imgPath)).slice(1).toLowerCase();
+          // Handle 'jpg' as 'jpeg', correct MIME type for data URLs
+          const mime = ext === 'jpg' ? 'jpeg' : ext;
+          // Read the binary data from the file
+          const data = await readBinaryFile(imgPath);
+          // Convert binary data to base64
+          const base64 = Buffer.from(data, 'binary').toString('base64');
+          // Create the data URL
+          const dataUrl = `data:image/${mime};base64,${base64}`;
+          // Replace the tag
+          const newImgTag = imgTag.replace(src, dataUrl);
+          newHtml = newHtml.replace(imgTag, newImgTag);
+        }
+      }
+    }
+    return newHtml;
   }
 }

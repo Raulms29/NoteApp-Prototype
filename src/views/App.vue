@@ -10,8 +10,8 @@
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
-import GenericDialog from '../components/GenericDialog.vue';
-import GenericButton from '../components/GenericButton.vue';
+import GenericDialog from '../components/generic/GenericDialog.vue';
+import GenericButton from '../components/generic/GenericButton.vue';
 import { useGlobalError } from '../stores/useGlobalError';
 import { computed } from 'vue';
 const errorStore = useGlobalError();

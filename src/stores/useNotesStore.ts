@@ -17,7 +17,7 @@ export const useNotesStore = defineStore('notes', () => {
         repo = new NoteRepository(
             workspace.path,
             await workspace.notesStructureFilePath(),
-            workspace.filesPath()
+            workspace.filesFolder
         );
         loadTree();
     }

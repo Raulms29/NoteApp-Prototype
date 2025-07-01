@@ -66,5 +66,10 @@ contextBridge.exposeInMainWorld('settingsAPI', {
     updateSetting: (key: string, value: string) => ipcRenderer.invoke('update-setting', key, value),
 });
 
+contextBridge.exposeInMainWorld('exportAPI', {
+    exportAsPDF: (htmlContent: string, fileName: string) =>
+        ipcRenderer.invoke('export-as-pdf', htmlContent, fileName),
+});
+
 console.log('Preload script loaded successfully');
 

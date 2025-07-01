@@ -10,9 +10,10 @@ describe('GIVEN a NoteRepository', () => {
     let repository: NoteRepository;
     const mockNotesPath = 'mock/notes/path';
     const mockStructurePath = 'mock/structure/path.json';
+    const mockFilesPath = 'mock/.files';
 
     beforeAll(() => {
-        repository = new NoteRepository(mockNotesPath, mockStructurePath);
+        repository = new NoteRepository(mockNotesPath, mockStructurePath, mockFilesPath);
     });
 
     describe('WHEN adding a note', () => {

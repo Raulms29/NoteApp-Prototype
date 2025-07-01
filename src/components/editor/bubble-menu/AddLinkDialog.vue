@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import { Editor } from '@tiptap/vue-3';
 import LinkIcon from 'icons/Link.vue';
-import { isAllowedUri } from '../../utils/urlUtils';
+import { isAllowedUri } from '../../../utils/urlUtils';
 import { ref, computed } from 'vue';
 
 // Props

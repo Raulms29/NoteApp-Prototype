@@ -43,8 +43,8 @@ describe('GIVEN a Note', () => {
         });
 
         it('THEN throws error for long name', () => {
-            const longName = 'a'.repeat(51);
-            expect(() => new Note(longName, [], '00000001')).toThrowError('Note name cannot exceed 100 characters.');
+            const longName = 'a'.repeat(31);
+            expect(() => new Note(longName, [], '00000001')).toThrowError('Note name cannot exceed 30 characters.');
         });
     });
 

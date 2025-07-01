@@ -45,9 +45,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import ArrowLeft from 'icons/ArrowLeft.vue'
-import GenericButton from '../components/GenericButton.vue'
-import LoadingOverlay from '../components/LoadingOverlay.vue'
-import GenericDialog from '../components/GenericDialog.vue'
+import GenericButton from '../components/generic/GenericButton.vue'
+import LoadingOverlay from '../components/loading/LoadingOverlay.vue'
+import GenericDialog from '../components/generic/GenericDialog.vue'
 import { useWorkspaceStore } from '../stores/useWorkspaceStore'
 import { Workspace } from '../services/domain/Workspace'
 import { useRouter } from 'vue-router'

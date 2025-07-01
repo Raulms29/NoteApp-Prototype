@@ -27,7 +27,7 @@ export class Workspace implements WorkspaceI {
         return await fileUtils.joinPaths(notesPath, 'notes.json');
     }
 
-    filesPath(): string {
+    get filesFolder(): string {
         return '.files';
     }
 

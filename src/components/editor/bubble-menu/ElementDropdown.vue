@@ -3,7 +3,7 @@
         <!-- Trigger -->
         <button @click="emit('update:open', !open)" class="inline-flex items-center px-3 py-2 bg-white bubble-button">
             <component :is="currentElementIcon" />
-            <img src="../../assets/icons/chevronDown.svg" alt="Chevron Down" width="16" height="16" />
+            <img src="../../../assets/icons/chevronDown.svg" alt="Chevron Down" width="16" height="16" />
         </button>
 
         <!-- Dropdown Content -->

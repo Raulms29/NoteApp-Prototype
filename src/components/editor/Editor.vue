@@ -28,7 +28,7 @@ import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import Underline from '@tiptap/extension-underline';
 import CharacterCount from '@tiptap/extension-character-count';
 
-import BubbleMenu from './BubbleMenu.vue';
+import BubbleMenu from './bubble-menu/BubbleMenu.vue';
 
 const emit = defineEmits(['note-change', 'note-content-update']);
 const notesStore = useNotesStore();

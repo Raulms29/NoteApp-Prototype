@@ -12,6 +12,7 @@ import { registerNoteHandlers, registerFileHandlers } from './utils/ipc/fileHand
 import { registerWorkspaceHandlers } from './utils/ipc/workspaceHandler';
 import { registerWindowHandlers } from './utils/ipc/windowHandler';
 import { registerSettingsHandlers } from './utils/ipc/settingsHandler';
+import { registerExportHandlers } from './utils/ipc/exportHandler';
 
 // Ensure only one instance of the app is running
 const gotTheLock = app.requestSingleInstanceLock();
@@ -99,6 +100,7 @@ if (!gotTheLock) {
     registerWorkspaceHandlers();
     registerFileHandlers('utf-8');
     registerSettingsHandlers();
+    registerExportHandlers();
     // Register window handlers and create the browser window
     registerWindowHandlers(createWindow());
     let workspaceRoot: string | null = null;
@@ -150,13 +152,19 @@ if (!gotTheLock) {
     });
 
     session.defaultSession.webRequest.onBeforeRequest((details, callback) => {
-      if (details.url.includes('.files') && !details.url.startsWith('mfp://')) { // Filter for .files URLs and avoid infinite redirects
-        callback({
-          redirectURL: 'mfp:///' + workspaceRoot.replace(/\\/g, '/') + new URL(details.url).pathname
-        });
-      }
-      else
+      if (
+        details.url.includes('.files') &&
+        !details.url.startsWith('mfp://') &&
+        !details.url.startsWith('data:text/html')
+      ) {
+        // Extract the path starting from '/.files/' (including .files)
+        const match = details.url.match(/(\/\.files\/[^?&#]*)/);
+        const filePart = match ? match[1] : '';
+        const redirectURL = `mfp:///${workspaceRoot.replace(/\\/g, '/')}${filePart}`;
+        callback({ redirectURL });
+      } else {
         callback({});
+      }
     });
   });
 
@@ -180,15 +188,15 @@ if (!gotTheLock) {
   });
 
   // ============================ //
-  app.on('before-quit', () => {
-    console.log('app before-quit');
-  });
+  // app.on('before-quit', () => {
+  //   console.log('app before-quit');
+  // });
 
-  app.on('browser-window-blur', () => {
-    console.log('app browser-window-blur');
-  });
+  // app.on('browser-window-blur', () => {
+  //   console.log('app browser-window-blur');
+  // });
 
-  app.on('browser-window-focus', () => {
-    console.log('app browser-window-focus');
-  });
+  // app.on('browser-window-focus', () => {
+  //   console.log('app browser-window-focus');
+  // });
 }

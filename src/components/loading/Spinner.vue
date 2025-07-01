@@ -11,7 +11,7 @@ defineProps<{ customClass?: string }>()
     width: 2.5rem;
     height: 2.5rem;
     border: 4px solid #bbb;
-    border-top: 4px solid #7c3aed;
+    border-top: 4px solid #007bff;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }

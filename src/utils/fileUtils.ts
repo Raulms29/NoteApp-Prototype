@@ -105,6 +105,7 @@ export const deleteFile = async (filePath: string): Promise<void> => {
     try {
         await window.fileAPI.deleteFile(filePath);
     } catch (error) {
+        console.error(`Failed to delete file: ${error instanceof Error ? error.message : 'Unknown error'}`);
         return;
     }
 };

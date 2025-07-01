@@ -1,4 +1,4 @@
-import { $, browser, expect } from '@wdio/globals';
+import { browser } from '@wdio/globals';
 
 describe('Electron Testing', () => {
     it('should print application title', async () => {

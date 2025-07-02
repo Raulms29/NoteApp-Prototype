@@ -70,7 +70,7 @@ export const renameFile = async (oldPath: string, newPath: string): Promise<void
 };
 
 export const joinPaths = async (...paths: string[]): Promise<string> => {
-    return await window.fileAPI.joinPaths(...paths);
+    return window.fileAPI.joinPaths(...paths);
 };
 
 export function getRandomFileName(): string {

@@ -77,7 +77,7 @@ export const MarkdownLink = Mark.create({
             {
                 tag: 'a[href]', // Matches anchor tags with an href attribute.
                 getAttrs: (dom) => {
-                    const href = (dom as HTMLElement).getAttribute('href');
+                    const href = dom.getAttribute('href');
                     if (!href || !this.options.isAllowedUri(href)) {
                         return false; // Invalid link
                     }

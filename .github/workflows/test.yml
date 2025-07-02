@@ -23,11 +23,8 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Run Unit Tests
-      run: npm run test-c -- --run
-
-    - name: Run Component Tests
-      run: npm run test:component-c -- --run
+    - name: Run Unit Tests with Coverage
+      run: npx vitest run --coverage
 
     - name: Analyze with SonarQube
       uses: SonarSource/sonarqube-scan-action@v5

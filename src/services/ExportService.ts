@@ -110,7 +110,7 @@ export default class ExportService {
     const filesPath = currentWorkspace.filesFolder;
 
     // Regex to match <img> tags and capture the src attribute
-    const imgTagRegex = /<img\s+[^>]*src=["']([^"']+)["'][^>]*>/gi;
+    const imgTagRegex = /<img\s+[^>]*?\bsrc=["']([^"'<>]{1,1024})["'][^>]*?>/gi;
 
     const matches = [...htmlContent.matchAll(imgTagRegex)];
 

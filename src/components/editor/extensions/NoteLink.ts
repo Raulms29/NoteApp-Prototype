@@ -7,7 +7,7 @@ import { Note } from '../../../services/domain/Note';
 const nonExistingId = '_______NonExistingID_______';
 
 // Regex to match [[NoteName]]
-const noteLinkRegex = /\[\[([^\]]+)\]\]/g;
+const noteLinkRegex = /\[\[([^\]]{1,32})\]\]/g;
 
 export const NoteLink = Mark.create({
     name: 'noteLink',

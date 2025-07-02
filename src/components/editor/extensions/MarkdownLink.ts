@@ -8,7 +8,8 @@ import { isAllowedUri } from '../../../utils/urlUtils';
  * Regular expression to match markdown links in the format [text](url).
  * Captures the link text and the URL separately for further processing.
  */
-const markdownLinkRegex = /\[([^\]]+)]\((https?:\/\/[^\s)]+(?:\([^\s)]+\)[^\s)]*)*)\)/g;
+const markdownLinkRegex = /\[([^\]]+)]\((https?:\/\/[^\s()]+(?:\([^\s()]*\)[^\s()]*)*)\)/g;
+
 
 export const MarkdownLink = Mark.create({
     name: 'link',

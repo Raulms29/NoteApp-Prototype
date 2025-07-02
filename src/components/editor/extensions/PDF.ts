@@ -66,8 +66,7 @@ export const Pdf = Node.create<PdfOptions>({
             markdown: {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 serialize(state: any, node: any) {
-                    console.log('PDF serialize', node.attrs);
-                    const text = node.attrs.title || 'PDF';
+                    const text = node.attrs.title ?? 'PDF';
                     state.write(`[${text}](<${node.attrs.src}>)`);
                     state.closeBlock(node);
                 },

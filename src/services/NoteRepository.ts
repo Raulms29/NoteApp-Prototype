@@ -135,7 +135,6 @@ export class NoteRepository {
      * The actual copy is delegated to fileUtils.copyImageToFolder.
      */
     async saveImage(sourcePath: string): Promise<string[]> {
-        console.log('Reached NoteRepository.saveImage');
         return this.saveFileToFilesFolder(sourcePath);
     }
 
@@ -145,7 +144,6 @@ export class NoteRepository {
      * The actual copy is delegated to fileUtils.copyFileToFolder.
      */
     async savePDF(sourcePath: string): Promise<string[]> {
-        console.log('Reached NoteRepository.savePDF');
         return this.saveFileToFilesFolder(sourcePath);
     }
 }

@@ -188,17 +188,4 @@ if (!gotTheLock) {
       createWindow();
     }
   });
-
-  // ============================ //
-  // app.on('before-quit', () => {
-  //   console.log('app before-quit');
-  // });
-
-  // app.on('browser-window-blur', () => {
-  //   console.log('app browser-window-blur');
-  // });
-
-  // app.on('browser-window-focus', () => {
-  //   console.log('app browser-window-focus');
-  // });
 }

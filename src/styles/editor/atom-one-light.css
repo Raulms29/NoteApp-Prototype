@@ -24,7 +24,7 @@ hue-6-2: #c18401
     background: #f3f4f6;
     border-radius: 0.5rem;
     color: var(--white);
-    font-family: 'Cascadia Code Pl', code;
+    font-family: 'Cascadia Code Pl', code, sans-serif;
     font-weight: 400;
     margin: 1.5rem 0;
     padding: 0.75rem 1rem;

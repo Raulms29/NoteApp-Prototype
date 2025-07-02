@@ -30,7 +30,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     }
 
     function selectWorkspace(id: string) {
-        const ws = workspaces.value.find(ws => ws.id === id) || null;
+        const ws = workspaces.value.find(ws => ws.id === id) ?? null;
         currentWorkspace.value = ws;
         setWorkspaceRoot(ws.path);
         notesStore.init(ws);

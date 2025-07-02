@@ -37,7 +37,6 @@ export const useNotesStore = defineStore('notes', () => {
 
     async function saveNoteContent(note: Note, html: string) {
         if (!currentNote.value) throw new Error('No note selected to save content for.');
-        console.log(`Saving content for note: ${note.name}`);
         await repo.writeNoteContent(note, html);
     }
 

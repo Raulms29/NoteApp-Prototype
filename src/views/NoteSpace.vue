@@ -45,7 +45,6 @@ const settingsStore = useSettingsStore();
     overflow-y: auto;
     background-color: var(--background-color);
     height: 98vh;
-    overflow: none;
 }
 
 .focus-mode-editor-pane {

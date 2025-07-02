@@ -21,5 +21,3 @@ function closeApp() {
     window.close();
 }
 </script>
-
-<style></style>

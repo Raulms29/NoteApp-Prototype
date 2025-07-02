@@ -27,7 +27,6 @@ export default class ExportService {
 
   async exportNoteAsMarkdown(editor: Editor, noteName: string, currentWorkspace: Workspace): Promise<void> {
     const markdownContent = editor.storage.markdown.getMarkdown();
-    console.log('JSON', editor.getJSON());
 
     const zip = new JSZip();
     zip.file(`${noteName}.md`, markdownContent);
@@ -84,15 +83,15 @@ export default class ExportService {
     if (element.type === 'image' && element.attrs) {
       const image: ImageType = {
         src: element.attrs.src,
-        title: element.attrs.title || '',
-        alt: element.attrs.alt || ''
+        title: element.attrs.title ?? '',
+        alt: element.attrs.alt ?? ''
       };
       return await this.getNameAndPath(image.src, currentWorkspace.path);
     }
     if (element.type === 'pdf' && element.attrs) {
       const pdf: PdfType = {
         src: element.attrs.src,
-        title: element.attrs.title || null
+        title: element.attrs.title ?? null
       };
       return await this.getNameAndPath(pdf.src, currentWorkspace.path);
     }

@@ -6,8 +6,8 @@ export const CustomImage = Image.extend({
             markdown: {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 serialize(state: any, node: any) {
-                    const alt = node.attrs.alt || '';
-                    const src = node.attrs.src || '';
+                    const alt = node.attrs.alt ?? '';
+                    const src = node.attrs.src ?? '';
                     state.write(`![${alt}](<${src}>)`);
                     state.closeBlock(node);
                 },

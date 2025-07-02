@@ -133,5 +133,3 @@ defineExpose({
     editor,
 })
 </script>
-
-<style scoped></style>

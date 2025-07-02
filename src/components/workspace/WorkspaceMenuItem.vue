@@ -11,9 +11,9 @@ defineProps<{
     label: string
 }>()
 
-const emit = defineEmits<{
-    (e: 'action'): void
-}>()
+const emit = defineEmits<
+    (e: 'action') => void
+>()
 
 function onClick() {
     emit('action')

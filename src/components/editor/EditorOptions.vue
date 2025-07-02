@@ -44,8 +44,6 @@ function handleDropdownSelect(key: string) {
     }
 }
 
-console.log('EditorOptions component initialized.', props.editor);
-
 function exportAsText() {
     const currentNote = notesStore.currentNote;
     exportService.exportNoteAsText(props.editor, currentNote.name);

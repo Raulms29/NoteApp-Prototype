@@ -49,9 +49,8 @@
 </template>
 
 <script setup lang="ts">
-import { BubbleMenu } from '@tiptap/vue-3';
+import { BubbleMenu, Editor } from '@tiptap/vue-3';
 import { onBeforeUnmount, onMounted, Ref, ref } from 'vue';
-import { Editor } from '@tiptap/vue-3';
 import BoldIcon from 'icons/FormatBold.vue';
 import ItalicIcon from 'icons/FormatItalic.vue';
 import UnderLineIcon from 'icons/FormatUnderline.vue';
@@ -150,7 +149,8 @@ const handleLinkDialogOpenChange = (newValue: boolean) => {
     display: flex;
     align-items: center;
     gap: 2px;
-    background: #fff;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(6px);
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     padding: 6px 10px;
@@ -183,10 +183,7 @@ const handleLinkDialogOpenChange = (newValue: boolean) => {
     background: #ededed;
 }
 
-.bubble-menu {
-    backdrop-filter: blur(6px);
-    background: rgba(255, 255, 255, 0.9);
-}
+
 
 .bubble-button:focus-visible {
     outline: 2px solid #6200ee;

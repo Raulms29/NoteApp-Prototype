@@ -152,7 +152,6 @@ function goBacktoWorkspaces() {
     width: 10%;
     text-align: right;
     font-weight: 600;
-    text-align: right;
 }
 
 .form-input {

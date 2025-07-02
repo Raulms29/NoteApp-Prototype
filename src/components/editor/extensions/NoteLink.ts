@@ -1,5 +1,5 @@
 import { Mark, mergeAttributes, InputRule, PasteRule, ExtendedRegExpMatchArray, Range, Editor } from '@tiptap/core';
-import { MarkType, Node } from '@tiptap/pm/model';
+import { MarkType, Node, Mark as ProseMirrorMark } from '@tiptap/pm/model';
 import { Plugin } from '@tiptap/pm/state';
 import { EditorState, TextSelection } from 'prosemirror-state';
 import { Note } from '../../../services/domain/Note';
@@ -150,10 +150,7 @@ function replaceWithNoteLink({ match, state, range, type, options }: { match: Ex
     noteName = noteName.trim();
     const { tr } = state;
 
-    let noteId = options.getNoteIdFromName(noteName);
-    if (noteId === null) {
-        noteId = nonExistingId;
-    }
+    const noteId = options.getNoteIdFromName(noteName) ?? nonExistingId;
 
     const mark = type.create({ noteName: noteName, noteId: noteId });
     tr.replaceWith(
@@ -181,9 +178,9 @@ function updateNoteLinkMark(editor: Editor, noteName: string, newNoteId: string,
     const markType = schema.marks.noteLink;
 
     doc.descendants((node: Node, pos: number) => {
-        if (!node.isText) return true;
+        if (!node.isText) return;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        node.marks.forEach((mark: any) => {
+        node.marks.forEach((mark: ProseMirrorMark) => {
             if (
                 mark.type === markType &&
                 mark.attrs.noteName === noteName &&
@@ -199,7 +196,6 @@ function updateNoteLinkMark(editor: Editor, noteName: string, newNoteId: string,
                 );
             }
         });
-        return true;
     });
 
     if (tr.docChanged) {

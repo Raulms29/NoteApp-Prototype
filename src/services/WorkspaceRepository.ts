@@ -15,7 +15,6 @@ export class WorkspaceRepository {
 
     async getWorkspaces(): Promise<Workspace[]> {
         const workspacesRaw = await window.workspaceAPI.getWorkspaces();
-        console.log('Retrieved workspaces:', workspacesRaw);
         return workspacesRaw.map((ws: WorkspaceI) => new Workspace(ws.name, ws.path, ws.id));
     }
 

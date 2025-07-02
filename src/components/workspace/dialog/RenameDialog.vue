@@ -26,5 +26,3 @@ defineEmits<{
 
 const localName = ref(props.name)
 </script>
-
-<style scoped></style>

@@ -21,9 +21,7 @@ import { useNotesStore } from '../../stores/useNotesStore';
 const router = useRouter();
 const notesStore = useNotesStore();
 
-const emit = defineEmits<{
-    (e: 'search'): void
-}>()
+const emit = defineEmits<(e: 'search') => void>();
 
 async function handleNewNote() {
     const newNote = await notesStore.createNote();

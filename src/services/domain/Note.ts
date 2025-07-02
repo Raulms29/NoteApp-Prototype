@@ -11,7 +11,7 @@ export class Note {
     private _id: string;
     private _name: string;
     private _children: Note[];
-    private _createdAt: Date;
+    private readonly _createdAt: Date;
 
     /**
      * Creates a new Note instance.

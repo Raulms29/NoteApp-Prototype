@@ -24,5 +24,3 @@ defineEmits<{
     (e: 'remove'): void
 }>()
 </script>
-
-<style scoped></style>

@@ -24,10 +24,10 @@ jobs:
       run: npm install
 
     - name: Run Unit Tests
-      run: npm run test -- --run
+      run: npm run test-c -- --run
 
     - name: Run Component Tests
-      run: npm run test:component -- --run
+      run: npm run test:component-c -- --run
 
     - name: Analyze with SonarQube
       uses: SonarSource/sonarqube-scan-action@v5

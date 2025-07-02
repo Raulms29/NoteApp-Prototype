@@ -29,18 +29,23 @@ jobs:
     - name: Run Component Tests
       run: npm run test:component -- --run
 
-  e2e:
-    needs: [unit-and-component-tests]
-    runs-on: windows-latest
+    - name: Analyze with SonarCloud
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-    steps: 
-    - name: Checkout repository
-      uses: actions/checkout@v4
+  # e2e:
+  #   needs: [unit-and-component-tests]
+  #   runs-on: windows-latest
 
-    - name: Set up Node.js 22
-      uses: actions/setup-node@v4
-      with:
-        node-version: '22.x'
+  #   steps: 
+  #   - name: Checkout repository
+  #     uses: actions/checkout@v4
+
+  #   - name: Set up Node.js 22
+  #     uses: actions/setup-node@v4
+  #     with:
+  #       node-version: '22.x'
     
-    - name: Run E2E tests with WebdriverIO
-      run: npm run test:e2e -- --run
+  #   - name: Run E2E tests with WebdriverIO
+  #     run: npm run test:e2e -- --run

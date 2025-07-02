@@ -128,3 +128,11 @@ export const downloadFile = (content: Blob, fileName: string): void => {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 };
+
+export const getTempDir = async (): Promise<string> => {
+    try {
+        return await window.fileAPI.getTempDir();
+    } catch (error) {
+        throw new Error(`Failed to get temp directory: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+};

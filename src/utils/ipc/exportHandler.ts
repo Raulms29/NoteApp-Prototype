@@ -1,30 +1,34 @@
 import { BrowserWindow, dialog, ipcMain } from "electron";
 import fs from 'fs';
+import fsPromises from 'fs/promises';
 
 export function registerExportHandlers() {
-    ipcMain.handle('export-as-pdf', async (_, htmlContent: string, fileName: string) => {
-        // Replace images with base64 data URLs before rendering
+    ipcMain.handle('export-as-pdf', async (_, tempFilePath: string, fileName: string) => {
         const win = new BrowserWindow({
             show: false, // Hidden window
         });
 
-        await win.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(htmlContent)}`);
+        try {
+            await win.loadFile(tempFilePath);
 
-        const pdfBuffer = await win.webContents.printToPDF({
-            printBackground: true,
-            pageSize: 'A4',
-        });
+            const pdfBuffer = await win.webContents.printToPDF({
+                printBackground: true,
+                pageSize: 'A4',
+            });
 
-        const { filePath } = await dialog.showSaveDialog({
-            title: 'Save Note as PDF',
-            defaultPath: `${fileName}.pdf`,
-            filters: [{ name: 'PDF File', extensions: ['pdf'] }],
-        });
+            const { filePath } = await dialog.showSaveDialog({
+                title: 'Save Note as PDF',
+                defaultPath: `${fileName}.pdf`,
+                filters: [{ name: 'PDF File', extensions: ['pdf'] }],
+            });
 
-        if (filePath) {
-            fs.writeFileSync(filePath, pdfBuffer);
+            if (filePath) {
+                fs.writeFileSync(filePath, pdfBuffer);
+            }
+        } finally {
+            // Clean up temp file and window
+            await fsPromises.unlink(tempFilePath).catch(() => { });
+            win.destroy();
         }
-
-        win.destroy();
     });
 }

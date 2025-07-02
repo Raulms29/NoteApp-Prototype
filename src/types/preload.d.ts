@@ -21,6 +21,7 @@ declare global {
             getFilenameFromPath: (filePath: string) => Promise<string>;
             getExtensionFromPath: (filePath: string) => Promise<string>;
             deleteFile: (filePath: string) => Promise<void>;
+            getTempDir: () => Promise<string>;
         },
         workspaceAPI: {
             getWorkspaces: () => Promise<WorkspaceI[]>;

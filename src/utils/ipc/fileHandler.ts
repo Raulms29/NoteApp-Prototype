@@ -74,4 +74,12 @@ export function registerFileHandlers(fileEncoding: BufferEncoding = 'utf-8') {
     ipcMain.handle('delete-file', async (_, filePath: string) => {
         fs.promises.unlink(filePath);
     });
+
+    ipcMain.handle('get-temp-dir', async () => {
+        const tempDir = path.join(__dirname, 'temp');
+        if (!fs.existsSync(tempDir)) {
+            await fs.promises.mkdir(tempDir, { recursive: true });
+        }
+        return tempDir;
+    });
 }

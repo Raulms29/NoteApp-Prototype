@@ -1,9 +1,10 @@
 import { Editor, JSONContent } from '@tiptap/vue-3';
 import JSZip from 'jszip';
-import { downloadFile, getFilenameFromPath, joinPaths, readBinaryFile, readTextFile, fileExists, getExtensionFromPath } from '../utils/fileUtils';
+import { downloadFile, getFilenameFromPath, joinPaths, readBinaryFile, readTextFile, fileExists, getExtensionFromPath, writeFile, deleteFile, getTempDir } from '../utils/fileUtils';
 import { Workspace } from './domain/Workspace';
 import HtmlConverter from './domain/HtmlConverter';
 import { Buffer } from 'buffer';
+
 interface ImageType {
   src: string;
   title?: string;
@@ -61,7 +62,17 @@ export default class ExportService {
     // Replace images with base64 data URLs
     htmlContent = await this.replaceImagesWithBase64(htmlContent, currentWorkspace);
 
-    await window.exportAPI.exportAsPDF(htmlContent, noteName);
+    // Write HTML to a temp file using fileUtils
+    const tempDir = await getTempDir();
+    const tempFilePath = await joinPaths(tempDir, `${noteName}-${Date.now()}.html`);
+    await writeFile(tempFilePath, htmlContent);
+
+    try {
+      await window.exportAPI.exportAsPDF(tempFilePath, noteName);
+    } finally {
+      // Clean up temp file
+      await deleteFile(tempFilePath).catch(() => { });
+    }
   }
 
   private async lookForFiles(node: JSONContent, zip: JSZip, currentWorkspace: Workspace): Promise<void> {

@@ -1,4 +1,4 @@
-import { ipcMain, dialog } from 'electron';
+import { ipcMain, dialog, app } from 'electron';
 import fs from 'fs';
 import path from 'path';
 
@@ -76,10 +76,7 @@ export function registerFileHandlers(fileEncoding: BufferEncoding = 'utf-8') {
     });
 
     ipcMain.handle('get-temp-dir', async () => {
-        const tempDir = path.join(__dirname, 'temp');
-        if (!fs.existsSync(tempDir)) {
-            await fs.promises.mkdir(tempDir, { recursive: true });
-        }
+        const tempDir = app.getPath('temp');
         return tempDir;
     });
 }

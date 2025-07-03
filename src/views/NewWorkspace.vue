@@ -1,7 +1,7 @@
 <template>
     <div class="new-workspace-outer" :aria-busy="isSelecting" :class="{ 'disabled': isSelecting }">
         <!-- Arrow to go back -->
-        <ArrowLeft class="back-arrow" @click="goBacktoWorkspaces" size="40" title="Worskpaces" />
+        <ArrowLeft class="back-arrow" @click="goBacktoWorkspaces" :size="40 as number" :title="'Worskpaces'" />
 
         <!-- Title -->
         <h2 class="new-workspace-title">Create new Workspace</h2>

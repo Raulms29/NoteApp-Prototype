@@ -1,9 +1,16 @@
 import { Editor, JSONContent } from '@tiptap/vue-3';
 import JSZip from 'jszip';
-import { downloadFile, getFilenameFromPath, joinPaths, readBinaryFile, readTextFile, fileExists, getExtensionFromPath, writeFile, deleteFile, getTempDir } from '../utils/fileUtils';
+import { downloadFile, getFilenameFromPath, joinPaths, readBinaryFile, fileExists, getExtensionFromPath, writeFile, getTempDir } from '../utils/fileUtils';
 import { Workspace } from './domain/Workspace';
 import HtmlConverter from './domain/HtmlConverter';
 import { Buffer } from 'buffer';
+// @ts-expect-error // This import is used to include CSS styles for HTML export
+// eslint-disable-next-line import/no-unresolved
+import exportCss from '../styles/export/export.css?raw';
+// @ts-expect-error // This import is used to include CSS styles for HTML export
+// eslint-disable-next-line import/no-unresolved
+import exportCssPDF from '../styles/export/exportPDF.css?raw';
+
 
 interface ImageType {
   src: string;
@@ -41,8 +48,7 @@ export default class ExportService {
 
   async exportNoteAsHtml(editor: Editor, noteName: string, currentWorkspace: Workspace): Promise<void> {
     let htmlContent = editor.getHTML();
-    const htmlStyles = await readTextFile('src/styles/export/export.css');
-    htmlContent = HtmlConverter.convertToHtml(htmlContent, noteName, htmlStyles);
+    htmlContent = HtmlConverter.convertToHtml(htmlContent, noteName, exportCss);
 
     const zip = new JSZip();
     zip.file(`${noteName}.html`, htmlContent);
@@ -55,9 +61,7 @@ export default class ExportService {
 
   async exportNoteAsPDF(editor: Editor, noteName: string, currentWorkspace: Workspace): Promise<void> {
     let htmlContent = editor.getHTML();
-    const htmlStyles = await readTextFile('src/styles/export/exportPDF.css');
-
-    htmlContent = HtmlConverter.convertToHtml(htmlContent, noteName, htmlStyles);
+    htmlContent = HtmlConverter.convertToHtml(htmlContent, noteName, exportCssPDF);
 
     // Replace images with base64 data URLs
     htmlContent = await this.replaceImagesWithBase64(htmlContent, currentWorkspace);
@@ -67,12 +71,7 @@ export default class ExportService {
     const tempFilePath = await joinPaths(tempDir, `${noteName}-${Date.now()}.html`);
     await writeFile(tempFilePath, htmlContent);
 
-    try {
-      await window.exportAPI.exportAsPDF(tempFilePath, noteName);
-    } finally {
-      // Clean up temp file
-      await deleteFile(tempFilePath).catch(() => { });
-    }
+    await window.exportAPI.exportAsPDF(tempFilePath, noteName);
   }
 
   private async lookForFiles(node: JSONContent, zip: JSZip, currentWorkspace: Workspace): Promise<void> {

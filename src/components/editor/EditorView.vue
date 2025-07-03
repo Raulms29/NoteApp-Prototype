@@ -65,6 +65,13 @@ async function handleNoteChange(previousNote: Note, previousNoteContent: string)
         await notesStore.saveNoteContent(previousNote, previousNoteContent);
     }
     noteName.value = notesStore.currentNote.name;
+
+    // Reset the editor scroll position to the top
+    const el = document.getElementById('editorPane');
+    el.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
 };
 
 function handleNoteContentChange(content: string) {

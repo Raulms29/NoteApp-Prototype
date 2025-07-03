@@ -12,7 +12,7 @@
                 </div>
             </pane>
             <pane>
-                <div class="editor-pane">
+                <div class="editor-pane" id="editorPane">
                     <EditorView />
                 </div>
             </pane>

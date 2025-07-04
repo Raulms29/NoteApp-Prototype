@@ -36,9 +36,7 @@ export class NoteRepository {
         const createNote = (item: RawNote): Note => {
 
             // Recursively map children to Note objects
-            const children = item._children
-                ? item._children.map((child: RawNote) => createNote(child))
-                : [];
+            const children = item._children.map((child: RawNote) => createNote(child));
 
             return new Note(
                 item._name,
@@ -77,7 +75,7 @@ export class NoteRepository {
             const json = JSON.stringify(notes, null, 2);
             await writeFile(this.structurePath, json);
         } catch (error) {
-            throw new Error(`Failed to save note structure: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            throw new Error(`Failed to save note structure: ${error.message}`);
         }
     }
 

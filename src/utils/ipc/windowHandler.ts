@@ -14,7 +14,7 @@ export function registerWindowHandlers(mainWindow: BrowserWindow | null) {
         if (mainWindow) mainWindow.minimize();
     });
     ipcMain.handle('change-window-size', (_, height = 800, width = 600) => {
-        if (mainWindow) mainWindow.setSize(height, width, true);
+        if (mainWindow) mainWindow.setSize(width, height, true);
     });
     ipcMain.handle('is-maximized', () => {
         if (mainWindow) return mainWindow.isMaximized();

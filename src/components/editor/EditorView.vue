@@ -97,6 +97,7 @@ import '../../styles/editor.css';
     display: flex;
     background: transparent;
     gap: 0.25rem;
+    z-index: 10;
 }
 
 .focus-mode-icon-btn {

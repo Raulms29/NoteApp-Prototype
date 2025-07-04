@@ -46,6 +46,10 @@ describe('GIVEN a Note', () => {
             const longName = 'a'.repeat(31);
             expect(() => new Note(longName, [], '00000001')).toThrowError('Note name cannot exceed 30 characters.');
         });
+        it('THEN throws error for invalid character name', () => {
+            const name = 'Invalid/Name';
+            expect(() => new Note(name, [], '00000001')).toThrowError('Note name cannot contain any of these characters: \\ / : * ? " < > |');
+        });
     });
 
     describe('WHEN adding a child', () => {
@@ -90,12 +94,15 @@ describe('GIVEN a Note', () => {
             expect(note.name).toBe('Parent Note');
             expect(note.children).toHaveLength(1);
             expect(note.children[0].id).toBe('00000002');
+            expect(note.hasChild(note.children[0])).toBe(true);
+            expect(note.getDescendants()).toHaveLength(2);
         });
 
         it('THEN checks descendant by ID', () => {
             expect(note.hasDescendantByID('00000003')).toBe(false);
             expect(note.hasDescendantByID('00000001')).toBe(false);
             expect(note.hasDescendantByID(`00000002`)).toBe(true);
+            expect(note.hasDescendantByID('00000010')).toBe(true);
         });
 
         it('THEN adds second child', () => {
@@ -120,6 +127,12 @@ describe('GIVEN a Note', () => {
             expect(note.hasDescendant(grandChildNote)).toBe(false);
             expect(childNote.children).toHaveLength(0);
             expect(note.hasDescendant(childNote)).toBe(true);
+        });
+
+        it('THEN remove non-existent descendant', () => {
+            const nonExistentNote = new Note('Non-existent Note', [], '00000099');
+            expect(note.removeDescendant(nonExistentNote)).toBe(false);
+            expect(note.hasDescendant(nonExistentNote)).toBe(false);
         });
     });
 });

@@ -64,7 +64,7 @@ async function setWindowSize() {
     if (isMaximized) {
         await window.windowAPI.unmaximizeWindow();
     }
-    await window.windowAPI.changeWindowSize(800, 600);
+    await window.windowAPI.changeWindowSize(600, 800);
     await window.windowAPI.setResizable(false);
 }
 

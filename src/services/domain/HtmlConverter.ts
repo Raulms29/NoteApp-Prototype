@@ -7,10 +7,8 @@ export default class HtmlConverter {
         <html>
         <head>
             <meta charset="UTF-8">
-            <title> ${title}</title>
-            <style>
-                ${styles || ''}
-            </style>
+            <title>${title}</title>
+            <style>${styles || ''}</style>
         </head>
         <body>
         <article class="note">

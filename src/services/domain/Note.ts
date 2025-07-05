@@ -24,7 +24,7 @@ export class Note {
     constructor(name: string, children: Note[] = [], id: string = Math.random().toString(36).substring(2, 10), createdAt: Date = new Date()) {
         this.id = id;
         this.name = name;
-        this._children = children ?? [];
+        this._children = children;
         this._createdAt = createdAt;
     }
 

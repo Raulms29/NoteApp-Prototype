@@ -17,6 +17,7 @@
     "semi": [
       "warn",
       "always"
-    ]
+    ],
+    "import/no-named-as-default": "off"
   }
 }

@@ -69,8 +69,8 @@ contextBridge.exposeInMainWorld('settingsAPI', {
 });
 
 contextBridge.exposeInMainWorld('exportAPI', {
-    exportAsPDF: (htmlContent: string, fileName: string) =>
-        ipcRenderer.invoke('export-as-pdf', htmlContent, fileName),
+    exportAsPDF: (tempHTMLFilePath: string, fileName: string) =>
+        ipcRenderer.invoke('export-as-pdf', tempHTMLFilePath, fileName),
 });
 
 console.log('Preload script loaded successfully');

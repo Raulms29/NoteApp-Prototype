@@ -56,7 +56,7 @@ function exportAsMarkdown() {
 
 function exportAsHTML() {
     const currentNote = notesStore.currentNote;
-    exportService.exportNoteAsHtml(props.editor, currentNote.name, workspaceStore.currentWorkspace);
+    exportService.exportNoteAsHTML(props.editor, currentNote.name, workspaceStore.currentWorkspace);
 }
 
 function exportAsPDF() {

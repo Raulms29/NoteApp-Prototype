@@ -1,6 +1,6 @@
 import { Editor, JSONContent } from '@tiptap/vue-3';
 import JSZip from 'jszip';
-import { downloadFile, getFilenameFromPath, joinPaths, readBinaryFile, fileExists, getExtensionFromPath, writeFile, getTempDir } from '../utils/fileUtils';
+import { downloadFile, getFilenameFromPath, joinPaths, readBinaryFile, fileExists, getExtensionFromPath, writeFile, getTempDir, exportAsPDF } from '../utils/fileUtils';
 import { Workspace } from './domain/Workspace';
 import HtmlConverter from './domain/HtmlConverter';
 import { Buffer } from 'buffer';
@@ -46,10 +46,9 @@ export default class ExportService {
     downloadFile(content, `${noteName}.zip`);
   }
 
-  async exportNoteAsHtml(editor: Editor, noteName: string, currentWorkspace: Workspace): Promise<void> {
+  async exportNoteAsHTML(editor: Editor, noteName: string, currentWorkspace: Workspace): Promise<void> {
     let htmlContent = editor.getHTML();
     htmlContent = HtmlConverter.convertToHtml(htmlContent, noteName, exportCss);
-
     const zip = new JSZip();
     zip.file(`${noteName}.html`, htmlContent);
     // Recursively process all nodes
@@ -71,7 +70,7 @@ export default class ExportService {
     const tempFilePath = await joinPaths(tempDir, `${noteName}-${Date.now()}.html`);
     await writeFile(tempFilePath, htmlContent);
 
-    await window.exportAPI.exportAsPDF(tempFilePath, noteName);
+    await exportAsPDF(tempFilePath, noteName);
   }
 
   private async lookForFiles(node: JSONContent, zip: JSZip, currentWorkspace: Workspace): Promise<void> {

@@ -129,6 +129,15 @@ export const downloadFile = (content: Blob, fileName: string): void => {
     URL.revokeObjectURL(url);
 };
 
+export const exportAsPDF = async (tempHTMLFilePath: string, fileName: string): Promise<void> => {
+    try {
+        await window.exportAPI.exportAsPDF(tempHTMLFilePath, fileName);
+    } catch (error) {
+        throw new Error(`Failed to export as PDF: ${error instanceof Error ? error.message :
+            'Unknown error'}`);
+    }
+};
+
 export const getTempDir = async (): Promise<string> => {
     try {
         return await window.fileAPI.getTempDir();

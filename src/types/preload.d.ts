@@ -42,7 +42,7 @@ declare global {
             updateSetting: <K extends keyof Settings>(key: K, value: Settings[K]) => Promise<void>;
         },
         exportAPI: {
-            exportAsPDF(htmlContent: string, fileName: string): Promise<void>;
+            exportAsPDF(tempHTMLFilePath: string, fileName: string): Promise<void>;
         }
     }
 }

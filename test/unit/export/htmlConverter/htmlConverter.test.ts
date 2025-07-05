@@ -1,4 +1,4 @@
-import HtmlConverter from '../../../src/services/domain/HtmlConverter';
+import HtmlConverter from '../../../../src/services/domain/HtmlConverter';
 
 describe('HtmlConverter', () => {
     it('should generate valid HTML with title and content', () => {

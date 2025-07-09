@@ -31,6 +31,9 @@ export const useWorkspaceStore = defineStore('workspace', () => {
 
     function selectWorkspace(id: string) {
         const ws = workspaces.value.find(ws => ws.id === id) ?? null;
+        if (!ws) {
+            throw new Error(`Workspace with id ${id} not found`);
+        }
         currentWorkspace.value = ws;
         setWorkspaceRoot(ws.path);
         notesStore.init(ws);
@@ -45,12 +48,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     }
 
     async function persistWorkspaces() {
-        try {
-            await repo.saveWorkspaces(workspaces.value);
-        }
-        catch (error) {
-            throw new Error(`Failed to persist workspaces: ${error}`);
-        }
+        await repo.saveWorkspaces(workspaces.value);
     }
 
     function validateWorkspace(name: string, path: string): void {

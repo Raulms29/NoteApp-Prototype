@@ -10,8 +10,11 @@
             <div v-if="open" class="absolute z-10 mt-1 bg-white border rounded shadow-lg py-1 dropdown-container">
                 <!-- Form -->
                 <form class="flex items-center gap-2 pr-1 pl-1">
-                    <label class="flex items-center gap-2 p-2 rounded-lg bg-neutral-100 dark:bg-neutral-900 cursor-text"
-                        for="link-input">
+                    <label
+                        for="link-input"
+                        class="flex items-center gap-2 p-2 rounded-lg bg-neutral-100 dark:bg-neutral-900 cursor-text"
+                    >
+                        <span class="sr-only">URL</span>
                         <input id="link-input" name="link-input"
                             class="flex-1 bg-transparent outline-none min-w-[12rem] text-black text-sm dark:text-white"
                             placeholder="Enter URL" type="url" v-model="url" />

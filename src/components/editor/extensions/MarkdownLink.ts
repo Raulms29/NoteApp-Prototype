@@ -1,6 +1,6 @@
 import { Mark, mergeAttributes, InputRule, PasteRule } from '@tiptap/core';
 import { Plugin } from '@tiptap/pm/state';
-import { TextSelection } from 'prosemirror-state';
+import { EditorState as PMEditorState, TextSelection } from 'prosemirror-state';
 import '@tiptap/extension-link';
 import { isAllowedUri } from '../../../utils/urlUtils';
 
@@ -10,6 +10,27 @@ import { isAllowedUri } from '../../../utils/urlUtils';
  */
 const markdownLinkRegex = /\[([^\]]+)]\((https?:\/\/[^\s()]+(?:\([^\s()]*\)[^\s()]*)*)\)/g;
 
+/**
+ * Handler for markdown link input/paste rules with proper types.
+ */
+function handleMarkdownLink({ match, state, range }: {
+    match: RegExpMatchArray,
+    state: PMEditorState,
+    range: { from: number; to: number; }
+}) {
+    const [, text, href] = match;
+    const { tr } = state;
+    const markType = state.schema.marks.link;
+    const mark = markType.create({ href });
+    tr.replaceWith(
+        range.from,
+        range.to,
+        state.schema.text(text, [mark])
+    );
+    const newPos = range.from + text.length;
+    tr.setSelection(TextSelection.create(tr.doc, newPos));
+    state.apply(tr);
+}
 
 export const MarkdownLink = Mark.create({
     name: 'link',
@@ -148,28 +169,7 @@ export const MarkdownLink = Mark.create({
         return [
             new InputRule({
                 find: markdownLinkRegex,
-                handler: ({ match, state, range }) => {
-                    const [, text, href] = match;
-
-                    const { tr } = state;
-                    const mark = this.type.create({ href });
-
-                    // Replace the matched text with a new text node and apply the mark
-                    tr.replaceWith(
-                        range.from,
-                        range.to,
-                        state.schema.text(text, [mark])
-                    );
-
-                    // Calculate the new position after the replacement
-                    const newPos = range.from + text.length;
-
-                    // Set the selection after the inserted link
-                    tr.setSelection(TextSelection.create(tr.doc, newPos));
-
-                    // Dispatch the transaction
-                    state.apply(tr);
-                },
+                handler: handleMarkdownLink,
             }),
         ];
     },
@@ -182,28 +182,7 @@ export const MarkdownLink = Mark.create({
         return [
             new PasteRule({
                 find: markdownLinkRegex,
-                handler: ({ match, state, range }) => {
-                    const [, text, href] = match;
-
-                    const { tr } = state;
-                    const mark = this.type.create({ href });
-
-                    // Replace the matched text with a new text node and apply the mark
-                    tr.replaceWith(
-                        range.from,
-                        range.to,
-                        state.schema.text(text, [mark])
-                    );
-
-                    // Calculate the new position after the replacement
-                    const newPos = range.from + text.length;
-
-                    // Set the selection after the inserted link
-                    tr.setSelection(TextSelection.create(tr.doc, newPos));
-
-                    // Dispatch the transaction
-                    state.apply(tr);
-                },
+                handler: handleMarkdownLink,
             }),
         ];
     },

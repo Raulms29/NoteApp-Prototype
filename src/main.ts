@@ -159,8 +159,9 @@ if (!gotTheLock) {
         !details.url.startsWith('mfp://') &&
         !details.url.startsWith('data:text/html')
       ) {
-        // Extract the path starting from '/.files/' (including .files)
-        const match = details.url.match(/(\/\.files\/[^?&#]*)/);
+        // Extract the path starting from '/.files/' (including .files) using RegExp.exec()
+        const regex = /(\/\.files\/[^?&#]*)/;
+        const match = regex.exec(details.url);
         const filePart = match ? match[1] : '';
         const redirectURL = `mfp:///${workspaceRoot.replace(/\\/g, '/')}${filePart}`;
         callback({ redirectURL });

@@ -23,11 +23,13 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Run Unit Tests
-      run: npm run test -- --run
+    - name: Run Unit Tests with Coverage
+      run: npx vitest run --coverage
 
-    - name: Run Component Tests
-      run: npm run test:component -- --run
+    - name: Analyze with SonarQube
+      uses: SonarSource/sonarqube-scan-action@v5
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   e2e:
     needs: [unit-and-component-tests]

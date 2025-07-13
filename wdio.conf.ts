@@ -6,7 +6,7 @@ export const config: WebdriverIO.Config = {
     // ====================
     // WebdriverIO supports running e2e tests as well as unit and component tests.
     runner: 'local',
-    tsConfigPath: './test/tsconfig.json',
+    tsConfigPath: './tsconfig.json',
 
     //
     // ==================
@@ -300,4 +300,4 @@ export const config: WebdriverIO.Config = {
     */
     // afterAssertion: function(params) {
     // }
-}
+};

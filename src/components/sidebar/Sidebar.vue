@@ -27,6 +27,7 @@ import { useNotesStore } from '../../stores/useNotesStore'
 import { Note } from '../../services/domain/Note'
 import ChevronRight from 'icons/ChevronRight.vue'
 import Delete from 'icons/Delete.vue'
+import FilePlusOutline from 'icons/FilePlusOutline.vue';
 import DotsHorizontal from 'icons/DotsHorizontal.vue'
 
 const store = useNotesStore()
@@ -80,6 +81,11 @@ function noteToTreeOption(note: Note): TreeOption {
 
 function getMenuOptions(option: TreeOption) {
     return [
+        {
+            label: 'New Note',
+            key: 'new',
+            icon: getNIcon(FilePlusOutline),
+        },
         {
             label: 'Delete',
             key: 'delete',
@@ -147,6 +153,9 @@ function handleMenuSelect(option: TreeOption) {
         if (key === 'delete' && option.rawNote) {
             store.deleteNote(option.rawNote as Note)
         }
+        if (key === 'new' && option.rawNote) {
+            store.createNote(undefined, option.rawNote as Note);
+        }
     }
 }
 
@@ -174,7 +183,7 @@ function renderLabel({ option }: { option: TreeOption }) {
             h('span', { class: 'truncate' }, typeof option.label === 'string' && option.label.length > 0 ? option.label : 'Untitled'),
             h(NDropdown, {
                 options: getMenuOptions(option),
-                trigger: 'click',
+                trigger: 'hover',
                 onSelect: handleMenuSelect(option),
                 placement: 'bottom-end',
                 onClick: (e: MouseEvent) => e.stopPropagation()

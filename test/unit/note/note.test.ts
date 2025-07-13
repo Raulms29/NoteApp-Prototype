@@ -2,6 +2,10 @@ import { Note } from '../../../src/services/domain/Note';
 
 describe('GIVEN a Note', () => {
     describe('WHEN it has no children', () => {
+        it('THEN hasChildren returns false', () => {
+            const note = new Note('Test Note', [], '00000001');
+            expect(note.hasChildren()).toBe(false);
+        });
         it('THEN initializes with an 8-char ID', () => {
             const note = new Note('Test Note', [], '00000001');
 
@@ -89,6 +93,9 @@ describe('GIVEN a Note', () => {
             note = new Note('Parent Note', [childNote], '00000001');
         });
 
+        it('THEN hasChildren returns true', () => {
+            expect(note.hasChildren()).toBe(true);
+        });
         it('THEN initializes with 1 child', () => {
             expect(note.id).toBe('00000001');
             expect(note.name).toBe('Parent Note');

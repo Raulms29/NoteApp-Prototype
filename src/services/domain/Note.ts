@@ -195,4 +195,8 @@ export class Note {
         }
         return descendants;
     }
+
+    hasChildren(): boolean {
+        return this._children.length > 0;
+    }
 }

@@ -19,7 +19,19 @@
                 <span class="note-name-underline" :class="{ active: isFocused }"></span>
             </div>
 
-            <Editor ref="editor" @note-change="handleNoteChange" @note-content-update="handleNoteContentChange" />
+            <div>
+                <NoteChildrenSmall
+                    v-if="notesStore.currentNote && notesStore.currentNote.hasChildren() && notesStore.currentNote.children.length > 5"
+                    :notes="notesStore.currentNote.children as Note[]"
+                    @select="notesStore.selectNote($event as Note)" />
+
+                <NoteChildrenBig
+                    v-if="notesStore.currentNote && notesStore.currentNote.hasChildren() && notesStore.currentNote.children.length <= 5"
+                    :notes="notesStore.currentNote.children as Note[]"
+                    @select="notesStore.selectNote($event as Note)" />
+
+                <Editor ref="editor" @note-change="handleNoteChange" @note-content-update="handleNoteContentChange" />
+            </div>
         </div>
     </div>
 </template>
@@ -83,6 +95,7 @@ function toggleFocusMode() {
 }
 
 import '../../styles/editor.css';
+import NoteChildrenBig from './note-children/NoteChildrenBig.vue';
 </script>
 
 <style scoped>
@@ -177,5 +190,34 @@ import '../../styles/editor.css';
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+.note-children {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    margin: 1rem;
+}
+
+.note-child {
+    background: var(--background-color);
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    min-width: 120px;
+    min-height: 48px;
+    border-radius: 8px;
+    flex-direction: column;
+}
+
+.note-child:hover {
+    background: var(--background-hover, #f3f3f3);
+}
+
+.note-child-icon {
+    width: 50%;
+    height: auto;
+    margin-bottom: 0.5rem;
 }
 </style>

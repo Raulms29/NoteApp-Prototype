@@ -9,7 +9,7 @@
     "package": "electron-forge package",
     "make": "echo Creating Installer... 💻 && electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "eslint --ext .ts,.tsx .",
+    "lint": "eslint --ext .ts .",
     "clean": "echo Removing files... 🫧 && rimraf .vite node_modules out coverage && echo All clean now!",
     "clean-linux": "echo Removing files... 🫧 && rm -rf .vite && rm -rf node_modules && rm -rf out && rm -rf coverage && echo All clean now!",
     "setup": "echo Installing dependencies... 🛠️ && npm ci",

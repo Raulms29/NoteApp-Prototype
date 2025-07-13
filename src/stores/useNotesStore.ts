@@ -133,10 +133,8 @@ export const useNotesStore = defineStore('notes', () => {
 
         if (parentTree != null) {
             parentTree.addChild(newNote);
-            console.log(`Creating note "${newNote.name}" under parent "${parent.name}".`);
         }
         else {
-            console.log(`Creating note "${newNote.name}" at root level.`);
             notes.value.push(newNote);
         }
 

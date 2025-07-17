@@ -1,4 +1,5 @@
 <template>
+    <LoadingOverlay v-if="editor && editor.isLoading"></LoadingOverlay>
     <div class="editor-wrapper">
         <div class="options">
             <button class="focus-mode-icon-btn" @click.stop="toggleFocusMode" v-if="notesStore.currentNote"
@@ -20,15 +21,10 @@
             </div>
 
             <div>
-                <NoteChildrenSmall
-                    v-if="notesStore.currentNote && notesStore.currentNote.hasChildren() && notesStore.currentNote.children.length > 5"
-                    :notes="notesStore.currentNote.children as Note[]"
-                    @select="notesStore.selectNote($event as Note)" />
-
-                <NoteChildrenBig
-                    v-if="notesStore.currentNote && notesStore.currentNote.hasChildren() && notesStore.currentNote.children.length <= 5"
-                    :notes="notesStore.currentNote.children as Note[]"
-                    @select="notesStore.selectNote($event as Note)" />
+                <NoteChildren v-if="notesStore.currentNote && notesStore.currentNote.hasChildren()"
+                    :notes="notesStore.currentNote.children as Note[]" @select="notesStore.selectNote($event as Note)"
+                    @delete="notesStore.deleteNote($event as Note)"
+                    @create="notesStore.createNote(undefined, $event as Note)" />
 
                 <Editor ref="editor" @note-change="handleNoteChange" @note-content-update="handleNoteContentChange" />
             </div>
@@ -95,7 +91,7 @@ function toggleFocusMode() {
 }
 
 import '../../styles/editor.css';
-import NoteChildrenBig from './note-children/NoteChildrenBig.vue';
+import NoteChildren from './note-children/NoteChildren.vue';
 </script>
 
 <style scoped>

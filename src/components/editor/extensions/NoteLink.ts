@@ -4,6 +4,10 @@ import { Plugin } from '@tiptap/pm/state';
 import { EditorState, TextSelection } from 'prosemirror-state';
 import { Note } from '../../../services/domain/Note';
 
+import type { MarkdownSerializerState } from 'prosemirror-markdown';
+import { Mark as ProseMark } from 'prosemirror-model';
+
+
 const nonExistingId = '_______NonExistingID_______';
 
 // Regex to match [[NoteName]]
@@ -11,6 +15,24 @@ const noteLinkRegex = /\[\[([^\]]{1,32})\]\]/g;
 
 export const NoteLink = Mark.create({
     name: 'noteLink',
+
+    addStorage() {
+        return {
+            markdown: {
+                serialize: {
+                    open() {
+                        return '![';
+                    },
+                    close(_: MarkdownSerializerState, mark: ProseMark) {
+                        const note = this.options.getNoteFromId(mark.attrs.noteId);
+                        const noteName = mark.attrs.text || '';
+                        return `${noteName}](<${note.name}.md>)`;
+                    }
+                },
+                parse: {}
+            }
+        };
+    },
 
     addOptions() {
         return {
@@ -58,14 +80,15 @@ export const NoteLink = Mark.create({
     parseHTML() {
         return [
             {
-                tag: 'span[data-note-id][data-note-name]',
+                tag: 'a[data-note-id][data-note-name]',
             },
         ];
     },
 
     renderHTML({ HTMLAttributes }) {
+        // Compose href for markdown detection, e.g. :noteId or #noteId
         return [
-            'span',
+            'a',
             mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
             0
         ];

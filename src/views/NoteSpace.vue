@@ -18,7 +18,7 @@
             </pane>
         </splitpanes>
     </div>
-    <div v-else class="focus-mode-editor-pane">
+    <div v-else class="focus-mode-editor-pane" id="editorPane">
         <EditorView />
     </div>
 </template>

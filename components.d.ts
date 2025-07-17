@@ -10,6 +10,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     AddLinkDialog: typeof import('./src/components/editor/bubble-menu/AddLinkDialog.vue')['default']
     BubbleMenu: typeof import('./src/components/editor/bubble-menu/BubbleMenu.vue')['default']
+    ChildrenOptions: typeof import('./src/components/editor/note-children/ChildrenOptions.vue')['default']
     Editor: typeof import('./src/components/editor/Editor.vue')['default']
     EditorOptions: typeof import('./src/components/editor/EditorOptions.vue')['default']
     EditorView: typeof import('./src/components/editor/EditorView.vue')['default']
@@ -19,6 +20,7 @@ declare module 'vue' {
     GenericErrorMessage: typeof import('./src/components/generic/GenericErrorMessage.vue')['default']
     LoadingOverlay: typeof import('./src/components/loading/LoadingOverlay.vue')['default']
     NewWorkspaceCard: typeof import('./src/components/workspace/NewWorkspaceCard.vue')['default']
+    NoteChildren: typeof import('./src/components/editor/note-children/NoteChildren.vue')['default']
     NoteChildrenBig: typeof import('./src/components/editor/note-children/NoteChildrenBig.vue')['default']
     NoteChildrenSmall: typeof import('./src/components/editor/note-children/NoteChildrenSmall.vue')['default']
     RemoveDialog: typeof import('./src/components/workspace/dialog/RemoveDialog.vue')['default']

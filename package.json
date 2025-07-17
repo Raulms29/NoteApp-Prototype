@@ -98,6 +98,7 @@
     "tiptap-markdown": "^0.8.10",
     "vue": "^3.4.19",
     "vue-material-design-icons": "^5.3.1",
-    "vue-router": "^4.5.1"
+    "vue-router": "^4.5.1",
+    "prosemirror-markdown": "^1.11.1"
   }
 }

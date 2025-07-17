@@ -1,20 +1,27 @@
 <template>
     <div class="note-children">
-        <div v-for="note in notes" :key="note.id" class="note-child text-center" @click="$emit('select', note)">
-            <img v-if="note.hasChildren()" src="../../../assets/icons/note-children.svg" alt="Note child icon"
-                class="note-child-icon" />
-            <img v-else src="../../../assets/icons/note-no-children.svg" alt="Note icon" class="note-child-icon" />
+        <div v-for="note in notes" :key="note.id" class="note-child" @click="$emit('select', note)">
+            <div class="note-child-img-container">
+                <div class="note-child-top-bar">
+                    <ChildrenOptions @create="$emit('create', note)" @delete="$emit('delete', note)" />
+                </div>
+                <img v-if="note.hasChildren()" src="../../../assets/icons/note-children.svg" alt="Note child icon"
+                    class="note-child-icon" />
+                <img v-else src="../../../assets/icons/note-no-children.svg" alt="Note icon" class="note-child-icon" />
+            </div>
             <p class="text-lg text-gray-700 dark:text-gray-300 text-center w-full">
                 {{ note.name }}
             </p>
         </div>
+
     </div>
+
 </template>
 
 <script lang="ts" setup>
 import { Note } from '../../../services/domain/Note';
 defineProps<{ notes: Note[] }>();
-const emit = defineEmits(['select']);
+const emit = defineEmits(['select', 'create', 'delete']);
 </script>
 
 <style scoped>
@@ -45,5 +52,27 @@ const emit = defineEmits(['select']);
     width: 50%;
     height: auto;
     margin-bottom: 0.5rem;
+}
+
+.note-child-img-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.note-child-top-bar {
+    position: absolute;
+    margin-right: 0.25rem;
+    margin-top: 0.25rem;
+    padding: 0;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    pointer-events: auto;
 }
 </style>

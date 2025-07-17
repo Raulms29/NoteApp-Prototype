@@ -5,15 +5,21 @@
                 <img v-if="note.hasChildren()" src="../../../assets/icons/note-children.svg" alt="Note child icon" />
                 <img v-else src="../../../assets/icons/note-no-children.svg" alt="Note icon" />
             </span>
-            <span class="note-child-name-small">{{ note.name }}</span>
+            <p class="note-child-name-small">{{ note.name }}</p>
+            <span class="note-child-options-small">
+                <ChildrenOptions @create="$emit('create', note)" @delete="$emit('delete', note)"
+                    :icon="DotsHorizontal" />
+            </span>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { Note } from '../../../services/domain/Note';
+import ChildrenOptions from './ChildrenOptions.vue';
+import DotsHorizontal from 'icons/DotsHorizontal.vue';
 defineProps<{ notes: Note[] }>();
-const emit = defineEmits(['select']);
+const emit = defineEmits(['select', 'create', 'delete']);
 </script>
 
 <style scoped>
@@ -32,6 +38,8 @@ const emit = defineEmits(['select']);
     cursor: pointer;
     transition: background 0.2s;
     background: var(--background-color);
+    position: relative;
+    gap: 0.5rem;
 }
 
 .note-child-small:hover {
@@ -58,5 +66,12 @@ const emit = defineEmits(['select']);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.note-child-options-small {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    height: 100%;
 }
 </style>

@@ -1,9 +1,12 @@
 <template>
-    <editor-content v-if="editor" :editor="editor as any" />
-    <BubbleMenu v-if="editor" :editor="editor as any" @image-upload="handleImageUpload" @pdf-upload="handlePdfUpload" />
-    <div class="editor-info" v-if="editor">
-        <span>{{ editor.storage?.characterCount?.words() || 0 }} words</span>
-        <span>{{ editor.storage?.characterCount?.characters() || 0 }} characters</span>
+    <div style="position: relative; min-height: 200px;">
+        <editor-content :editor="editor as any" />
+        <BubbleMenu v-if="editor" :editor="editor as any" @image-upload="handleImageUpload"
+            @pdf-upload="handlePdfUpload" />
+        <div class="editor-info" v-if="editor">
+            <span>{{ editor.storage?.characterCount?.words() || 0 }} words</span>
+            <span>{{ editor.storage?.characterCount?.characters() || 0 }} characters</span>
+        </div>
     </div>
 </template>
 
@@ -12,13 +15,15 @@ import { ref, watch, onBeforeMount, onBeforeUnmount } from 'vue';
 import { useNotesStore } from '../../stores/useNotesStore';
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import { Note } from '../../services/domain/Note';
-import BubbleMenu from './bubble-menu/BubbleMenu.vue';
 import { createEditor } from './createEditor';
+import { EditorView } from '@tiptap/pm/view';
 
 const emit = defineEmits(['note-change', 'note-content-update']);
 const notesStore = useNotesStore();
 const editor = ref<Editor>(null);
 const currentNote = ref<Note | null>(null);
+const isLoading = ref(false);
+const isBubbleMenuVisible = ref(false);
 
 function emitNoteChange(previousNote: Note, previousNoteContent: string) {
     emit('note-change', previousNote, previousNoteContent);
@@ -44,16 +49,31 @@ async function handlePdfUpload(filePath: string) {
 }
 
 onBeforeMount(() => {
-    editor.value = createEditor(notesStore, emitNoteContentUpdate);
+    editor.value = createEditor(notesStore, emitNoteContentUpdate, {
+        handleKeyDown(view: EditorView, event: KeyboardEvent) {
+            if (event.key === 'Tab') {
+                event.preventDefault();
+                view.dispatch(
+                    view.state.tr.insertText('\t', view.state.selection.from, view.state.selection.to)
+                );
+                return true;
+            }
+        }
+    });
+    isLoading.value = false;
 
+    // Whatch when the current note changes and update the editor content accordingly
     watch(
         () => notesStore.currentNote,
         async (newNote: Note) => {
             if (newNote && editor.value) {
+                isLoading.value = true;
                 const content = editor.value.getHTML();
-                editor.value.commands.setContent(await notesStore.loadCurrentNoteContent());
+                const noteContent = await notesStore.loadCurrentNoteContent();
+                editor.value.commands.setContent(noteContent);
                 emitNoteChange(currentNote.value as Note, content);
                 currentNote.value = newNote;
+                isLoading.value = false;
             }
         },
         { immediate: true }
@@ -66,5 +86,6 @@ onBeforeUnmount(() => {
 
 defineExpose({
     editor,
+    isLoading,
 })
 </script>

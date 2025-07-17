@@ -29,6 +29,7 @@ import ChevronRight from 'icons/ChevronRight.vue'
 import Delete from 'icons/Delete.vue'
 import FilePlusOutline from 'icons/FilePlusOutline.vue';
 import DotsHorizontal from 'icons/DotsHorizontal.vue'
+import { getNIcon } from '../../utils/icons';
 
 const store = useNotesStore()
 
@@ -59,11 +60,6 @@ watch(
     },
     { immediate: true }
 )
-
-// --- Icon helpers ---
-function getNIcon(icon: any) {
-    return () => h(NIcon, null, { default: () => h(icon) })
-}
 
 // --- Tree option helpers ---
 function noteToTreeOption(note: Note): TreeOption {
@@ -192,10 +188,12 @@ function renderLabel({ option }: { option: TreeOption }) {
                     h(
                         NButton,
                         {
-                            class: 'sidebar-action-btn',
+                            class: 'note-options-trigger-btn sidebar-action-btn',
                             size: 'tiny',
                             quaternary: true,
-                            style: 'margin-left: 8px;',
+                            style: `margin-left: 8px;
+                            --n-color-hover: var(--primary-color, #007bff);;
+                            --n-text-color-hover: white;`,
                             onClick: (e: MouseEvent) => e.stopPropagation()
                         },
                         { default: getNIcon(DotsHorizontal) }

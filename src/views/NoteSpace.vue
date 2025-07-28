@@ -1,7 +1,7 @@
 <template>
     <div v-if="!settingsStore.settings.focusMode" class="note-space-container">
         <splitpanes class="split-theme">
-            <pane min-size="12.5" max-size="50" size="14.5">
+            <pane :min-size="paneMinSize" max-size="50" size="14.5">
                 <div class="flex-1 truncate pl-3 text-xl font-bold workspace-title select-none m-1">
                     <VectorTriangle class="mr-2" />
                     {{ workspaceStore.currentWorkspace?.name }}
@@ -30,9 +30,33 @@ import { Splitpanes, Pane } from 'splitpanes';
 import { useWorkspaceStore } from '../stores/useWorkspaceStore';
 import { useSettingsStore } from '../stores/useSettingsStore';
 import VectorTriangle from 'icons/VectorTriangle.vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 
 const workspaceStore = useWorkspaceStore();
 const settingsStore = useSettingsStore();
+
+
+const smallScreenPaneMinSize = 20;
+const largeScreenPaneMinSize = 12.5;
+const paneMinSize = ref(largeScreenPaneMinSize);
+
+function updateMinSize() {
+    if (window.innerWidth < 1200) {
+        paneMinSize.value = smallScreenPaneMinSize;
+    } else {
+        paneMinSize.value = largeScreenPaneMinSize;
+    }
+}
+
+onMounted(() => {
+    updateMinSize();
+    window.addEventListener('resize', updateMinSize);
+});
+
+onUnmounted(() => {
+    window.removeEventListener('resize', updateMinSize);
+});
+
 </script>
 
 <style scoped>
@@ -58,6 +82,8 @@ const settingsStore = useSettingsStore();
 .sidebar-pane {
     background-color: var(--background-color);
     height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar-separator {

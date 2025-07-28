@@ -12,6 +12,15 @@
         </div>
 
         <div class="editor-container" v-if="notesStore.currentNote">
+            <div class="breadcrumb">
+                <n-breadcrumb>
+                    <n-breadcrumb-item v-for="(item) in notesStore.getNoteBreadcrumb(notesStore.currentNote as Note)"
+                        @click="notesStore.selectNote(item)">
+                        {{ item.name }}
+                    </n-breadcrumb-item>
+                </n-breadcrumb>
+            </div>
+
             <div class="note-name">
                 <GenericErrorMessage v-if="renameError" :message="renameError" />
 
@@ -23,8 +32,7 @@
             <div>
                 <NoteChildren v-if="notesStore.currentNote && notesStore.currentNote.hasChildren()"
                     :notes="notesStore.currentNote.children as Note[]" @select="notesStore.selectNote($event as Note)"
-                    @delete="notesStore.deleteNote($event as Note)"
-                    @create="notesStore.createNote(undefined, $event as Note)" />
+                    @delete="notesStore.deleteNote($event as Note)" @create="handleCreateNote($event as Note)" />
 
                 <Editor ref="editor" @note-change="handleNoteChange" @note-content-update="handleNoteContentChange" />
             </div>
@@ -88,6 +96,11 @@ function handleNoteContentChange(content: string) {
 
 function toggleFocusMode() {
     settingsStore.updateSetting('focusMode', !settingsStore.settings.focusMode);
+}
+
+async function handleCreateNote(note: Note) {
+    const createdNote = await notesStore.createNote(undefined, note);
+    notesStore.selectNote(createdNote);
 }
 
 import '../../styles/editor.css';
@@ -215,5 +228,10 @@ import NoteChildren from './note-children/NoteChildren.vue';
     width: 50%;
     height: auto;
     margin-bottom: 0.5rem;
+}
+
+.breadcrumb {
+    display: flex;
+    justify-content: center;
 }
 </style>

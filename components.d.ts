@@ -30,6 +30,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     Sidebar: typeof import('./src/components/sidebar/Sidebar.vue')['default']
     SidebarButtons: typeof import('./src/components/sidebar/SidebarButtons.vue')['default']
+    SidebarSettings: typeof import('./src/components/sidebar/settings/SidebarSettings.vue')['default']
     Spinner: typeof import('./src/components/loading/Spinner.vue')['default']
     WorkspaceCard: typeof import('./src/components/workspace/WorkspaceCard.vue')['default']
     WorkspaceMenuItem: typeof import('./src/components/workspace/WorkspaceMenuItem.vue')['default']

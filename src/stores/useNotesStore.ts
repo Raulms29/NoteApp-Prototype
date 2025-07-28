@@ -179,6 +179,18 @@ export const useNotesStore = defineStore('notes', () => {
         return [filePathC, fileName];
     }
 
+    function getNoteBreadcrumb(note: Note): Note[] {
+        if (!note) {
+            throw new Error('No note provided to get breadcrumb for.');
+        }
+        const path: Note[] = [];
+        if (!notes.value || !findBreadCrumb(notes.value, note.id, path)) {
+            throw new Error('Note not found in the note tree.');
+        }
+
+        return path;
+    }
+
     // --- PRIVATE/HELPER FUNCTIONS ---
     function removeNoteFromTree(noteToDelete: Note): boolean {
         let removed = false;
@@ -238,6 +250,22 @@ export const useNotesStore = defineStore('notes', () => {
         return cleanedPath;
     }
 
+    function findBreadCrumb(currentNotes: Note[], targetId: string, path: Note[]): boolean {
+        for (const n of currentNotes) {
+            path.push(n);
+            if (n.id === targetId) {
+                return true;
+            }
+            if (n.children && n.children.length > 0) {
+                if (findBreadCrumb(n.children, targetId, path)) {
+                    return true;
+                }
+            }
+            path.pop();
+        }
+        return false;
+    }
+
     return {
         noteTree: notes,
         currentNote,
@@ -257,5 +285,6 @@ export const useNotesStore = defineStore('notes', () => {
         getNoteById,
         saveImage,
         savePDF,
+        getNoteBreadcrumb
     };
 });

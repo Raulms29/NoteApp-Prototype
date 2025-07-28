@@ -16,7 +16,10 @@
                 :pattern="pattern" :selected-keys="selectedKeys" :show-irrelevant-nodes="false"
                 style="--n-drop-mark-color: #1976d2;" />
         </div>
+        <SidebarSettings />
     </div>
+
+
 </template>
 
 <script lang="ts" setup>
@@ -246,10 +249,11 @@ function toggleSearch() {
 }
 
 .sidebar-tree-scroll {
-    flex: 1 1 0%;
-    min-height: 0;
+    flex: 1 1 auto;
     overflow-y: auto;
-    max-height: 90vh;
+    max-height: 88vh;
+    min-height: 0;
+    height: 88vh;
 }
 
 ::v-deep(.n-tree-node) {
@@ -326,5 +330,65 @@ function toggleSearch() {
     top: 0;
     right: 0;
     z-index: 1;
+}
+
+@media (max-height: 950px) {
+    .sidebar-tree-scroll {
+        height: 86.5vh;
+    }
+}
+
+@media (max-height: 900px) {
+    .sidebar-tree-scroll {
+        height: 86.5vh;
+    }
+}
+
+@media (max-height: 850px) {
+    .sidebar-tree-scroll {
+        height: 85.5vh;
+    }
+}
+
+@media (max-height: 800px) {
+    .sidebar-tree-scroll {
+        height: 83.5vh;
+    }
+}
+
+@media (max-height: 750px) {
+    .sidebar-tree-scroll {
+        height: 81.5vh;
+    }
+}
+
+@media (max-height: 700px) {
+    .sidebar-tree-scroll {
+        height: 79.5vh;
+    }
+}
+
+@media (max-height: 650px) {
+    .sidebar-tree-scroll {
+        height: 78.5vh;
+    }
+}
+
+@media (max-height: 600px) {
+    .sidebar-tree-scroll {
+        height: 78.5vh;
+    }
+}
+
+@media (max-height: 550px) {
+    .sidebar-tree-scroll {
+        height: 74.5vh;
+    }
+}
+
+@media (max-height: 500px) {
+    .sidebar-tree-scroll {
+        height: 72.5vh;
+    }
 }
 </style>

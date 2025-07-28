@@ -104,7 +104,8 @@ if (!gotTheLock) {
     registerSettingsHandlers();
     registerExportHandlers();
     // Register window handlers and create the browser window
-    registerWindowHandlers(createWindow());
+    const mainWindow = createWindow();
+    registerWindowHandlers(mainWindow);
     let workspaceRoot: string | null = null;
 
     ipcMain.handle('set-workspace-root', (_, rootPath: string) => {

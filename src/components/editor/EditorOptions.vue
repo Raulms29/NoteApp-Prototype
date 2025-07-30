@@ -7,20 +7,37 @@
             </button>
         </template>
     </NDropdown>
+    <GenericDialog v-if="showDialog" :title="`Export ${notesStore.currentNote?.name}`"
+        text="Do you want to include subnotes in the export?">
+        <template #actions>
+            <GenericButton variant="primary" @click="exportNotes(true)">Yes</GenericButton>
+            <GenericButton variant="secondary" @click="exportNotes(false)">No</GenericButton>
+            <GenericButton variant="secondary" @click="showDialog = false">Cancel</GenericButton>
+        </template>
+    </GenericDialog>
 </template>
 
 <script lang="ts" setup>
 import { NDropdown } from 'naive-ui';
 import { useNotesStore } from '../../stores/useNotesStore';
 import DotsHorizontal from 'icons/DotsHorizontal.vue';
-import { Editor } from '@tiptap/vue-3';
+import { JSONContent } from '@tiptap/vue-3';
 import ExportService from '../../services/ExportService';
 import { useWorkspaceStore } from '../../stores/useWorkspaceStore';
+import { createEditor } from './createEditor';
+import { Note } from '../../services/domain/Note';
+import { ref } from 'vue';
 
-const props = defineProps<{ editor: Editor }>();
 const notesStore = useNotesStore();
 const workspaceStore = useWorkspaceStore();
 const exportService = new ExportService();
+const showDialog = ref(false);
+
+const tempEditor = createEditor(notesStore, () => { })
+
+const emit = defineEmits(['update:isLoading']);
+
+const currentOption = ref<string | null>(null);
 
 const dropdownOptions = [
     { label: 'Export as Text', key: 'export-text' },
@@ -30,39 +47,143 @@ const dropdownOptions = [
 ];
 
 function handleDropdownSelect(key: string) {
-    if (key === 'export-text') {
-        exportAsText();
-    }
-    if (key === 'export-markdown') {
-        exportAsMarkdown();
-    }
-    if (key === 'export-html') {
-        exportAsHTML();
-    }
-    if (key === 'export-pdf') {
-        exportAsPDF();
+    if (dropdownOptions.some(option => option.key === key)) {
+        showDialog.value = true;
+        currentOption.value = key;
     }
 }
 
-function exportAsText() {
-    const currentNote = notesStore.currentNote;
-    exportService.exportNoteAsText(props.editor, currentNote.name);
+function exportNotes(includeSubnotes: boolean) {
+    showDialog.value = false;
+
+    if (currentOption.value === 'export-text') {
+        wrapWithLoading(exportAsText, includeSubnotes);
+    }
+    if (currentOption.value === 'export-markdown') {
+        wrapWithLoading(exportAsMarkdown, includeSubnotes);
+    }
+    if (currentOption.value === 'export-html') {
+        wrapWithLoading(exportAsHTML, includeSubnotes);
+    }
+    if (currentOption.value === 'export-pdf') {
+        wrapWithLoading(exportAsPDF, includeSubnotes);
+    }
 }
 
-function exportAsMarkdown() {
-    const currentNote = notesStore.currentNote;
-    exportService.exportNoteAsMarkdown(props.editor, currentNote.name, workspaceStore.currentWorkspace);
+async function getNotesContent(notes: Note[]): Promise<string[]> {
+    const notesContent: string[] = [];
+    for (const note of notes) {
+        const content = await notesStore.loadNoteContent(note);
+        notesContent.push(content);
+    }
+    return notesContent;
 }
 
-function exportAsHTML() {
-    const currentNote = notesStore.currentNote;
-    exportService.exportNoteAsHTML(props.editor, currentNote.name, workspaceStore.currentWorkspace);
+function getNotesNames(notes: Note[]): string[] {
+    return notes.map(note => note.name);
 }
 
-function exportAsPDF() {
-    const currentNote = notesStore.currentNote;
-    exportService.exportNoteAsPDF(props.editor, currentNote.name, workspaceStore.currentWorkspace);
+async function exportAsText(includeSubnotes: boolean) {
+    const notes: Note[] = getNotes(includeSubnotes);
+
+    const notesText: string[] = [];
+    const notesNames: string[] = getNotesNames(notes);
+    const notesContent = await getNotesContent(notes);
+
+    for (let i = 0; i < notes.length; i++) {
+        const content = notesContent[i];
+        tempEditor.commands.setContent(content);
+        notesText.push(tempEditor.getText());
+    }
+
+    if (notes.length === 1) {
+        await exportService.exportNoteAsText(notesText[0], notesNames[0]);
+        return;
+    }
+
+    await exportService.exportNotesAsText(notesText, notesNames);
 }
+
+async function exportAsMarkdown(includeSubnotes: boolean) {
+    const notes = getNotes(includeSubnotes);
+
+    const notesMarkdown: string[] = [];
+    const notesJSON: JSONContent[] = [];
+    const notesNames = getNotesNames(notes);
+    const notesContent = await getNotesContent(notes);
+
+    for (let i = 0; i < notes.length; i++) {
+        const content = notesContent[i];
+        tempEditor.commands.setContent(content);
+        notesMarkdown.push(tempEditor.storage.markdown.getMarkdown());
+        notesJSON.push(tempEditor.getJSON());
+    }
+    await exportService.exportNoteAsMarkdown(notesMarkdown, notesNames, notesJSON, workspaceStore.currentWorkspace);
+}
+
+async function exportAsHTML(includeSubnotes: boolean) {
+    const notes: Note[] = getNotes(includeSubnotes);
+
+    const notesHTML: string[] = [];
+    const notesJSON: JSONContent[] = [];
+    const notesNames = getNotesNames(notes);
+    const notesContent = await getNotesContent(notes);
+
+    for (let i = 0; i < notes.length; i++) {
+        const content = notesContent[i];
+        tempEditor.commands.setContent(content);
+        notesHTML.push(tempEditor.getHTML());
+        notesJSON.push(tempEditor.getJSON());
+    }
+
+    await exportService.exportNotesAsHTML(notesHTML, notesNames, notesJSON, workspaceStore.currentWorkspace);
+}
+
+async function exportAsPDF(includeSubnotes: boolean) {
+    const notes: Note[] = getNotes(includeSubnotes);
+    const notesHTML: string[] = [];
+    const notesNames = getNotesNames(notes);
+    const notesContent = await getNotesContent(notes);
+
+    for (let i = 0; i < notes.length; i++) {
+        const content = notesContent[i];
+        tempEditor.commands.setContent(content);
+        notesHTML.push(tempEditor.getHTML());
+    }
+
+    if (notes.length === 1) {
+        await exportService.exportNoteAsPDF(notesHTML[0], notesNames[0], workspaceStore.currentWorkspace);
+        return;
+    }
+
+    await exportService.exportNotesAsPDF(notesHTML, notesNames, workspaceStore.currentWorkspace);
+
+}
+
+
+function emitLoadingState(isLoading: boolean) {
+    emit('update:isLoading', isLoading);
+}
+
+async function wrapWithLoading(fn: (includeSubnotes: boolean) => Promise<void>, includeSubnotes: boolean) {
+    emitLoadingState(true);
+    try {
+        await fn(includeSubnotes);
+    } finally {
+        emitLoadingState(false);
+    }
+}
+
+function getNotes(includeSubnotes: boolean): Note[] {
+    const currentNote: Note = notesStore.currentNote as Note;
+    let notes: Note[] = [currentNote];
+    if (includeSubnotes) {
+        notes.push(...currentNote.getDescendants());
+    }
+    return notes;
+}
+
+
 </script>
 
 <style scoped>

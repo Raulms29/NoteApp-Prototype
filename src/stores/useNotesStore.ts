@@ -51,6 +51,11 @@ export const useNotesStore = defineStore('notes', () => {
         return await repo.readNoteContent(currentNote.value as Note);
     }
 
+    async function loadNoteContent(note: Note): Promise<string> {
+        if (!note) throw new Error('No note provided to load content for.');
+        return await repo.readNoteContent(note);
+    }
+
     async function renameNote(note: Note, newName: string) {
         if (getNoteByName(newName) !== null) {
             throw new Error(`A note with the name "${newName}" already exists.`);
@@ -274,6 +279,7 @@ export const useNotesStore = defineStore('notes', () => {
         selectNote,
         saveNoteContent,
         loadCurrentNoteContent,
+        loadNoteContent,
         createNote,
         renameNote,
         deleteNote,

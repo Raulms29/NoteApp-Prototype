@@ -138,6 +138,14 @@ export const exportAsPDF = async (tempHTMLFilePath: string, fileName: string): P
     }
 };
 
+export const exportAsPDFReturnFile = async (tempHTMLFilePath: string): Promise<Buffer> => {
+    try {
+        return await window.exportAPI.exportAsPDFReturnFile(tempHTMLFilePath);
+    } catch (error) {
+        throw new Error(`Failed to export as PDF and return file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+};
+
 export const getTempDir = async (): Promise<string> => {
     try {
         return await window.fileAPI.getTempDir();

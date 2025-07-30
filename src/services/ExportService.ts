@@ -1,6 +1,6 @@
-import { Editor, JSONContent } from '@tiptap/vue-3';
+import { JSONContent } from '@tiptap/vue-3';
 import JSZip from 'jszip';
-import { downloadFile, getFilenameFromPath, joinPaths, readBinaryFile, fileExists, getExtensionFromPath, writeFile, getTempDir, exportAsPDF } from '../utils/fileUtils';
+import { downloadFile, getFilenameFromPath, joinPaths, readBinaryFile, fileExists, getExtensionFromPath, writeFile, getTempDir, exportAsPDFReturnFile, exportAsPDF } from '../utils/fileUtils';
 import { Workspace } from './domain/Workspace';
 import HtmlConverter from './domain/HtmlConverter';
 import { Buffer } from 'buffer';
@@ -25,52 +25,107 @@ interface PdfType {
 
 export default class ExportService {
 
-  exportNoteAsText(editor: Editor, noteName: string): void {
-    let textContent = editor.getText();
-    // Replace 3+ consecutive newlines with a single newline
-    textContent = textContent.replace(/\n{3,}/g, '\n');
+  async exportNotesAsText(textContent: string[], noteNames: string[]): Promise<void> {
+    textContent = this.processNoteText(textContent);
+
+    if (textContent.length === 1) {
+      const content = new Blob([textContent[0]], { type: 'text/plain' });
+      downloadFile(content, `${noteNames[0]}.txt`);
+    }
+    else {
+      const zip = new JSZip();
+      textContent.forEach((text, index) => {
+        const fileName = `${noteNames[index]}.txt`;
+        zip.file(fileName, text);
+      });
+      const content = await zip.generateAsync({ type: 'blob' });
+      downloadFile(content, `${noteNames[0]}.zip`);
+    }
+  }
+
+  async exportNoteAsText(textContent: string, noteName: string): Promise<void> {
+    textContent = this.processNoteText([textContent])[0];
     const content = new Blob([textContent], { type: 'text/plain' });
     downloadFile(content, `${noteName}.txt`);
   }
 
-  async exportNoteAsMarkdown(editor: Editor, noteName: string, currentWorkspace: Workspace): Promise<void> {
-    const markdownContent = editor.storage.markdown.getMarkdown();
-
+  async exportNoteAsMarkdown(markdownContent: string[], noteNames: string[], markdownJSON: JSONContent[], currentWorkspace: Workspace): Promise<void> {
     const zip = new JSZip();
-    zip.file(`${noteName}.md`, markdownContent);
+    markdownContent.forEach((text, index) => {
+      const fileName = `${noteNames[index]}.md`;
+      zip.file(fileName, text);
+    });
 
     // Recursively process all nodes
-    await this.lookForFiles(editor.getJSON(), zip, currentWorkspace);
+    for (let i = 0; i < markdownContent.length; i++) {
+      const node = markdownJSON[i];
+      await this.lookForFiles(node, zip, currentWorkspace);
+    }
 
     const content = await zip.generateAsync({ type: 'blob' });
-    downloadFile(content, `${noteName}.zip`);
+    downloadFile(content, `${noteNames[0]}.zip`);
   }
 
-  async exportNoteAsHTML(editor: Editor, noteName: string, currentWorkspace: Workspace): Promise<void> {
-    let htmlContent = editor.getHTML();
-    htmlContent = HtmlConverter.convertToHtml(htmlContent, noteName, exportCss);
+  async exportNotesAsHTML(htmlContent: string[], noteNames: string[], htmlJSONs: JSONContent[], currentWorkspace: Workspace): Promise<void> {
     const zip = new JSZip();
-    zip.file(`${noteName}.html`, htmlContent);
+    htmlContent.forEach((html, index) => {
+      const fileName = `${noteNames[index]}.html`;
+      const convertedHtml = HtmlConverter.convertToHtml(html, noteNames[index], exportCss);
+      zip.file(fileName, convertedHtml);
+    });
+
     // Recursively process all nodes
-    await this.lookForFiles(editor.getJSON(), zip, currentWorkspace);
+    for (let i = 0; i < htmlContent.length; i++) {
+      const node = htmlJSONs[i];
+      await this.lookForFiles(node, zip, currentWorkspace);
+    }
 
     const content = await zip.generateAsync({ type: 'blob' });
-    downloadFile(content, `${noteName}.zip`);
+    downloadFile(content, `${noteNames[0]}.zip`);
   }
 
-  async exportNoteAsPDF(editor: Editor, noteName: string, currentWorkspace: Workspace): Promise<void> {
-    let htmlContent = editor.getHTML();
+  async exportNotesAsPDF(htmlContent: string[], noteNames: string[], currentWorkspace: Workspace): Promise<void> {
+    const pdfs: Buffer[] = [];
+    for (let i = 0; i < htmlContent.length; i++) {
+
+      let html = HtmlConverter.convertToHtml(htmlContent[i], noteNames[i], exportCssPDF);
+
+      // Replace images with base64 data URLs
+      html = await this.replaceImagesWithBase64(html, currentWorkspace);
+
+      // Write HTML to a temp file using fileUtils
+      const tempFilePath = await this.writeHTMLToTempDir(html, noteNames[i]);
+
+      pdfs.push(await exportAsPDFReturnFile(tempFilePath));
+    }
+
+    const zip = new JSZip();
+    pdfs.forEach((pdf, index) => {
+      const fileName = `${noteNames[index]}.pdf`;
+      zip.file(fileName, pdf);
+    });
+
+    const content = await zip.generateAsync({ type: 'blob' });
+    downloadFile(content, `${noteNames[0]}.zip`);
+  }
+
+  async exportNoteAsPDF(htmlContent: string, noteName: string, currentWorkspace: Workspace): Promise<void> {
     htmlContent = HtmlConverter.convertToHtml(htmlContent, noteName, exportCssPDF);
 
     // Replace images with base64 data URLs
     htmlContent = await this.replaceImagesWithBase64(htmlContent, currentWorkspace);
 
     // Write HTML to a temp file using fileUtils
+    const tempFilePath = await this.writeHTMLToTempDir(htmlContent, noteName);
+
+    await exportAsPDF(tempFilePath, noteName);
+  }
+
+  async writeHTMLToTempDir(htmlContent: string, noteName: string): Promise<string> {
     const tempDir = await getTempDir();
     const tempFilePath = await joinPaths(tempDir, `${noteName}-${Date.now()}.html`);
     await writeFile(tempFilePath, htmlContent);
-
-    await exportAsPDF(tempFilePath, noteName);
+    return tempFilePath;
   }
 
   private async lookForFiles(node: JSONContent, zip: JSZip, currentWorkspace: Workspace): Promise<void> {
@@ -147,5 +202,13 @@ export default class ExportService {
       }
     }
     return newHtml;
+  }
+
+  private processNoteText(textContent: string[]) {
+    textContent = textContent.map((text) => {
+      // Replace 3+ consecutive newlines with a single newline
+      return text.replace(/\n{3,}/g, '\n');
+    });
+    return textContent;
   }
 }

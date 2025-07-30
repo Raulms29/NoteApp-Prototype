@@ -43,6 +43,7 @@ declare global {
         },
         exportAPI: {
             exportAsPDF(tempHTMLFilePath: string, fileName: string): Promise<void>;
+            exportAsPDFReturnFile(tempHTMLFilePath: string): Promise<Buffer>;
         }
     }
 }

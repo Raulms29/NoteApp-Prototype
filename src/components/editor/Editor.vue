@@ -18,18 +18,19 @@ import { Note } from '../../services/domain/Note';
 import { createEditor } from './createEditor';
 import { EditorView } from '@tiptap/pm/view';
 
-const emit = defineEmits(['note-change', 'note-content-update']);
+const emit = defineEmits(['note-change', 'note-content-update', 'update:isLoading']);
 const notesStore = useNotesStore();
 const editor = ref<Editor>(null);
 const currentNote = ref<Note | null>(null);
-const isLoading = ref(false);
-const isBubbleMenuVisible = ref(false);
-
+const props = defineProps<{ isLoading: boolean }>();
 function emitNoteChange(previousNote: Note, previousNoteContent: string) {
     emit('note-change', previousNote, previousNoteContent);
 }
 function emitNoteContentUpdate() {
     emit('note-content-update', editor.value?.getHTML?.());
+}
+function emitLoadingState(isLoading: boolean) {
+    emit('update:isLoading', isLoading);
 }
 
 async function handleImageUpload(filePath: string) {
@@ -60,20 +61,20 @@ onBeforeMount(() => {
             }
         }
     });
-    isLoading.value = false;
+    emitLoadingState(false);
 
     // Whatch when the current note changes and update the editor content accordingly
     watch(
         () => notesStore.currentNote,
         async (newNote: Note) => {
             if (newNote && editor.value) {
-                isLoading.value = true;
+                emitLoadingState(true);
                 const content = editor.value.getHTML();
                 const noteContent = await notesStore.loadCurrentNoteContent();
                 editor.value.commands.setContent(noteContent);
                 emitNoteChange(currentNote.value as Note, content);
                 currentNote.value = newNote;
-                isLoading.value = false;
+                emitLoadingState(false);
             }
         },
         { immediate: true }
@@ -83,9 +84,4 @@ onBeforeMount(() => {
 onBeforeUnmount(() => {
     editor.value?.destroy();
 });
-
-defineExpose({
-    editor,
-    isLoading,
-})
 </script>

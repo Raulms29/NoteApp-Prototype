@@ -1,5 +1,5 @@
 <template>
-    <LoadingOverlay v-if="editor && editor.isLoading"></LoadingOverlay>
+    <LoadingOverlay v-if="isLoading"></LoadingOverlay>
     <div class="editor-wrapper">
         <div class="options">
             <button class="focus-mode-icon-btn" @click.stop="toggleFocusMode" v-if="notesStore.currentNote"
@@ -8,7 +8,7 @@
                 <BullseyeArrowIcon v-else :size="20" />
             </button>
 
-            <EditorOptions v-if="notesStore.currentNote && editor" :editor="editor.editor" />
+            <EditorOptions v-if="notesStore.currentNote" @update:is-loading="handleUpdateLoadingState" />
         </div>
 
         <div class="editor-container" v-if="notesStore.currentNote">
@@ -34,7 +34,8 @@
                     :notes="notesStore.currentNote.children as Note[]" @select="notesStore.selectNote($event as Note)"
                     @delete="notesStore.deleteNote($event as Note)" @create="handleCreateNote($event as Note)" />
 
-                <Editor ref="editor" @note-change="handleNoteChange" @note-content-update="handleNoteContentChange" />
+                <Editor :isLoading="isLoading" @note-change="handleNoteChange"
+                    @note-content-update="handleNoteContentChange" @update:is-loading="handleUpdateLoadingState" />
             </div>
         </div>
     </div>
@@ -52,11 +53,12 @@ import Editor from './Editor.vue';
 
 const notesStore = useNotesStore();
 const settingsStore = useSettingsStore();
-const editor = ref<typeof Editor | null>(null);
 
 const noteName = ref<string>(notesStore.currentNote ? notesStore.currentNote.name : '');
 const isFocused = ref(false);
 const renameError = ref<string | null>(null);
+
+const isLoading = ref(false);
 
 
 const debouncedSave = debounce(async (content: string) => {
@@ -101,6 +103,10 @@ function toggleFocusMode() {
 async function handleCreateNote(note: Note) {
     const createdNote = await notesStore.createNote(undefined, note);
     notesStore.selectNote(createdNote);
+}
+
+function handleUpdateLoadingState(loading: boolean) {
+    isLoading.value = loading;
 }
 
 import '../../styles/editor.css';

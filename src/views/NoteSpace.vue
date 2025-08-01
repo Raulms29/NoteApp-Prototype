@@ -1,7 +1,7 @@
 <template>
-    <div v-if="!settingsStore.settings.focusMode" class="note-space-container">
+    <div class="note-space-container">
         <splitpanes class="split-theme">
-            <pane :min-size="paneMinSize" max-size="50" size="14.5">
+            <pane :min-size="paneMinSize" max-size="50" size="14.5" v-if="!settingsStore.settings.focusMode">
                 <div class="flex-1 truncate pl-3 text-xl font-bold workspace-title select-none m-1">
                     <VectorTriangle class="mr-2" />
                     {{ workspaceStore.currentWorkspace?.name }}
@@ -17,9 +17,6 @@
                 </div>
             </pane>
         </splitpanes>
-    </div>
-    <div v-else class="focus-mode-editor-pane" id="editorPane">
-        <EditorView />
     </div>
 </template>
 
@@ -69,14 +66,6 @@ onUnmounted(() => {
     overflow-y: auto;
     background-color: var(--background-color);
     height: 98vh;
-}
-
-.focus-mode-editor-pane {
-    position: relative;
-    height: 100vh;
-    background-color: var(--background-color);
-    display: flex;
-    flex-direction: column;
 }
 
 .sidebar-pane {

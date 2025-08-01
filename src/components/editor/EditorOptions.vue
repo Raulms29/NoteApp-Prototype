@@ -9,15 +9,29 @@
     </NDropdown>
     <GenericDialog v-if="showDialog" :title="`Export ${notesStore.currentNote?.name}`"
         text="Do you want to include subnotes in the export?">
+
+        <template #content>
+            <div>
+                Include subnotes in the export:
+                <GenericSwitch v-model="includeSubnotes">
+                    <template #checked>
+                        Yes
+                    </template>
+                    <template #unchecked>
+                        No
+                    </template>
+                </GenericSwitch>
+            </div>
+        </template>
         <template #actions>
-            <GenericButton variant="primary" @click="exportNotes(true)">Yes</GenericButton>
-            <GenericButton variant="secondary" @click="exportNotes(false)">No</GenericButton>
             <GenericButton variant="secondary" @click="showDialog = false">Cancel</GenericButton>
+            <GenericButton variant="primary" @click="exportNotes(includeSubnotes)">Export</GenericButton>
         </template>
     </GenericDialog>
 </template>
 
 <script lang="ts" setup>
+import GenericSwitch from '../generic/switch/GenericSwitch.vue';
 import { NDropdown } from 'naive-ui';
 import { useNotesStore } from '../../stores/useNotesStore';
 import DotsHorizontal from 'icons/DotsHorizontal.vue';
@@ -38,6 +52,7 @@ const tempEditor = createEditor(notesStore, () => { })
 const emit = defineEmits(['update:isLoading']);
 
 const currentOption = ref<string | null>(null);
+const includeSubnotes = ref(false);
 
 const dropdownOptions = [
     { label: 'Export as Text', key: 'export-text' },

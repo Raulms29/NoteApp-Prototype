@@ -1,4 +1,6 @@
 :root {
     --sidebar-text-separator-color: #53575c;
     --background-color: white;
+    --main-detail-color: #1976d2;
+    --main-detail-color-transparent: #1976d240;
 }

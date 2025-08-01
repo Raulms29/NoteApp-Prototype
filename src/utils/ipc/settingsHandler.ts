@@ -20,10 +20,6 @@ export function registerSettingsHandlers() {
     });
 
     ipcMain.handle('set-settings', (_event, settings) => {
-        settingsStore.store = settings;
-    });
-
-    ipcMain.handle('update-setting', (_event, key, value) => {
-        settingsStore.set(key, value);
+        settingsStore.set('settings', settings);
     });
 }

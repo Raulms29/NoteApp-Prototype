@@ -10,15 +10,17 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     const workspaces = ref<Workspace[]>([]);
     const currentWorkspace = ref<Workspace | null>(null);
     const notesStore = useNotesStore();
+    const firstWorkspaceAccess = ref<boolean>(true);
 
     async function init() {
         workspaces.value = await repo.getWorkspaces();
+        console.log('Workspaces loaded:', workspaces.value);
     }
 
-    function addWorkspace(workspace: Workspace) {
-        repo.createWorkspace(workspace);
+    async function addWorkspace(workspace: Workspace) {
+        await repo.createWorkspace(workspace);
         workspaces.value = [...workspaces.value, workspace];
-        persistWorkspaces();
+        await persistWorkspaces();
     }
 
     function removeWorkspace(id: string) {
@@ -29,14 +31,19 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         persistWorkspaces();
     }
 
-    function selectWorkspace(id: string) {
+    async function selectWorkspace(id: string) {
         const ws = workspaces.value.find(ws => ws.id === id) ?? null;
         if (!ws) {
             throw new Error(`Workspace with id ${id} not found`);
         }
+
         currentWorkspace.value = ws;
         setWorkspaceRoot(ws.path);
+        ws.lastAccesed = new Date();
+        firstWorkspaceAccess.value = false;
         notesStore.init(ws);
+
+        persistWorkspaces();
     }
 
     function renameWorkspace(id: string, newName: string) {
@@ -71,9 +78,21 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         return `${currentWorkspace.value.path}/.files`;
     }
 
+    function getLastWorkspaceAccesed(): Workspace | null {
+        return workspaces.value.reduce((last, ws) => {
+            const lastAccesed = ws.lastAccesed;
+            if (!lastAccesed) return last;
+            if (!last || lastAccesed.getTime() > last.lastAccesed.getTime()) {
+                return ws;
+            }
+            return last;
+        }, null);
+    }
+
     return {
         workspaces,
         currentWorkspace,
+        firstWorkspaceAccess,
         init,
         addWorkspace,
         removeWorkspace,
@@ -81,6 +100,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         renameWorkspace,
         validateWorkspace,
         persistWorkspaces,
-        getCurrentFilesPath
+        getCurrentFilesPath,
+        getLastWorkspaceAccesed
     };
 });

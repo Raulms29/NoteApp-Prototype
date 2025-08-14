@@ -74,7 +74,7 @@ async function selectLocation() {
     }
 }
 
-function handleCreate() {
+async function handleCreate() {
     try {
         workspaceStore.validateWorkspace(name.value, location.value);
     } catch (e) {
@@ -82,7 +82,7 @@ function handleCreate() {
         return;
     }
 
-    workspaceStore.addWorkspace(new Workspace(name.value.trim(), location.value.trim()));
+    await workspaceStore.addWorkspace(new Workspace(name.value.trim(), location.value.trim()));
     router.push({ name: 'workspace' });
 }
 

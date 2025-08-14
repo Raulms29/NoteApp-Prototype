@@ -22,21 +22,23 @@ import { useRouter } from 'vue-router';
 import { WorkspaceI } from '../services/domain/Workspace';
 import { useWorkspaceStore } from '../stores/useWorkspaceStore';
 import { onMounted, ref } from 'vue';
+import { useSettingsStore } from '../stores//useSettingsStore';
 
 const router = useRouter();
 
 const workspaceStore = useWorkspaceStore();
 const errorMessage = ref<string>(null);
+const settingsStore = useSettingsStore();
 
-workspaceStore.init()
+async function selectWorkspace(workspace: WorkspaceI) {
+    await workspaceStore.selectWorkspace(workspace.id);
+    resizeWindowAndNavigate();
+}
 
-function selectWorkspace(workspace: WorkspaceI) {
+function resizeWindowAndNavigate() {
     window.windowAPI.setResizable(true)
     window.windowAPI.maximizeWindow();
-
-    workspaceStore.selectWorkspace(workspace.id);
     router.replace({ name: 'noteSpace' });
-
 }
 
 function newWorkspace() {
@@ -67,9 +69,16 @@ async function setWindowSize() {
     await window.windowAPI.changeWindowSize(600, 800);
     await window.windowAPI.setResizable(false);
 }
-
-onMounted(() => {
-    setWindowSize();
+onMounted(async () => {
+    await workspaceStore.init();
+    const lastWorkspaceAccesed = workspaceStore.getLastWorkspaceAccesed();
+    if (workspaceStore.firstWorkspaceAccess && settingsStore.settings.rememberLastWorkspace && lastWorkspaceAccesed !== null) {
+        selectWorkspace(lastWorkspaceAccesed);
+    }
+    else {
+        setWindowSize();
+        workspaceStore.firstWorkspaceAccess = false;
+    }
 })
 
 

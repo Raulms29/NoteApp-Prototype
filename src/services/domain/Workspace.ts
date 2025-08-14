@@ -4,18 +4,21 @@ export interface WorkspaceI {
     name: string;
     path: string;
     id: string;
+    lastAccesed: Date;
 }
 
 export class Workspace implements WorkspaceI {
     _name: string;
     path: string;
     _id: string;
+    _lastAccesed: Date;
 
 
-    constructor(name: string, path: string, id = Math.random().toString(36).substring(2, 10)) {
+    constructor(name: string, path: string, id = Math.random().toString(36).substring(2, 10), lastAccesed: Date | null = null) {
         this.name = name;
         this.path = path;
         this.id = id;
+        this.lastAccesed = lastAccesed;
     }
 
     async notesStructurePath(): Promise<string> {
@@ -25,6 +28,10 @@ export class Workspace implements WorkspaceI {
     async notesStructureFilePath(): Promise<string> {
         const notesPath = await this.notesStructurePath();
         return await fileUtils.joinPaths(notesPath, 'notes.json');
+    }
+
+    async filesFolderPath(): Promise<string> {
+        return await fileUtils.joinPaths(this.path, this.filesFolder);
     }
 
     get filesFolder(): string {
@@ -56,5 +63,15 @@ export class Workspace implements WorkspaceI {
             throw new Error('Workspace name cannot exceed 25 characters');
         }
         this._name = newName;
+    }
+    set lastAccesed(date: Date) {
+        this._lastAccesed = date;
+    }
+
+    get lastAccesed(): Date {
+        if (this._lastAccesed !== null) {
+            return new Date(this._lastAccesed);
+        }
+        return this._lastAccesed;
     }
 }

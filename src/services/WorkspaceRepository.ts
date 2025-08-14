@@ -4,24 +4,26 @@ import * as fileUtils from '../utils/fileUtils';
 export class WorkspaceRepository {
 
     async saveWorkspaces(workspaces: WorkspaceI[]): Promise<void> {
+        console.log('Saving workspaces:', workspaces);
         await window.workspaceAPI.setWorkspaces(
             workspaces.map(ws => ({
                 id: ws.id,
                 name: ws.name,
-                path: ws.path
-            }))
-        );
+                path: ws.path,
+                lastAccesed: ws.lastAccesed
+            })));
     }
 
     async getWorkspaces(): Promise<Workspace[]> {
         const workspacesRaw = await window.workspaceAPI.getWorkspaces();
-        return workspacesRaw.map((ws: WorkspaceI) => new Workspace(ws.name, ws.path, ws.id));
+        console.log('Retrieved workspaces:', workspacesRaw);
+        return workspacesRaw.map((ws: WorkspaceI) => new Workspace(ws.name, ws.path, ws.id, ws.lastAccesed));
     }
 
     async createWorkspace(workspace: Workspace) {
         const notesFolder = await workspace.notesStructurePath();
         const structureFile = await workspace.notesStructureFilePath();
-        const filesFolder = workspace.filesFolder;
+        const filesFolder = await workspace.filesFolderPath();
 
         // Only create the folders and file if they do not exist
         if (!await fileUtils.folderExists(notesFolder)) {

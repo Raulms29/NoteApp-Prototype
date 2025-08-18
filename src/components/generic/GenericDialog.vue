@@ -37,7 +37,7 @@ defineProps<{
     background: #fff;
     border-radius: 0.75rem;
     box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.18);
-    min-width: 22rem;
+    min-width: 30rem;
     max-width: 40vw;
     padding: 1rem;
     display: flex;

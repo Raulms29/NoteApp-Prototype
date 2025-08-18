@@ -1,17 +1,23 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import type { Settings } from '../services/domain/Settings';
-// import { useWorkspaceStore } from './useWorkspaceStore';
 
 export const useSettingsStore = defineStore('settings', () => {
     const settings = ref<Settings>({
         rememberLastWorkspace: false,
+        rememberLastNote: false,
         focusMode: false,
+        subNotesDisplayType: 'DEFAULT'
     });
 
-    // const workspaceStore = useWorkspaceStore();
+    const subNotesOptions = [
+        { value: 'DEFAULT', label: 'Default' },
+        { value: 'BIG_ONLY', label: 'Big Only' },
+        { value: 'SMALL_ONLY', label: 'Small Only' },
+        { value: 'NONE', label: 'None' }
+    ];
 
-    // const currentWorkspace = workspaceStore.currentWorkspace;
+    const numberSubnotesBigDefault = 5;
 
     function init() {
         loadSettings();
@@ -22,15 +28,24 @@ export const useSettingsStore = defineStore('settings', () => {
     }
 
     async function saveSettings() {
-        await window.settingsAPI.setSettings({ rememberLastWorkspace: settings.value.rememberLastWorkspace, focusMode: false });
+        await window.settingsAPI.setSettings({
+            rememberLastWorkspace: settings.value.rememberLastWorkspace,
+            rememberLastNote: settings.value.rememberLastNote,
+            focusMode: false,
+            subNotesDisplayType: settings.value.subNotesDisplayType
+        });
     }
 
     async function updateSetting<K extends keyof Settings>(key: K, value: Settings[K]) {
         settings.value[key] = value;
     }
 
+
+
     return {
         settings,
+        subNotesOptions,
+        numberSubnotesBigDefault,
         init,
         loadSettings,
         saveSettings,

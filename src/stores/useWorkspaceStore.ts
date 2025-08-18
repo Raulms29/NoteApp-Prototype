@@ -2,14 +2,12 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { Workspace } from '../services/domain/Workspace';
 import { WorkspaceRepository } from '../services/WorkspaceRepository';
-import { useNotesStore } from './useNotesStore';
 import { setWorkspaceRoot } from '../utils/fileUtils';
 
 export const useWorkspaceStore = defineStore('workspace', () => {
     const repo = new WorkspaceRepository();
     const workspaces = ref<Workspace[]>([]);
     const currentWorkspace = ref<Workspace | null>(null);
-    const notesStore = useNotesStore();
     const firstWorkspaceAccess = ref<boolean>(true);
 
     async function init() {
@@ -41,9 +39,9 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         setWorkspaceRoot(ws.path);
         ws.lastAccesed = new Date();
         firstWorkspaceAccess.value = false;
-        notesStore.init(ws);
 
-        persistWorkspaces();
+        await persistWorkspaces();
+        return ws;
     }
 
     function renameWorkspace(id: string, newName: string) {

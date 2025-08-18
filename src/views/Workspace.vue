@@ -23,15 +23,18 @@ import { WorkspaceI } from '../services/domain/Workspace';
 import { useWorkspaceStore } from '../stores/useWorkspaceStore';
 import { onMounted, ref } from 'vue';
 import { useSettingsStore } from '../stores//useSettingsStore';
+import { useNotesStore } from '../stores/useNotesStore';
 
 const router = useRouter();
 
 const workspaceStore = useWorkspaceStore();
 const errorMessage = ref<string>(null);
 const settingsStore = useSettingsStore();
+const notesStore = useNotesStore();
 
 async function selectWorkspace(workspace: WorkspaceI) {
-    await workspaceStore.selectWorkspace(workspace.id);
+    const ws = await workspaceStore.selectWorkspace(workspace.id);
+    await notesStore.init(ws);
     resizeWindowAndNavigate();
 }
 

@@ -10,6 +10,7 @@ import { Workspace } from '../services/domain/Workspace';
 export const useNotesStore = defineStore('notes', () => {
     const notes = ref<Note[]>();
     const currentNote = ref<Note | null>(null);
+    const firstNoteAccess = ref<boolean>(true);
     let repo: NoteRepository;
 
     // Initialize the repository
@@ -19,7 +20,7 @@ export const useNotesStore = defineStore('notes', () => {
             await workspace.notesStructureFilePath(),
             workspace.filesFolder
         );
-        loadTree();
+        await loadTree();
     }
 
     function updateNoteTree() {
@@ -30,15 +31,17 @@ export const useNotesStore = defineStore('notes', () => {
         notes.value = await repo.loadNoteTree();
     }
 
-    function selectNote(note: Note) {
+    async function selectNote(note: Note) {
         const existingNote = getNoteById(note.id);
         console.log(`Selecting note: ${note.name}`);
         if (!existingNote) {
             currentNote.value = null;
         }
         else {
+            note.lastAccessed = new Date();
             currentNote.value = note;
         }
+        updateNoteTree();
     }
 
     async function saveNoteContent(note: Note, html: string) {
@@ -196,6 +199,21 @@ export const useNotesStore = defineStore('notes', () => {
         return path;
     }
 
+    /**
+    * Returns the most recently accessed note (by lastAccessed property).
+    */
+    function getLastNoteAccesed(): Note | null {
+        const allNotes = flattenNotes(notes.value ?? []);
+        return allNotes.reduce((last, note) => {
+            const lastAccesed = note.lastAccessed;
+            if (!lastAccesed) return last;
+            if (!last || lastAccesed.getTime() > (last.lastAccessed?.getTime?.() ?? 0)) {
+                return note;
+            }
+            return last;
+        }, null);
+    }
+
     // --- PRIVATE/HELPER FUNCTIONS ---
     function removeNoteFromTree(noteToDelete: Note): boolean {
         let removed = false;
@@ -274,6 +292,7 @@ export const useNotesStore = defineStore('notes', () => {
     return {
         noteTree: notes,
         currentNote,
+        firstNoteAccess,
         init,
         loadTree,
         selectNote,
@@ -291,6 +310,7 @@ export const useNotesStore = defineStore('notes', () => {
         getNoteById,
         saveImage,
         savePDF,
-        getNoteBreadcrumb
+        getNoteBreadcrumb,
+        getLastNoteAccesed
     };
 });

@@ -26,11 +26,13 @@ import '../styles/splitpanes.css';
 import { Splitpanes, Pane } from 'splitpanes';
 import { useWorkspaceStore } from '../stores/useWorkspaceStore';
 import { useSettingsStore } from '../stores/useSettingsStore';
+import { useNotesStore } from '../stores/useNotesStore';
 import VectorTriangle from 'icons/VectorTriangle.vue';
 import { ref, onMounted, onUnmounted } from 'vue';
 
 const workspaceStore = useWorkspaceStore();
 const settingsStore = useSettingsStore();
+const notesStore = useNotesStore();
 
 
 const smallScreenPaneMinSize = 20;
@@ -48,6 +50,12 @@ function updateMinSize() {
 onMounted(() => {
     updateMinSize();
     window.addEventListener('resize', updateMinSize);
+
+    const lastNoteAccessed = notesStore.getLastNoteAccesed();
+    if (notesStore.firstNoteAccess && settingsStore.settings.rememberLastNote && lastNoteAccessed !== null) {
+        notesStore.selectNote(lastNoteAccessed);
+    }
+    notesStore.firstNoteAccess = true;
 });
 
 onUnmounted(() => {

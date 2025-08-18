@@ -30,7 +30,8 @@
             </div>
 
             <div>
-                <NoteChildren v-if="notesStore.currentNote && notesStore.currentNote.hasChildren()"
+                <NoteChildren
+                    v-if="notesStore.currentNote && notesStore.currentNote.hasChildren() && settingsStore.settings.subNotesDisplayType !== 'NONE'"
                     :notes="notesStore.currentNote.children as Note[]" @select="notesStore.selectNote($event as Note)"
                     @delete="notesStore.deleteNote($event as Note)" @create="handleCreateNote($event as Note)" />
 

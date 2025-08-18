@@ -4,6 +4,7 @@ export interface RawNote {
     _id: string;
     _createdAt: string; // Dates are typically stored as strings in JSON
     _children?: RawNote[]; // Optional array of child notes
+    _lastAccessed: string;
 }
 
 export class Note {
@@ -12,6 +13,7 @@ export class Note {
     private _name: string;
     private _children: Note[];
     private readonly _createdAt: Date;
+    private _lastAccessed: Date;
 
     /**
      * Creates a new Note instance.
@@ -21,11 +23,12 @@ export class Note {
      * @param createdAt - The creation date of the note, defaults to the current date.
      * @throws Will throw an error if tehre is a validation error.
      */
-    constructor(name: string, children: Note[] = [], id: string = Math.random().toString(36).substring(2, 10), createdAt: Date = new Date()) {
+    constructor(name: string, children: Note[] = [], id: string = Math.random().toString(36).substring(2, 10), createdAt: Date = new Date(), lastAccessed: Date | null = null) {
         this.id = id;
         this.name = name;
         this._children = children;
         this._createdAt = createdAt;
+        this.lastAccessed = lastAccessed;
     }
 
     /**
@@ -97,6 +100,14 @@ export class Note {
      */
     get createdAt(): Date {
         return this._createdAt;
+    }
+
+    get lastAccessed(): Date {
+        return this._lastAccessed;
+    }
+
+    set lastAccessed(date: Date) {
+        this._lastAccessed = date;
     }
 
     /**

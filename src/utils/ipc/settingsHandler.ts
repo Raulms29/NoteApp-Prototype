@@ -6,7 +6,9 @@ export type SettingsSchema = Settings;
 
 const defaults: SettingsSchema = {
     rememberLastWorkspace: false,
+    rememberLastNote: false,
     focusMode: false,
+    subNotesDisplayType: 'DEFAULT',
 };
 
 const settingsStore = new Store<SettingsSchema>({
@@ -19,7 +21,7 @@ export function registerSettingsHandlers() {
         return settingsStore.get('settings', defaults);
     });
 
-    ipcMain.handle('set-settings', (_event, settings) => {
+    ipcMain.handle('set-settings', (_event, settings: SettingsSchema) => {
         settingsStore.set('settings', settings);
     });
 }

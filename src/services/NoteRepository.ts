@@ -42,7 +42,8 @@ export class NoteRepository {
                 item._name,
                 children,
                 item._id,
-                new Date(item._createdAt)
+                new Date(item._createdAt),
+                item._lastAccessed ? new Date(item._lastAccessed) : null
             );
         };
 

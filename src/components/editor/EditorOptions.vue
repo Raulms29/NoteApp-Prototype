@@ -41,6 +41,7 @@ import { useWorkspaceStore } from '../../stores/useWorkspaceStore';
 import { createEditor } from './createEditor';
 import { Note } from '../../services/domain/Note';
 import { ref } from 'vue';
+import { Workspace } from '../../services/domain/Workspace';
 
 const notesStore = useNotesStore();
 const workspaceStore = useWorkspaceStore();
@@ -111,11 +112,6 @@ async function exportAsText(includeSubnotes: boolean) {
         notesText.push(tempEditor.getText());
     }
 
-    if (notes.length === 1) {
-        await exportService.exportNoteAsText(notesText[0], notesNames[0]);
-        return;
-    }
-
     await exportService.exportNotesAsText(notesText, notesNames);
 }
 
@@ -133,7 +129,7 @@ async function exportAsMarkdown(includeSubnotes: boolean) {
         notesMarkdown.push(tempEditor.storage.markdown.getMarkdown());
         notesJSON.push(tempEditor.getJSON());
     }
-    await exportService.exportNoteAsMarkdown(notesMarkdown, notesNames, notesJSON, workspaceStore.currentWorkspace);
+    await exportService.exportNoteAsMarkdown(notesMarkdown, notesNames, notesJSON, workspaceStore.currentWorkspace as Workspace);
 }
 
 async function exportAsHTML(includeSubnotes: boolean) {
@@ -151,7 +147,7 @@ async function exportAsHTML(includeSubnotes: boolean) {
         notesJSON.push(tempEditor.getJSON());
     }
 
-    await exportService.exportNotesAsHTML(notesHTML, notesNames, notesJSON, workspaceStore.currentWorkspace);
+    await exportService.exportNotesAsHTML(notesHTML, notesNames, notesJSON, workspaceStore.currentWorkspace as Workspace);
 }
 
 async function exportAsPDF(includeSubnotes: boolean) {
@@ -166,12 +162,7 @@ async function exportAsPDF(includeSubnotes: boolean) {
         notesHTML.push(tempEditor.getHTML());
     }
 
-    if (notes.length === 1) {
-        await exportService.exportNoteAsPDF(notesHTML[0], notesNames[0], workspaceStore.currentWorkspace);
-        return;
-    }
-
-    await exportService.exportNotesAsPDF(notesHTML, notesNames, workspaceStore.currentWorkspace);
+    await exportService.exportNotesAsPDF(notesHTML, notesNames, workspaceStore.currentWorkspace as Workspace);
 
 }
 

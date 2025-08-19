@@ -37,7 +37,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
 
         currentWorkspace.value = ws;
         setWorkspaceRoot(ws.path);
-        ws.lastAccesed = new Date();
+        ws.lastAccessed = new Date();
         firstWorkspaceAccess.value = false;
 
         await persistWorkspaces();
@@ -78,13 +78,13 @@ export const useWorkspaceStore = defineStore('workspace', () => {
 
     function getLastWorkspaceAccesed(): Workspace | null {
         return workspaces.value.reduce((last, ws) => {
-            const lastAccesed = ws.lastAccesed;
+            const lastAccesed = ws.lastAccessed;
             if (!lastAccesed) return last;
-            if (!last || lastAccesed.getTime() > last.lastAccesed.getTime()) {
+            if (!last || lastAccesed.getTime() > last.lastAccessed.getTime()) {
                 return ws;
             }
             return last;
-        }, null);
+        }, null) as Workspace | null;
     }
 
     return {

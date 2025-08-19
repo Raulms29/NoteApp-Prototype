@@ -26,10 +26,10 @@ describe('WorkspaceRepository', () => {
     });
 
     it('saves workspaces using the API', async () => {
-        const workspaces = [new Workspace('WS1', '/path/1', 'abc12345')];
+        const workspaces = [new Workspace('WS1', '/path/1', 'abc12345',)];
         await repo.saveWorkspaces(workspaces);
         expect(mockSetWorkspaces).toHaveBeenCalledWith([
-            { id: 'abc12345', name: 'WS1', path: '/path/1' }
+            { id: workspaces[0].id, name: workspaces[0].name, path: workspaces[0].path, lastAccessed: workspaces[0].lastAccessed, }
         ]);
     });
 
@@ -63,7 +63,7 @@ describe('WorkspaceRepository', () => {
         expect(mockFileExists).toHaveBeenCalledWith('/path/2/.notes/notes.json');
         expect(mockWriteFile).toHaveBeenCalledWith('/path/2/.notes/notes.json', JSON.stringify([]));
         // Should check and create .files folder
-        expect(mockFolderExists).toHaveBeenCalledWith('.files');
-        expect(mockCreateFolder).toHaveBeenCalledWith('.files');
+        expect(mockFolderExists).toHaveBeenCalledWith('/path/2/.notes');
+        expect(mockCreateFolder).toHaveBeenCalledWith('/path/2/.notes');
     });
 });

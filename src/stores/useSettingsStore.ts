@@ -19,8 +19,8 @@ export const useSettingsStore = defineStore('settings', () => {
 
     const numberSubnotesBigDefault = 5;
 
-    function init() {
-        loadSettings();
+    async function init() {
+        await loadSettings();
     }
 
     async function loadSettings() {
@@ -47,7 +47,6 @@ export const useSettingsStore = defineStore('settings', () => {
         subNotesOptions,
         numberSubnotesBigDefault,
         init,
-        loadSettings,
         saveSettings,
         updateSetting,
     };

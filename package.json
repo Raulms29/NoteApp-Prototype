@@ -15,6 +15,7 @@
     "setup": "echo Installing dependencies... 🛠️ && npm ci",
     "build": "npm run check-node-folder && npm run make",
     "test": "npm run check-node-folder && echo Running unit tests... 🧪 && npx vitest test/unit",
+    "test:coverage": "npm run check-node-folder && echo Running unit tests with coverage... 🧪 && npx vitest test/unit --coverage",
     "test:component": "npm run check-node-folder && echo Running component tests... 🧪 && npx vitest test/component",
     "test:e2e": "npm run check-out-folder && echo Running e2e tests 🧪 && npx wdio",
     "test:all": "echo Running all tests... 🧪 && npm run check-out-folder && echo Running unit tests... 🧪 && npx vitest test/unit --run && echo Running component tests... 🧪 && npx vitest test/component --run && echo Running e2e tests 🧪 && npx wdio",

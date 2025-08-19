@@ -13,6 +13,7 @@ describe('GIVEN a Note', () => {
             expect(note.name).toBe('Test Note');
             expect(note.children).toHaveLength(0);
             expect(note.createdAt.getTime()).toBeLessThanOrEqual(Date.now());
+            expect(note.lastAccessed).toBeNull();
         });
 
         it('THEN initializes without ID', () => {
@@ -22,6 +23,20 @@ describe('GIVEN a Note', () => {
             expect(note.name).toBe('Test Note');
             expect(note.children).toHaveLength(0);
             expect(note.createdAt.getTime()).toBeLessThanOrEqual(Date.now());
+            expect(note.lastAccessed).toBeNull();
+        });
+        it('THEN initializes with lastAccessed if provided', () => {
+            const lastAccessedDate = new Date();
+            const note = new Note('Test Note', [], '00000001', new Date(), lastAccessedDate);
+            expect(note.lastAccessed).toEqual(lastAccessedDate);
+        });
+
+        it('THEN can set and get lastAccessed', () => {
+            const note = new Note('Test Note', [], '00000001');
+            expect(note.lastAccessed).toBeNull();
+            const newDate = new Date();
+            note.lastAccessed = newDate;
+            expect(note.lastAccessed).toEqual(newDate);
         });
 
         it('THEN trims the ID', () => {

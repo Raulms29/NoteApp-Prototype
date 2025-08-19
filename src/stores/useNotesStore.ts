@@ -1,5 +1,3 @@
-// src/stores/useNotesStore.ts
-
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { Note } from '../services/domain/Note';

@@ -26,25 +26,25 @@ interface PdfType {
 export default class ExportService {
 
   async exportNotesAsText(textContent: string[], noteNames: string[]): Promise<void> {
-    textContent = this.processNoteText(textContent);
+    textContent = this.processNotePlainText(textContent);
 
     if (textContent.length === 1) {
-      const content = new Blob([textContent[0]], { type: 'text/plain' });
-      downloadFile(content, `${noteNames[0]}.txt`);
+      await this.exportNoteAsText(textContent[0], noteNames[0]);
+      return;
     }
-    else {
-      const zip = new JSZip();
-      textContent.forEach((text, index) => {
-        const fileName = `${noteNames[index]}.txt`;
-        zip.file(fileName, text);
-      });
-      const content = await zip.generateAsync({ type: 'blob' });
-      downloadFile(content, `${noteNames[0]}.zip`);
-    }
+
+    const zip = new JSZip();
+    textContent.forEach((text, index) => {
+      const fileName = `${noteNames[index]}.txt`;
+      zip.file(fileName, text);
+    });
+    const content = await zip.generateAsync({ type: 'blob' });
+    downloadFile(content, `${noteNames[0]}.zip`);
+
   }
 
-  async exportNoteAsText(textContent: string, noteName: string): Promise<void> {
-    textContent = this.processNoteText([textContent])[0];
+  private async exportNoteAsText(textContent: string, noteName: string): Promise<void> {
+    textContent = this.processNotePlainText([textContent])[0];
     const content = new Blob([textContent], { type: 'text/plain' });
     downloadFile(content, `${noteName}.txt`);
   }
@@ -85,6 +85,11 @@ export default class ExportService {
   }
 
   async exportNotesAsPDF(htmlContent: string[], noteNames: string[], currentWorkspace: Workspace): Promise<void> {
+    if (htmlContent.length === 1) {
+      await this.exportNoteAsPDF(htmlContent[0], noteNames[0], currentWorkspace);
+      return;
+    }
+
     const pdfs: Buffer[] = [];
     for (let i = 0; i < htmlContent.length; i++) {
 
@@ -109,7 +114,7 @@ export default class ExportService {
     downloadFile(content, `${noteNames[0]}.zip`);
   }
 
-  async exportNoteAsPDF(htmlContent: string, noteName: string, currentWorkspace: Workspace): Promise<void> {
+  private async exportNoteAsPDF(htmlContent: string, noteName: string, currentWorkspace: Workspace): Promise<void> {
     htmlContent = HtmlConverter.convertToHtml(htmlContent, noteName, exportCssPDF);
 
     // Replace images with base64 data URLs
@@ -121,7 +126,7 @@ export default class ExportService {
     await exportAsPDF(tempFilePath, noteName);
   }
 
-  async writeHTMLToTempDir(htmlContent: string, noteName: string): Promise<string> {
+  private async writeHTMLToTempDir(htmlContent: string, noteName: string): Promise<string> {
     const tempDir = await getTempDir();
     const tempFilePath = await joinPaths(tempDir, `${noteName}-${Date.now()}.html`);
     await writeFile(tempFilePath, htmlContent);
@@ -204,7 +209,7 @@ export default class ExportService {
     return newHtml;
   }
 
-  private processNoteText(textContent: string[]) {
+  private processNotePlainText(textContent: string[]) {
     textContent = textContent.map((text) => {
       // Replace 3+ consecutive newlines with a single newline
       return text.replace(/\n{3,}/g, '\n');

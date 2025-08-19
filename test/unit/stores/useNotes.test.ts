@@ -49,6 +49,7 @@ describe('GIVEN the useNotesStore store', () => {
         await store.init(workspace);
     });
 
+    // • init (reset)
     it('THEN it should reset', async () => {
         store.selectNote(testNote);
         await store.createNote('AnotherNote');
@@ -58,6 +59,7 @@ describe('GIVEN the useNotesStore store', () => {
         await expect(store.createNote('ShouldFail')).rejects.toThrow();
     });
 
+    // • loadTree
     describe('WHEN loadTree is called', () => {
         it('THEN it should set notes.value to the result of repo.loadNoteTree', async () => {
             const notes = [testNote];
@@ -66,6 +68,7 @@ describe('GIVEN the useNotesStore store', () => {
         });
     });
 
+    // • selectNote
     describe('WHEN selectNote is called', () => {
         it('THEN it should set currentNote to the given note', () => {
             store.selectNote(testNote);
@@ -78,6 +81,7 @@ describe('GIVEN the useNotesStore store', () => {
         });
     });
 
+    // • saveNoteContent
     describe('WHEN saveNoteContent is called', () => {
         const html = '<p>Test</p>';
         it('THEN it save correctly', async () => {
@@ -90,6 +94,7 @@ describe('GIVEN the useNotesStore store', () => {
         });
     });
 
+    // • loadCurrentNoteContent
     describe('WHEN loadCurrentNoteContent is called', () => {
         it('THEN it should return the content for the current note', async () => {
             store.selectNote(testNote);
@@ -103,6 +108,42 @@ describe('GIVEN the useNotesStore store', () => {
         });
     });
 
+    // • loadNoteContent
+    describe('WHEN loadNoteContent is called', () => {
+        it('THEN it should return the note content for a valid note', async () => {
+            mockReadNoteContent.mockResolvedValueOnce('note content');
+            const content = await store.loadNoteContent(testNote);
+            expect(mockReadNoteContent).toHaveBeenCalledWith(testNote);
+            expect(content).toBe('note content');
+        });
+        it('THEN it should throw if no note is provided', async () => {
+            await expect(store.loadNoteContent(null)).rejects.toThrow('No note provided to load content for.');
+        });
+    });
+
+    // • createNote
+    describe('WHEN createNote is called', () => {
+        it('THEN it should create a note', async () => {
+            const note = await store.createNote('RootNote');
+            expect(store.noteTree.some(n => n.name === 'RootNote')).toBe(true);
+            expect(mockWriteNoteContent).toHaveBeenCalledWith(note, '');
+        });
+        it('THEN it should create a child note under the given parent', async () => {
+            const parent = await store.createNote('Parent');
+            const child = await store.createNote('Child', parent);
+            expect(parent.children).toContain(child);
+            expect(child.name).toBe('Child');
+            expect(mockWriteNoteContent).toHaveBeenCalledWith(child, '');
+        });
+        it('THEN it should create a note with a unique name if duplicate exists', async () => {
+            await store.createNote('DupNote');
+            const note2 = await store.createNote('DupNote');
+            expect(note2.name).toBe('DupNote 1');
+            expect(mockWriteNoteContent).toHaveBeenCalledWith(note2, '');
+        });
+    });
+
+    // • renameNote
     describe('WHEN renameNote is called', () => {
         it('THEN it should rename the note and call repo.renameNoteFile and updateNoteTree', async () => {
             const note = await store.createNote('OldName');
@@ -118,6 +159,7 @@ describe('GIVEN the useNotesStore store', () => {
         });
     });
 
+    // • deleteNote
     describe('WHEN deleteNote is called', () => {
         it('THEN it should remove a root note, call repo.deleteNoteFiles, and update the tree', async () => {
             store.selectNote(testNote);
@@ -149,19 +191,19 @@ describe('GIVEN the useNotesStore store', () => {
         });
     });
 
-    describe('WHEN a note is called', () => {
-
+    // • moveNoteTo, moveNoteBefore, moveNoteAfter
+    describe('WHEN moving notes', () => {
         function findNoteIndexById(arr: Note[], id: string) {
             return arr.findIndex(n => n.id == id);
         }
 
         it('THEN it should throw if trying to move a note that does not exist', () => {
-            const nonExistentNote = new Note('NotInTree', [], 'notinid1'); // 8 chars
-            const target = new Note('Target', [], 'target01'); // 8 chars
+            const nonExistentNote = new Note('NotInTree', [], 'notinid1');
+            const target = new Note('Target', [], 'target01');
             expect(() => store.moveNoteTo(nonExistentNote, target)).toThrow('Note with ID notinid1 not found in the note tree.');
         });
         it('THEN it should throw if trying to move a null note', () => {
-            const target = new Note('Target', [], 'target01'); // 8 chars
+            const target = new Note('Target', [], 'target01');
             expect(() => store.moveNoteTo(null, target)).toThrow('No note provided to move.');
         });
 
@@ -221,27 +263,9 @@ describe('GIVEN the useNotesStore store', () => {
         });
     });
 
-    describe('WHEN createNote is called', () => {
-        it('THEN it should create a note', async () => {
-            const note = await store.createNote('RootNote');
-            expect(store.noteTree.some(n => n.name === 'RootNote')).toBe(true);
-            expect(mockWriteNoteContent).toHaveBeenCalledWith(note, '');
-        });
-        it('THEN it should create a child note under the given parent', async () => {
-            const parent = await store.createNote('Parent');
-            const child = await store.createNote('Child', parent);
-            expect(parent.children).toContain(child);
-            expect(child.name).toBe('Child');
-            expect(mockWriteNoteContent).toHaveBeenCalledWith(child, '');
-        });
-        it('THEN it should create a note with a unique name if duplicate exists', async () => {
-            await store.createNote('DupNote');
-            const note2 = await store.createNote('DupNote');
-            expect(note2.name).toBe('DupNote 1');
-            expect(mockWriteNoteContent).toHaveBeenCalledWith(note2, '');
-        });
-    });
+    // getNoteByName and getNoteById are used in other tests
 
+    // • saveImage
     describe('WHEN saveImage is called', () => {
         it('THEN it should call repo.saveImage and return the correct path and filename', async () => {
             mockSaveImage.mockResolvedValueOnce(['some/path/image.png', 'image.png']);
@@ -252,6 +276,7 @@ describe('GIVEN the useNotesStore store', () => {
         });
     });
 
+    // • savePDF
     describe('WHEN savePDF is called', () => {
         it('THEN it should call repo.savePDF and return the correct path and filename', async () => {
             mockSavePDF.mockResolvedValueOnce(['some/path/file.pdf', 'file.pdf']);
@@ -259,6 +284,47 @@ describe('GIVEN the useNotesStore store', () => {
             expect(mockSavePDF).toHaveBeenCalledWith('source/path/file.pdf');
             expect(filePath).toBe('some/path/file.pdf');
             expect(fileName).toBe('file.pdf');
+        });
+    });
+
+    // • getNoteBreadcrumb
+    describe('WHEN getNoteBreadcrumb is called', () => {
+        it('THEN it should return the correct breadcrumb path', async () => {
+            const parent = await store.createNote('Parent');
+            const child = await store.createNote('Child', parent);
+            const grandchild = await store.createNote('Grandchild', child);
+            const path = store.getNoteBreadcrumb(grandchild);
+            expect(path.map(n => n.name)).toEqual(['Parent', 'Child', 'Grandchild']);
+        });
+        it('THEN it should throw if note is not provided', () => {
+            expect(() => store.getNoteBreadcrumb(null)).toThrow('No note provided to get breadcrumb for.');
+        });
+        it('THEN it should throw if note is not in the tree', () => {
+            const fakeNote = new Note('Fake', []);
+            expect(() => store.getNoteBreadcrumb(fakeNote)).toThrow('Note not found in the note tree.');
+        });
+    });
+
+    // • getLastNoteAccesed
+    describe('WHEN getLastNoteAccesed is called', () => {
+        it('THEN it should return the most recently accessed note', async () => {
+            const note1 = await store.createNote('Note1');
+            const note2 = await store.createNote('Note2');
+            note1.lastAccessed = new Date('2025-01-01T10:00:00Z');
+            note2.lastAccessed = new Date('2025-01-02T10:00:00Z');
+            const last = store.getLastNoteAccesed();
+            expect(last).toEqual(note2);
+        });
+        it('THEN it should return null if no notes have lastAccessed', async () => {
+            await store.createNote('Note1');
+            await store.createNote('Note2');
+            const last = store.getLastNoteAccesed();
+            expect(last).toBeNull();
+        });
+        it('THEN it should return null if noteTree is empty', () => {
+            store.reset();
+            const last = store.getLastNoteAccesed();
+            expect(last).toBeNull();
         });
     });
 });

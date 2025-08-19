@@ -5,17 +5,18 @@ export class WorkspaceRepository {
 
     async saveWorkspaces(workspaces: WorkspaceI[]): Promise<void> {
         await window.workspaceAPI.setWorkspaces(
+            // This is needed to avoid an error when sending non-serializable data through IPC
             workspaces.map(ws => ({
                 id: ws.id,
                 name: ws.name,
                 path: ws.path,
-                lastAccesed: ws.lastAccesed
+                lastAccessed: ws.lastAccessed
             })));
     }
 
     async getWorkspaces(): Promise<Workspace[]> {
         const workspacesRaw = await window.workspaceAPI.getWorkspaces();
-        return workspacesRaw.map((ws: WorkspaceI) => new Workspace(ws.name, ws.path, ws.id, ws.lastAccesed));
+        return workspacesRaw.map((ws: WorkspaceI) => new Workspace(ws.name, ws.path, ws.id, ws.lastAccessed));
     }
 
     async createWorkspace(workspace: Workspace) {

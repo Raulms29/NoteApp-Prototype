@@ -14,10 +14,10 @@ const workspaceStore = new Store<WorkspacesSchema>({
 export function registerWorkspaceHandlers() {
 
     ipcMain.handle('get-workspaces', () => {
-        return workspaceStore.get('workspaces', []).map(ws => ({ name: ws.name, path: ws.path, id: ws.id, lastAccesed: ws.lastAccesed ? new Date(ws.lastAccesed) : null }));
+        return workspaceStore.get('workspaces', []).map(ws => ({ name: ws.name, path: ws.path, id: ws.id, lastAccessed: ws.lastAccessed ? new Date(ws.lastAccessed) : null }));
     });
 
-    ipcMain.handle('set-workspaces', (_event, workspaces) => {
-        workspaceStore.set('workspaces', workspaces.map((ws: WorkspaceI) => ({ name: ws.name, path: ws.path, id: ws.id, lastAccesed: ws.lastAccesed })));
+    ipcMain.handle('set-workspaces', (_event, workspaces: WorkspaceI[]) => {
+        workspaceStore.set('workspaces', workspaces.map((ws: WorkspaceI) => ({ name: ws.name, path: ws.path, id: ws.id, lastAccessed: ws.lastAccessed })));
     });
 }

@@ -4,21 +4,21 @@ export interface WorkspaceI {
     name: string;
     path: string;
     id: string;
-    lastAccesed: Date;
+    lastAccessed: Date;
 }
 
 export class Workspace implements WorkspaceI {
-    _name: string;
+    private _name: string;
     path: string;
-    _id: string;
-    _lastAccesed: Date;
+    private _id: string;
+    private _lastAccessed: Date;
 
 
-    constructor(name: string, path: string, id = Math.random().toString(36).substring(2, 10), lastAccesed: Date | null = null) {
+    constructor(name: string, path: string, id = Math.random().toString(36).substring(2, 10), lastAccessed: Date | null = null) {
         this.name = name;
         this.path = path;
         this.id = id;
-        this.lastAccesed = lastAccesed;
+        this.lastAccessed = lastAccessed;
     }
 
     async notesStructurePath(): Promise<string> {
@@ -64,14 +64,14 @@ export class Workspace implements WorkspaceI {
         }
         this._name = newName;
     }
-    set lastAccesed(date: Date) {
-        this._lastAccesed = date;
+    set lastAccessed(date: Date) {
+        this._lastAccessed = date;
     }
 
-    get lastAccesed(): Date {
-        if (this._lastAccesed !== null) {
-            return new Date(this._lastAccesed);
+    get lastAccessed(): Date {
+        if (this._lastAccessed !== null) {
+            return new Date(this._lastAccessed);
         }
-        return this._lastAccesed;
+        return this._lastAccessed;
     }
 }

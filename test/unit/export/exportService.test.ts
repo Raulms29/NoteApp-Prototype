@@ -1,10 +1,11 @@
 import ExportService from '../../../src/services/ExportService';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { Editor } from '@tiptap/vue-3';
+import { Editor, JSONContent } from '@tiptap/vue-3';
 import { Workspace } from '../../../src/services/domain/Workspace';
 import * as fileUtils from '../../../src/utils/fileUtils';
 import { createEditor } from '../../../src/components/editor/createEditor';
 import { useNotesStore } from '../../../src/stores/useNotesStore';
+import { fail } from 'assert';
 
 vi.mock('../../../src/utils/fileUtils', () => ({
     downloadFile: vi.fn(),
@@ -16,6 +17,7 @@ vi.mock('../../../src/utils/fileUtils', () => ({
     writeFile: vi.fn(),
     getTempDir: vi.fn(),
     exportAsPDF: vi.fn(),
+    exportAsPDFReturnFile: vi.fn(() => Promise.resolve(Buffer.from('mocked PDF content'))),
 }));
 
 const mockDownloadFile = vi.fn();
@@ -23,6 +25,9 @@ vi.spyOn(fileUtils, 'downloadFile').mockImplementation(mockDownloadFile);
 
 const mockExportAsPDF = vi.fn();
 vi.spyOn(fileUtils, 'exportAsPDF').mockImplementation(mockExportAsPDF);
+
+const mockExportAsPDFReturnFile = vi.fn();
+vi.spyOn(fileUtils, 'exportAsPDFReturnFile').mockImplementation(mockExportAsPDFReturnFile);
 
 const mockDir = '/mock/temp/dir';
 const mockGetTempDir = vi.fn(async () => mockDir);
@@ -61,80 +66,121 @@ describe('GIVEN an ExportService', () => {
     });
 
     describe('WHEN exporting as text', () => {
-        it('THEN it calls downloadFile with .txt', () => {
-            testExportAsText('Hello\n\n\nWorld!', 'TestNote');
+        it('THEN it calls downloadFile with .txt', async () => {
+            await testExportAsText(['Hello\n\n\nWorld!'], ['TestNote']);
+        });
+        it('THEN it calls downloadFile with .txt for multiple notes', async () => {
+            await testExportAsText(['Note1 Content', 'Note2 Content'], ['Note1', 'Note2']);
         });
     });
 
     describe('WHEN exporting as HTML', () => {
         it('THEN exports correctly', async () => {
-            await testExportAsHTML('<p>Hello</p><p>World!</p>', 'TestNote');
+            await testExportAsHTML(['<p>Hello</p><p>World!</p>'], ['TestNote']);
+        });
+        it('THEN exports correctly for multiple notes', async () => {
+            await testExportAsHTML(['<p>Note1</p>', '<p>Note2</p>'], ['Note1', 'Note2']);
         });
         it('THEN exports correctly with images', async () => {
-            await testExportAsHTML('<p>Hello</p><img src=".files/test-image.jpg" alt="Test Image">  <img src=".files/test-image.png" title="Test Image"><p>World!</p>', 'TestNoteWithImage');
+            await testExportAsHTML(['<p>Hello</p><img src=".files/test-image.jpg" alt="Test Image">  <img src=".files/test-image.png" title="Test Image"><p>World!</p>'], ['TestNoteWithImage']);
         });
         it('THEN exports correctly with pdfs', async () => {
-            await testExportAsHTML('<p>Hello</p><div src=".files/msowevze.pdf" data-type="pdf" contenteditable="false"><iframe src=".files/msowevze.pdf" width="100%" height="1095px"></iframe></div><p>World!</p>', 'TestNoteWithPDF');
+            await testExportAsHTML(['<p>Hello</p><div src=".files/msowevze.pdf" data-type="pdf" contenteditable="false"><iframe src=".files/msowevze.pdf" width="100%" height="1095px"></iframe></div><p>World!</p>'], ['TestNoteWithPDF']);
         });
     });
 
     describe('WHEN exporting as Markdown', () => {
         it('THEN it exports correctly', async () => {
-            await testExportAsMarkdown('# Hello\n\nWorld!', 'TestNote');
+            await testExportAsMarkdown(['# Hello\n\nWorld!'], ['TestNote']);
+        });
+        it('THEN it exports correctly for multiple notes', async () => {
+            await testExportAsMarkdown(['# Note1', '# Note2'], ['Note1', 'Note2']);
+
         });
     });
 
     describe('WHEN exporting as PDF', () => {
         it('THEN it exports correctly', async () => {
-            await testExportAsPDF('<p>Hello</p><p>World!</p>', 'TestNote');
+            await testExportAsPDF(['<p>Hello</p><p>World!</p>'], ['TestNote']);
+        });
+        it('THEN it exports correctly for multiple notes', async () => {
+            await testExportAsPDF(['<p>Note1</p>', '<p>Note2</p>'], ['Note1', 'Note2']);
         });
         it('THEN exports correctly with images', async () => {
-            await testExportAsPDF('<p>Hello</p><img src=".files/test-image.png" alt="Test Image"> <p>World!</p>', 'TestNoteWithImage');
+            await testExportAsPDF(['<p>Hello</p><img src=".files/test-image.png" alt="Test Image"> <p>World!</p>'], ['TestNoteWithImage']);
         });
         it('THEN exports correctly with pdfs', async () => {
-            await testExportAsPDF('<p>Hello</p><div src=".files/msowevze.pdf" title="msowevze" data-type="pdf" contenteditable="false"><iframe src=".files/msowevze.pdf" width="100%" height="1095px"></iframe></div><p>World!</p>', 'TestNoteWithPDF');
+            await testExportAsPDF(['<p>Hello</p><div src=".files/msowevze.pdf" title="msowevze" data-type="pdf" contenteditable="false"><iframe src=".files/msowevze.pdf" width="100%" height="1095px"></iframe></div><p>World!</p>'], ['TestNoteWithPDF']);
         });
     });
 });
 
 
 // Helper for text export
-function testExportAsText(content: string, noteName: string) {
-    editor.commands.setContent(content);
-    service.exportNoteAsText(editor, noteName);
+async function testExportAsText(content: string[], noteName: string[]) {
+    await service.exportNotesAsText(content, noteName);
     expect(mockDownloadFile).toHaveBeenCalled();
     const [, filename] = mockDownloadFile.mock.calls[0];
-    expect(filename).toBe(`${noteName}.txt`);
+    if (content.length === 1) {
+        expect(filename).toBe(`${noteName[0]}.txt`);
+    }
+    else if (content.length > 1) {
+        expect(filename).toBe(`${noteName[0]}.zip`);
+    }
+    else {
+        fail();
+    }
 }
 
 // Helper for HTML export
-async function testExportAsHTML(content: string, noteName: string) {
-    editor.commands.setContent(content);
-    await service.exportNoteAsHTML(editor, noteName, workspace);
+async function testExportAsHTML(content: string[], noteName: string[]) {
+    const jsonContent = getJSONFromContent(content, editor);
+    await service.exportNotesAsHTML(content, noteName, jsonContent, workspace);
     expect(mockDownloadFile).toHaveBeenCalled();
     const [blob, filename] = mockDownloadFile.mock.calls[0];
-    expect(filename).toBe(`${noteName}.zip`);
+    expect(filename).toBe(`${noteName[0]}.zip`);
     expect(blob).toBeInstanceOf(Blob);
 }
 
 // Helper for Markdown export
-async function testExportAsMarkdown(content: string, noteName: string) {
-    editor.commands.setContent(content);
-    await service.exportNoteAsMarkdown(editor, noteName, workspace);
+async function testExportAsMarkdown(content: string[], noteName: string[]) {
+    const jsonContent = getJSONFromContent(content, editor);
+    await service.exportNoteAsMarkdown(content, noteName, jsonContent, workspace);
     expect(mockDownloadFile).toHaveBeenCalled();
     const [blob, filename] = mockDownloadFile.mock.calls[0];
-    expect(filename).toBe(`${noteName}.zip`);
+    expect(filename).toBe(`${noteName[0]}.zip`);
     expect(blob).toBeInstanceOf(Blob);
 }
 
 // Helper for PDF export
-async function testExportAsPDF(content: string, noteName: string) {
-    editor.commands.setContent(content);
-    await service.exportNoteAsPDF(editor, noteName, workspace);
+async function testExportAsPDF(content: string[], noteName: string[]) {
+    await service.exportNotesAsPDF(content, noteName, workspace);
     expect(mockGetTempDir).toHaveBeenCalled();
-    expect(mockExportAsPDF).toHaveBeenCalled();
-    const [path, notename] = mockExportAsPDF.mock.calls[0];
-    expect(notename).toBe(noteName);
-    expect(path).toContain(mockDir);
-    expect(path).toContain(`${noteName}-`);
+
+    if (content.length === 1) {
+        const [path, notename] = mockExportAsPDF.mock.calls[0];
+
+        expect(mockExportAsPDF).toHaveBeenCalled();
+        expect(notename).toBe(noteName[0]);
+        expect(path).toContain(mockDir);
+        expect(path).toContain(`${noteName[0]}-`);
+    }
+    else {
+        expect(mockExportAsPDFReturnFile).toHaveBeenCalledTimes(content.length);
+        expect(mockDownloadFile).toHaveBeenCalled();
+        const [blob, filename] = mockDownloadFile.mock.calls[0];
+        expect(filename).toBe(`${noteName[0]}.zip`);
+        expect(blob).toBeInstanceOf(Blob);
+    }
+
+
+}
+
+function getJSONFromContent(content: string[], editor: Editor): JSONContent[] {
+    const jsonContent: JSONContent[] = [];
+    content.forEach((text) => {
+        editor.commands.setContent(text);
+        jsonContent.push(editor.getJSON());
+    });
+    return jsonContent;
 }

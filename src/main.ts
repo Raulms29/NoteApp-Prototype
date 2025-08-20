@@ -122,11 +122,12 @@ if (!gotTheLock) {
       const url = new URL(request.url);
       console.log('Decoded URL pathname:', url.pathname);
       let filePath = decodeURIComponent(url.pathname);
-      console.log('Relative path:', filePath);
 
       if (process.platform === 'win32' && filePath.startsWith('/')) {
         filePath = filePath.slice(1);
       }
+
+      console.log('Final file path:', filePath);
 
       if (!fs.existsSync(filePath)) {
         return new Response('File not found', { status: 404 });

@@ -1,7 +1,7 @@
 import { vi } from 'vitest';
-import { Workspace } from '../../../src/services/domain/Workspace';
+import { Workspace } from '../../../../src/services/domain/Workspace';
 
-vi.mock('../../../src/utils/fileUtils', () => ({
+vi.mock('../../../../src/utils/fileUtils', () => ({
     joinPaths: async (...args: string[]) => args.join('/'),
 }));
 

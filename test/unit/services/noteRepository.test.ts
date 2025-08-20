@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeAll } from 'vitest';
-import { Note } from '../../../../src/services/domain/Note';
-import { NoteRepository } from '../../../../src/services/NoteRepository';
-import * as fileUtils from '../../../../src/utils/fileUtils';
+import { Note } from '../../../src/services/domain/Note';
+import { NoteRepository } from '../../../src/services/NoteRepository';
+import * as fileUtils from '../../../src/utils/fileUtils';
 
 vi.mock('../../../src/utils/fileUtils');
 vi.mock('fs');

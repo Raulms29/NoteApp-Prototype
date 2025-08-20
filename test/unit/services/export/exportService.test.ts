@@ -1,13 +1,13 @@
-import ExportService from '../../../src/services/ExportService';
+import ExportService from '../../../../src/services/ExportService';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { Editor, JSONContent } from '@tiptap/vue-3';
-import { Workspace } from '../../../src/services/domain/Workspace';
-import * as fileUtils from '../../../src/utils/fileUtils';
-import { createEditor } from '../../../src/components/editor/createEditor';
-import { useNotesStore } from '../../../src/stores/useNotesStore';
+import { Workspace } from '../../../../src/services/domain/Workspace';
+import * as fileUtils from '../../../../src/utils/fileUtils';
+import { createEditor } from '../../../../src/components/editor/createEditor';
+import { useNotesStore } from '../../../../src/stores/useNotesStore';
 import { fail } from 'assert';
 
-vi.mock('../../../src/utils/fileUtils', () => ({
+vi.mock('../../../../src/utils/fileUtils', () => ({
     downloadFile: vi.fn(),
     getFilenameFromPath: vi.fn(() => 'mocked-file.ext'),
     joinPaths: vi.fn((...args) => args.join('/')),
@@ -38,7 +38,7 @@ const service: ExportService = new ExportService();
 let editor: Editor;
 let workspace: Workspace;
 // Mock useNotesStore
-vi.mock('../../../src/stores/useNotesStore', () => ({
+vi.mock('../../../../src/stores/useNotesStore', () => ({
     useNotesStore: vi.fn(() => ({
         getNoteById: vi.fn(),
         selectNote: vi.fn(),

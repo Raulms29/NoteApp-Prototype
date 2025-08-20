@@ -49,7 +49,6 @@ import GenericButton from '../components/generic/GenericButton.vue'
 import LoadingOverlay from '../components/loading/LoadingOverlay.vue'
 import GenericDialog from '../components/generic/GenericDialog.vue'
 import { useWorkspaceStore } from '../stores/useWorkspaceStore'
-import { Workspace } from '../services/domain/Workspace'
 import { useRouter } from 'vue-router'
 
 const name = ref('')
@@ -82,7 +81,7 @@ async function handleCreate() {
         return;
     }
 
-    await workspaceStore.addWorkspace(new Workspace(name.value.trim(), location.value.trim()));
+    await workspaceStore.addWorkspace(name.value.trim(), location.value.trim());
     router.push({ name: 'workspace' });
 }
 

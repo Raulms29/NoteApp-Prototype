@@ -1,7 +1,6 @@
 import { setActivePinia, createPinia } from 'pinia';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useWorkspaceStore } from '../../../src/stores/useWorkspaceStore';
-import { Workspace } from '../../../src/services/domain/Workspace';
 
 // Mock WorkspaceRepository and fileUtils
 const getWorkspaces = vi.fn(async () => []);
@@ -20,14 +19,11 @@ vi.mock('../../../src/services/WorkspaceRepository', () => {
 vi.mock('../../../src/utils/fileUtils', () => ({
     setWorkspaceRoot: vi.fn(),
 }));
-vi.mock('../../../src/stores/useNotesStore', () => ({
-    useNotesStore: vi.fn(() => ({ init: vi.fn() })),
-}));
 
 describe('GIVEN the useWorkspaceStore store', () => {
-    const workspaceID = 'abcd1234';
     let store: ReturnType<typeof useWorkspaceStore>;
-    let ws: Workspace;
+    let wsName: string;
+    let wsPath: string;
 
     beforeEach(() => {
         setActivePinia(createPinia());
@@ -35,7 +31,8 @@ describe('GIVEN the useWorkspaceStore store', () => {
 
         store = useWorkspaceStore();
         store.init();
-        ws = new Workspace('Test', '/test/path', workspaceID);
+        wsName = 'Test';
+        wsPath = '/test/path';
     });
 
     // • store initialization
@@ -43,42 +40,46 @@ describe('GIVEN the useWorkspaceStore store', () => {
         it('THEN workspaces should be empty and currentWorkspace null', () => {
             expect(store.workspaces).toEqual([]);
             expect(store.currentWorkspace).toBeNull();
+            expect(getWorkspaces).toHaveBeenCalled();
         });
     });
 
     // • addWorkspace
     describe('WHEN addWorkspace is called', () => {
         it('THEN the workspace should be added', async () => {
-            await store.addWorkspace(ws);
+            const ws = await store.addWorkspace(wsName, wsPath);
             expect(store.workspaces).toContainEqual(ws);
+            expect(createWorkspace).toHaveBeenCalledWith(ws);
         });
     });
 
     // • removeWorkspace
     describe('WHEN removeWorkspace is called', () => {
         it('THEN the workspace should be removed', async () => {
-            await store.addWorkspace(ws);
-            store.removeWorkspace(workspaceID);
+            const ws = await store.addWorkspace(wsName, wsPath);
+            store.removeWorkspace(ws.id);
             expect(store.workspaces.length).not.toContainEqual(ws);
+            expect(saveWorkspaces).toHaveBeenCalled();
         });
 
         it('THEN currentWorkspace should be null if removed', async () => {
-            await store.addWorkspace(ws);
-            store.selectWorkspace(workspaceID);
-            store.removeWorkspace(workspaceID);
+            const ws = await store.addWorkspace(wsName, wsPath);
+            store.selectWorkspace(ws.id);
+            store.removeWorkspace(ws.id);
             expect(store.currentWorkspace).toBeNull();
+            expect(saveWorkspaces).toHaveBeenCalled();
         });
     });
 
     // • selectWorkspace
     describe('WHEN selectWorkspace is called', () => {
         it('THEN currentWorkspace should be set', async () => {
-            await store.addWorkspace(ws);
-            store.selectWorkspace(workspaceID);
+            const ws = await store.addWorkspace(wsName, wsPath);
+            store.selectWorkspace(ws.id);
             expect(store.currentWorkspace).toEqual(ws);
         });
         it('THEN it should throw when it does not exist', async () => {
-            await store.addWorkspace(ws);
+            await store.addWorkspace(wsName, wsPath);
             const id = 'NonExistentID';
             await expect(store.selectWorkspace(id)).rejects.toThrow(`Workspace with id ${id} not found`);
         });
@@ -87,9 +88,10 @@ describe('GIVEN the useWorkspaceStore store', () => {
     // • renameWorkspace
     describe('WHEN renameWorkspace is called', () => {
         it('THEN the workspace name should be updated', async () => {
-            await store.addWorkspace(ws);
-            store.renameWorkspace(workspaceID, 'Renamed');
+            const ws = await store.addWorkspace(wsName, wsPath);
+            store.renameWorkspace(ws.id, 'Renamed');
             expect(store.workspaces[0].name).toBe('Renamed');
+            expect(saveWorkspaces).toHaveBeenCalled();
         });
     });
 
@@ -103,8 +105,8 @@ describe('GIVEN the useWorkspaceStore store', () => {
             expect(() => store.validateWorkspace('Valid', '')).toThrow();
         });
         it('THEN it should throw for duplicate path', async () => {
-            await store.addWorkspace(ws);
-            expect(() => store.validateWorkspace('Another', '/test/path')).toThrow();
+            await store.addWorkspace(wsName, wsPath);
+            expect(() => store.validateWorkspace('Another', wsPath)).toThrow();
         });
         it('THEN it should not throw for valid workspace', () => {
             expect(() => store.validateWorkspace('Valid', '/unique/path')).not.toThrow();
@@ -114,9 +116,9 @@ describe('GIVEN the useWorkspaceStore store', () => {
     // • getCurrentFilesPath
     describe('WHEN getCurrentFilesPath is called', () => {
         it('THEN it should return the .files path for the current workspace', async () => {
-            await store.addWorkspace(ws);
-            store.selectWorkspace(workspaceID);
-            expect(store.getCurrentFilesPath()).toBe('/test/path/.files');
+            const ws = await store.addWorkspace(wsName, wsPath);
+            store.selectWorkspace(ws.id);
+            expect(store.getCurrentFilesPath()).toBe(`${wsPath}/.files`);
         });
         it('THEN it should return null if no workspace is selected', () => {
             expect(store.getCurrentFilesPath()).toBeNull();
@@ -125,12 +127,18 @@ describe('GIVEN the useWorkspaceStore store', () => {
 
     // • getLastWorkspaceAccesed
     describe('WHEN getLastWorkspaceAccesed is called', () => {
-        let ws2: Workspace;
-        let ws3: Workspace;
+        let ws2Name: string;
+        let ws2Path: string;
+        let ws3Name: string;
+        let ws3Path: string;
 
         beforeEach(() => {
-            ws2 = new Workspace('WS2', '/path/2');
-            ws3 = new Workspace('WS3', '/path/3');
+            wsName = 'Test';
+            wsPath = '/test/path';
+            ws2Name = 'WS2';
+            ws2Path = '/path/2';
+            ws3Name = 'WS3';
+            ws3Path = '/path/3';
         });
 
         it('THEN it should return null if there are no workspaces', () => {
@@ -138,35 +146,41 @@ describe('GIVEN the useWorkspaceStore store', () => {
         });
 
         it('THEN it should return null if no workspace has lastAccessed', async () => {
-            await store.addWorkspace(ws);
-            await store.addWorkspace(ws2);
+            await store.addWorkspace(wsName, wsPath);
+            await store.addWorkspace(ws2Name, ws2Path);
             expect(store.getLastWorkspaceAccesed()).toBeNull();
         });
 
         it('THEN it should return the workspace with the latest lastAccessed date', async () => {
+
+            const ws = await store.addWorkspace(wsName, wsPath);
+            const ws2 = await store.addWorkspace(ws2Name, ws2Path);
+
             ws.lastAccessed = new Date('2025-01-01T10:00:00Z');
             ws2.lastAccessed = new Date('2025-01-02T10:00:00Z');
-            await store.addWorkspace(ws);
-            await store.addWorkspace(ws2);
-            expect(store.getLastWorkspaceAccesed()).toEqual(ws2);
+
+            expect(store.getLastWorkspaceAccesed()).toEqual(store.workspaces[1]);
         });
 
         it('THEN it should handle multiple workspaces with different lastAccessed dates', async () => {
+            const ws = await store.addWorkspace(wsName, wsPath);
+            const ws2 = await store.addWorkspace(ws2Name, ws2Path);
+            const ws3 = await store.addWorkspace(ws3Name, ws3Path);
+
             ws.lastAccessed = new Date('2025-01-01T10:00:00Z');
             ws2.lastAccessed = new Date('2025-01-03T10:00:00Z');
             ws3.lastAccessed = new Date('2025-01-02T10:00:00Z');
-            await store.addWorkspace(ws);
-            await store.addWorkspace(ws2);
-            await store.addWorkspace(ws3);
-            expect(store.getLastWorkspaceAccesed()).toEqual(ws2);
+
+            expect(store.getLastWorkspaceAccesed()).toEqual(store.workspaces[1]);
         });
     });
 
     // • persistWorkspaces
     describe('WHEN persistWorkspaces is called', () => {
         it('THEN it should work properly', async () => {
-            await store.addWorkspace(ws);
+            await store.addWorkspace(wsName, wsPath);
             await store.persistWorkspaces();
+            expect(saveWorkspaces).toHaveBeenCalled();
         });
     });
 });

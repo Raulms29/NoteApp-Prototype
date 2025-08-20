@@ -3,6 +3,9 @@ import fs from 'fs';
 import fsPromises from 'fs/promises';
 
 export function registerExportHandlers() {
+    /**
+     * Handles exporting an HTML file as a PDF and returns the PDF buffer.
+     */
     ipcMain.handle('export-as-pdf-return-file', async (_, tempHTMLFilePath: string) => {
         const win = new BrowserWindow({
             show: false, // Hidden window
@@ -23,6 +26,9 @@ export function registerExportHandlers() {
             throw err;
         }
     });
+    /**
+     * Handles exporting an HTML file as a PDF and saves it to disk.
+     */
     ipcMain.handle('export-as-pdf', async (_, tempHTMLFilePath: string, fileName: string) => {
         const win = new BrowserWindow({
             show: false, // Hidden window

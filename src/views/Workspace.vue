@@ -19,7 +19,7 @@
 <script lang="ts" setup>
 
 import { useRouter } from 'vue-router';
-import { WorkspaceI } from '../services/domain/Workspace';
+import { Workspace, WorkspaceI } from '../services/domain/Workspace';
 import { useWorkspaceStore } from '../stores/useWorkspaceStore';
 import { onMounted, ref } from 'vue';
 import { useSettingsStore } from '../stores//useSettingsStore';
@@ -34,7 +34,7 @@ const notesStore = useNotesStore();
 
 async function selectWorkspace(workspace: WorkspaceI) {
     const ws = await workspaceStore.selectWorkspace(workspace.id);
-    await notesStore.init(ws);
+    await notesStore.init(ws as Workspace);
     resizeWindowAndNavigate();
 }
 

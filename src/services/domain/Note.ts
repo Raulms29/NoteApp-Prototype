@@ -21,7 +21,8 @@ export class Note {
      * @param name - The name of the note, must not contain invalid filename characters.
      * @param children - An optional array of child notes.
      * @param createdAt - The creation date of the note, defaults to the current date.
-     * @throws Will throw an error if tehre is a validation error.
+     * @param lastAccessed - The date when the note was last accessed, defaults to null.
+     * @throws Will throw an error if there is a validation error.
      */
     constructor(name: string, children: Note[] = [], id: string = Math.random().toString(36).substring(2, 10), createdAt: Date = new Date(), lastAccessed: Date | null = null) {
         this.id = id;
@@ -102,10 +103,18 @@ export class Note {
         return this._createdAt;
     }
 
+    /**
+     * Gets the last accessed date of the note.
+     * @returns The last accessed date of the note.
+     */
     get lastAccessed(): Date {
         return this._lastAccessed;
     }
 
+    /**
+     * Sets the last accessed date of the note.
+     * @param date - The date when the note was last accessed.
+     */
     set lastAccessed(date: Date) {
         this._lastAccessed = date;
     }
@@ -199,6 +208,10 @@ export class Note {
         return true; // Note was found and removed directly
     }
 
+    /**
+     * Retrieves all descendant notes of the current note (children, grandchildren, etc.).
+     * @returns An array containing all descendant notes.
+     */
     getDescendants(): Note[] {
         const descendants: Note[] = [];
         for (const child of this._children) {
@@ -207,6 +220,10 @@ export class Note {
         return descendants;
     }
 
+    /**
+     * Checks if the note has any child notes.
+     * @returns True if the note has one or more children, false otherwise.
+     */
     hasChildren(): boolean {
         return this._children.length > 0;
     }

@@ -1,3 +1,6 @@
+/**
+ * Gets the full path for a note file.
+ */
 export const getNotePath = async (notesPath: string, noteName: string): Promise<string> => {
     if (!window.fileAPI) {
         throw new Error('fileAPI is not available in the renderer process.');
@@ -5,6 +8,9 @@ export const getNotePath = async (notesPath: string, noteName: string): Promise<
     return await window.fileAPI.getNotePath(notesPath, noteName);
 };
 
+/**
+ * Checks if a file exists at the given path.
+ */
 export const fileExists = async (filePath: string): Promise<boolean> => {
     try {
         return await window.fileAPI.fileExists(filePath);
@@ -13,6 +19,9 @@ export const fileExists = async (filePath: string): Promise<boolean> => {
     }
 };
 
+/**
+ * Reads a text file and returns its content as a string.
+ */
 export const readTextFile = async (filePath: string): Promise<string> => {
     try {
         return await window.fileAPI.readTextFile(filePath);
@@ -21,6 +30,9 @@ export const readTextFile = async (filePath: string): Promise<string> => {
     }
 };
 
+/**
+ * Reads a binary file and returns its content as a string.
+ */
 export const readBinaryFile = async (filePath: string): Promise<string> => {
     try {
         return await window.fileAPI.readBinaryFile(filePath);
@@ -29,6 +41,9 @@ export const readBinaryFile = async (filePath: string): Promise<string> => {
     }
 };
 
+/**
+ * Writes content to a file at the given path.
+ */
 export const writeFile = async (filePath: string, content: string): Promise<void> => {
     try {
         await window.fileAPI.writeFile(filePath, content);
@@ -37,6 +52,9 @@ export const writeFile = async (filePath: string, content: string): Promise<void
     }
 };
 
+/**
+ * Opens a folder selection dialog and returns the selected path.
+ */
 export const selectFolder = async (): Promise<string | null> => {
     try {
         return await window.fileAPI.selectFolder();
@@ -45,6 +63,9 @@ export const selectFolder = async (): Promise<string | null> => {
     }
 };
 
+/**
+ * Creates a folder at the specified path.
+ */
 export const createFolder = async (path: string): Promise<void> => {
     try {
         await window.fileAPI.createFolder(path);
@@ -53,6 +74,9 @@ export const createFolder = async (path: string): Promise<void> => {
     }
 };
 
+/**
+ * Checks if a folder exists at the given path.
+ */
 export const folderExists = async (folderPath: string): Promise<boolean> => {
     try {
         return await window.fileAPI.folderExists(folderPath);
@@ -61,6 +85,9 @@ export const folderExists = async (folderPath: string): Promise<boolean> => {
     }
 };
 
+/**
+ * Renames a file from oldPath to newPath.
+ */
 export const renameFile = async (oldPath: string, newPath: string): Promise<void> => {
     try {
         await window.fileAPI.renameFile(oldPath, newPath);
@@ -69,14 +96,23 @@ export const renameFile = async (oldPath: string, newPath: string): Promise<void
     }
 };
 
+/**
+ * Joins multiple path segments into a single path.
+ */
 export const joinPaths = async (...paths: string[]): Promise<string> => {
     return window.fileAPI.joinPaths(...paths);
 };
 
+/**
+ * Generates a random file name string.
+ */
 export function getRandomFileName(): string {
     return Math.random().toString(36).slice(2, 10);
 }
 
+/**
+ * Copies a file to the specified destination folder.
+ */
 export const copyFileToFolder = async (sourcePath: string, destinationFolder: string): Promise<void> => {
     try {
         await window.fileAPI.copyFileToFolder(sourcePath, destinationFolder);
@@ -85,6 +121,9 @@ export const copyFileToFolder = async (sourcePath: string, destinationFolder: st
     }
 };
 
+/**
+ * Gets the file name from a file path.
+ */
 export const getFilenameFromPath = async (filePath: string): Promise<string> => {
     try {
         return await window.fileAPI.getFilenameFromPath(filePath);
@@ -93,6 +132,9 @@ export const getFilenameFromPath = async (filePath: string): Promise<string> => 
     }
 };
 
+/**
+ * Gets the file extension from a file path.
+ */
 export const getExtensionFromPath = async (filePath: string): Promise<string> => {
     try {
         return await window.fileAPI.getExtensionFromPath(filePath);
@@ -101,6 +143,9 @@ export const getExtensionFromPath = async (filePath: string): Promise<string> =>
     }
 };
 
+/**
+ * Deletes a file at the given path.
+ */
 export const deleteFile = async (filePath: string): Promise<void> => {
     try {
         await window.fileAPI.deleteFile(filePath);
@@ -110,14 +155,9 @@ export const deleteFile = async (filePath: string): Promise<void> => {
     }
 };
 
-export const setWorkspaceRoot = async (rootPath: string): Promise<void> => {
-    try {
-        await window.workspaceAPI.setWorkspaceRoot(rootPath);
-    } catch (error) {
-        throw new Error(`Failed to set workspace root: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
-};
-
+/**
+ * Triggers a download of a file with the given content and name.
+ */
 export const downloadFile = (content: Blob, fileName: string): void => {
     const url = URL.createObjectURL(content);
     const a = document.createElement('a');
@@ -129,6 +169,9 @@ export const downloadFile = (content: Blob, fileName: string): void => {
     URL.revokeObjectURL(url);
 };
 
+/**
+ * Exports an HTML file as a PDF with the given file name.
+ */
 export const exportAsPDF = async (tempHTMLFilePath: string, fileName: string): Promise<void> => {
     try {
         await window.exportAPI.exportAsPDF(tempHTMLFilePath, fileName);
@@ -138,6 +181,9 @@ export const exportAsPDF = async (tempHTMLFilePath: string, fileName: string): P
     }
 };
 
+/**
+ * Exports an HTML file as a PDF and returns the PDF as a Buffer.
+ */
 export const exportAsPDFReturnFile = async (tempHTMLFilePath: string): Promise<Buffer> => {
     try {
         return await window.exportAPI.exportAsPDFReturnFile(tempHTMLFilePath);
@@ -146,10 +192,24 @@ export const exportAsPDFReturnFile = async (tempHTMLFilePath: string): Promise<B
     }
 };
 
+/**
+ * Gets the path to the temporary directory.
+ */
 export const getTempDir = async (): Promise<string> => {
     try {
         return await window.fileAPI.getTempDir();
     } catch (error) {
         throw new Error(`Failed to get temp directory: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+};
+
+/**
+ * Sets the root path for the workspace.
+ */
+export const setWorkspaceRoot = async (rootPath: string): Promise<void> => {
+    try {
+        await window.workspaceAPI.setWorkspaceRoot(rootPath);
+    } catch (error) {
+        throw new Error(`Failed to set workspace root: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 };

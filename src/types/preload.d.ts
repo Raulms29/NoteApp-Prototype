@@ -3,6 +3,10 @@ export { };
 import { WorkspaceI } from '../services/domain/Workspace';
 import { Settings } from '../services/domain/Settings';
 
+/**
+ * Type definitions for the preload scripts used in the application
+ * This file declares global types and APIs exposed to the renderer process via preload.
+ */
 declare global {
     interface Window {
         fileAPI: {

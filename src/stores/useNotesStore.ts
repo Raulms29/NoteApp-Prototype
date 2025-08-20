@@ -4,14 +4,19 @@ import { Note } from '../services/domain/Note';
 import { NoteRepository } from '../services/NoteRepository';
 import { Workspace } from '../services/domain/Workspace';
 
-
+/**
+ * Pinia store for managing notes in the application
+ */
 export const useNotesStore = defineStore('notes', () => {
     const notes = ref<Note[]>();
     const currentNote = ref<Note | null>(null);
     const firstNoteAccess = ref<boolean>(true);
     let repo: NoteRepository;
 
-    // Initialize the repository
+    /**
+     * Initializes the note store for the given workspace and loads the note tree.
+     * @param workspace - The workspace to initialize the store
+     */
     async function init(workspace: Workspace) {
         repo = new NoteRepository(
             workspace.path,
@@ -25,10 +30,17 @@ export const useNotesStore = defineStore('notes', () => {
         repo.saveNoteTree(notes.value);
     }
 
+    /**
+     * Loads the note tree from the repository into the store.
+     */
     async function loadTree(): Promise<void> {
         notes.value = await repo.loadNoteTree();
     }
 
+    /**
+     * Selects a note from the note tree.
+     * @param note - The note to select.
+     */
     async function selectNote(note: Note) {
         const existingNote = getNoteById(note.id);
         console.log(`Selecting note: ${note.name}`);
@@ -42,85 +54,41 @@ export const useNotesStore = defineStore('notes', () => {
         updateNoteTree();
     }
 
+    /**
+     * Saves the HTML content for the specified note.
+     * @param note - The note to save content for.
+     * @param html - The HTML content to save.
+     */
     async function saveNoteContent(note: Note, html: string) {
         if (!currentNote.value) throw new Error('No note selected to save content for.');
         await repo.writeNoteContent(note, html);
     }
 
+    /**
+     * Loads the HTML content of the currently selected note.
+     * @returns The HTML content as a string.
+     */
     async function loadCurrentNoteContent(): Promise<string> {
         if (!currentNote.value) throw new Error('No note selected to load.');
-        return await repo.readNoteContent(currentNote.value as Note);
+        return await loadNoteContent(currentNote.value as Note);
     }
 
+    /**
+     * Loads the HTML content of the specified note.
+     * @param note - The note to load content for.
+     * @returns The HTML content as a string.
+     */
     async function loadNoteContent(note: Note): Promise<string> {
         if (!note) throw new Error('No note provided to load content for.');
         return await repo.readNoteContent(note);
     }
 
-    async function renameNote(note: Note, newName: string) {
-        if (getNoteByName(newName) !== null) {
-            throw new Error(`A note with the name "${newName}" already exists.`);
-        }
-        const oldName = note.name;
-        // Update the note's name
-        note.name = newName;
-        // Rename the file
-        await repo.renameNoteFile(oldName, note.name);
-        updateNoteTree();
-    }
-
-    function deleteNote(noteToDelete: Note) {
-        if (!noteToDelete) {
-            throw new Error('No note provided to delete.');
-        }
-
-        // Remove the note from the notes tree
-        const removed = removeNoteFromTree(noteToDelete);
-        if (!removed) {
-            throw new Error(`Note with ID ${noteToDelete.id} not found in the note tree.`);
-        }
-
-        const descendants = noteToDelete.getDescendants();
-
-        // Delete the note file
-        repo.deleteNoteFiles([noteToDelete, ...descendants]);
-        if (currentNote.value?.id === noteToDelete.id) {
-            currentNote.value = null; // Clear current note if it was the one deleted
-        }
-        // Update the note tree after deletion
-        updateNoteTree();
-    }
-
-    function moveNoteTo(noteToMove: Note, targetNote: Note) {
-        // Perform note removal from the tree
-        preMoveNote(noteToMove);
-
-        // Add the note to the new parent
-        targetNote.addChild(noteToMove);
-
-        updateNoteTree();
-    }
-
-    function moveNoteBefore(noteToMove: Note, targetNote: Note) {
-        // Perform note removal from the tree
-        preMoveNote(noteToMove);
-
-        // Insert the note before the target note
-        insertInPosition(notes.value, noteToMove, targetNote, (i) => i);
-
-        updateNoteTree();
-    }
-
-    function moveNoteAfter(noteToMove: Note, targetNote: Note) {
-        // Perform note removal from the tree
-        preMoveNote(noteToMove);
-
-        // Insert the note after the target note
-        insertInPosition(notes.value, noteToMove, targetNote, (i) => i + 1);
-
-        updateNoteTree();
-    }
-
+    /**
+     * Creates a new note with the given name and parent (if provided)
+     * @param newName - The name for the new note.
+     * @param parent - The parent note to add the new note to (optional).
+     * @returns The newly created Note instance.
+     */
     async function createNote(newName = 'New Note', parent?: Note): Promise<Note> {
         newName = newName.trim();
 
@@ -150,18 +118,119 @@ export const useNotesStore = defineStore('notes', () => {
         return newNote;
     }
 
+    /**
+     * Renames the specified note and updates the note tree and file.
+     * @param note - The note to rename.
+     * @param newName - The new name for the note.
+     */
+    async function renameNote(note: Note, newName: string) {
+        if (getNoteByName(newName) !== null) {
+            throw new Error(`A note with the name "${newName}" already exists.`);
+        }
+        const oldName = note.name;
+        // Update the note's name
+        note.name = newName;
+        // Rename the file
+        await repo.renameNoteFile(oldName, note.name);
+        updateNoteTree();
+    }
+
+    /**
+     * Deletes the specified note and its descendants from the note tree and files.
+     * @param noteToDelete - The note to delete.
+     */
+    function deleteNote(noteToDelete: Note) {
+        if (!noteToDelete) {
+            throw new Error('No note provided to delete.');
+        }
+
+        // Remove the note from the notes tree
+        const removed = removeNoteFromTree(noteToDelete);
+        if (!removed) {
+            throw new Error(`Note with ID ${noteToDelete.id} not found in the note tree.`);
+        }
+
+        const descendants = noteToDelete.getDescendants();
+
+        // Delete the note file
+        repo.deleteNoteFiles([noteToDelete, ...descendants]);
+        if (currentNote.value?.id === noteToDelete.id) {
+            currentNote.value = null; // Clear current note if it was the one deleted
+        }
+        // Update the note tree after deletion
+        updateNoteTree();
+    }
+
+    /**
+     * Moves a note to be a child of another note.
+     * @param noteToMove - The note to move.
+     * @param targetNote - The target parent note.
+     */
+    function moveNoteTo(noteToMove: Note, targetNote: Note) {
+        // Perform note removal from the tree
+        preMoveNote(noteToMove);
+
+        // Add the note to the new parent
+        targetNote.addChild(noteToMove);
+
+        updateNoteTree();
+    }
+
+    /**
+     * Moves a note before another note in the note tree.
+     * @param noteToMove - The note to move.
+     * @param targetNote - The target note to move before.
+     */
+    function moveNoteBefore(noteToMove: Note, targetNote: Note) {
+        // Perform note removal from the tree
+        preMoveNote(noteToMove);
+
+        // Insert the note before the target note
+        insertInPosition(notes.value, noteToMove, targetNote, (i) => i);
+
+        updateNoteTree();
+    }
+
+    /**
+     * Moves a note after another note in the note tree.
+     * @param noteToMove - The note to move.
+     * @param targetNote - The target note to move after.
+     */
+    function moveNoteAfter(noteToMove: Note, targetNote: Note) {
+        // Perform note removal from the tree
+        preMoveNote(noteToMove);
+
+        // Insert the note after the target note
+        insertInPosition(notes.value, noteToMove, targetNote, (i) => i + 1);
+
+        updateNoteTree();
+    }
+
+    /**
+     * Resets the notes store, clearing all currently stored information
+     */
     function reset() {
         notes.value = [];
         currentNote.value = null;
         repo = null;
     }
 
+    /**
+     * Finds a note by its name.
+     * @param name - The name of the note to find.
+     * @returns The found Note instance or null if not found.
+     */
     function getNoteByName(name: string): Note {
         if (!notes.value) return null;
         const flatNotes = flattenNotes(notes.value);
         return flatNotes.find(note => note.name === name) || null;
     }
 
+    /**
+     * Finds a note by its ID.
+     * @param id - The ID of the note to find.
+     * @returns The found Note instance or null if not found.
+     */
     function getNoteById(id: string): Note {
         if (!notes.value) return null;
         const flatNotes = flattenNotes(notes.value);
@@ -169,15 +238,23 @@ export const useNotesStore = defineStore('notes', () => {
     }
 
     /**
-     * Saves an image by copying it from a source path to the files folder and returns the new filename.
+     * Saves an image to the files folder and returns its path and name.
+     * @param sourcePath - The source path of the image file.
+     * @returns An array containing the cleaned file path and file name.
      */
     async function saveImage(sourcePath: string): Promise<string[]> {
         const [filePath, fileName] = await repo.saveImage(sourcePath);
+        console.log(`Image saved to: ${filePath}, Name: ${fileName}`);
         const filePathC = preparePath(filePath);
 
         return [filePathC, fileName];
     }
 
+    /**
+     * Saves a PDF to the files folder and returns its path and name.
+     * @param sourcePath - The source path of the PDF file.
+     * @returns An array containing the cleaned file path and file name.
+     */
     async function savePDF(sourcePath: string): Promise<string[]> {
         const [filePath, fileName] = await repo.savePDF(sourcePath);
         const filePathC = preparePath(filePath);
@@ -185,6 +262,11 @@ export const useNotesStore = defineStore('notes', () => {
         return [filePathC, fileName];
     }
 
+    /**
+     * Gets the breadcrumb path for a given note in the note tree.
+     * @param note - The note to get the breadcrumb for.
+     * @returns An array of Note instances representing the path.
+     */
     function getNoteBreadcrumb(note: Note): Note[] {
         if (!note) {
             throw new Error('No note provided to get breadcrumb for.');
@@ -198,8 +280,9 @@ export const useNotesStore = defineStore('notes', () => {
     }
 
     /**
-    * Returns the most recently accessed note (by lastAccessed property).
-    */
+     * Returns the most recently accessed note (by lastAccessed property).
+     * @returns The most recently accessed Note instance or null if none found.
+     */
     function getLastNoteAccesed(): Note | null {
         const allNotes = flattenNotes(notes.value ?? []);
         return allNotes.reduce((last, note) => {
@@ -290,6 +373,7 @@ export const useNotesStore = defineStore('notes', () => {
     return {
         noteTree: notes,
         currentNote,
+        /** True if no note has been accessed yet, false otherwise */
         firstNoteAccess,
         init,
         loadTree,

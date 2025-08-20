@@ -25,6 +25,11 @@ interface PdfType {
 
 export default class ExportService {
 
+  /**
+   * Exports notes as plain text files, either individually or as a zip archive.
+   * @param textContent - Array of note contents as plain text.
+   * @param noteNames - Array of note names for file naming.
+   */
   async exportNotesAsText(textContent: string[], noteNames: string[]): Promise<void> {
     textContent = this.processNotePlainText(textContent);
 
@@ -49,6 +54,13 @@ export default class ExportService {
     downloadFile(content, `${noteName}.txt`);
   }
 
+  /**
+   * Exports notes as Markdown files, including them and embedded files in a zip archive.
+   * @param markdownContent - Array of note contents in Markdown format.
+   * @param noteNames - Array of note names for file naming.
+   * @param markdownJSON - Array of JSONContent for file extraction.
+   * @param currentWorkspace - The current workspace instance.
+   */
   async exportNoteAsMarkdown(markdownContent: string[], noteNames: string[], markdownJSON: JSONContent[], currentWorkspace: Workspace): Promise<void> {
     const zip = new JSZip();
     markdownContent.forEach((text, index) => {
@@ -66,6 +78,13 @@ export default class ExportService {
     downloadFile(content, `${noteNames[0]}.zip`);
   }
 
+  /**
+   * Exports notes as HTML files, including them and embedded files in a zip archive.
+   * @param htmlContent - Array of note contents in HTML format.
+   * @param noteNames - Array of note names for file naming.
+   * @param htmlJSONs - Array of JSONContent for file extraction.
+   * @param currentWorkspace - The current workspace instance.
+   */
   async exportNotesAsHTML(htmlContent: string[], noteNames: string[], htmlJSONs: JSONContent[], currentWorkspace: Workspace): Promise<void> {
     const zip = new JSZip();
     htmlContent.forEach((html, index) => {
@@ -84,6 +103,12 @@ export default class ExportService {
     downloadFile(content, `${noteNames[0]}.zip`);
   }
 
+  /**
+   * Exports notes as PDF files, either individually or as a zip archive.
+   * @param htmlContent - Array of note contents in HTML format.
+   * @param noteNames - Array of note names for file naming.
+   * @param currentWorkspace - The current workspace instance.
+   */
   async exportNotesAsPDF(htmlContent: string[], noteNames: string[], currentWorkspace: Workspace): Promise<void> {
     if (htmlContent.length === 1) {
       await this.exportNoteAsPDF(htmlContent[0], noteNames[0], currentWorkspace);

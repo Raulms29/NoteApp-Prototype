@@ -22,7 +22,6 @@ const emit = defineEmits(['note-change', 'note-content-update', 'update:isLoadin
 const notesStore = useNotesStore();
 const editor = ref<Editor>(null);
 const currentNote = ref<Note | null>(null);
-const props = defineProps<{ isLoading: boolean }>();
 function emitNoteChange(previousNote: Note, previousNoteContent: string) {
     emit('note-change', previousNote, previousNoteContent);
 }

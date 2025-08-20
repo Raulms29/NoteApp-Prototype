@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { WorkspaceRepository } from '../../../../src/services/WorkspaceRepository';
-import { Workspace } from '../../../../src/services/domain/Workspace';
-import * as fileUtils from '../../../../src/utils/fileUtils';
+import { WorkspaceRepository } from '../../../src/services/WorkspaceRepository';
+import { Workspace } from '../../../src/services/domain/Workspace';
+import * as fileUtils from '../../../src/utils/fileUtils';
 
 // Mock the electron store API
 const mockSetWorkspaces = vi.fn();

@@ -6,10 +6,22 @@ export class NoteRepository {
     private structurePath: string;
     private filesPath: string;
 
+    /**
+     * Creates a new NoteRepository instance and configures its paths.
+     * @param notesPath - The path to the notes directory.
+     * @param structurePath - The path to the note structure file.
+     * @param filesPath - The path to the files directory.
+     */
     constructor(notesPath: string, structurePath: string, filesPath: string) {
         this.configureRepository(notesPath, structurePath, filesPath);
     }
 
+    /**
+     * Configures the repository paths for notes, structure, and files.
+     * @param notesPath - The path to the notes directory.
+     * @param structurePath - The path to the note structure file.
+     * @param filesPath - The path to the files directory.
+     */
     configureRepository(notesPath: string, structurePath: string, filesPath: string) {
         this.notesPath = notesPath;
         this.structurePath = structurePath;
@@ -18,6 +30,7 @@ export class NoteRepository {
 
     /**
      * Loads the note structure from the JSON file.
+     * @returns An array of Note objects representing the note tree.
      */
     async loadNoteTree(): Promise<Note[]> {
         if (!await fileExists(this.structurePath)) {
@@ -52,6 +65,11 @@ export class NoteRepository {
         return notes;
     }
 
+    /**
+     * Renames a note file if the new name does not already exist.
+     * @param oldName - The current name of the note file.
+     * @param newName - The new name for the note file.
+     */
     async renameNoteFile(oldName: string, newName: string) {
         const oldFilePath = await getNotePath(this.notesPath, oldName.trim());
         const newFilePath = await getNotePath(this.notesPath, newName.trim());
@@ -68,9 +86,9 @@ export class NoteRepository {
     }
 
     /**
-    * Saves the note structure to the JSON file.
-    * @param notes The note structure to save.
-    */
+     * Saves the note structure to the JSON file.
+     * @param notes - The note structure to save.
+     */
     async saveNoteTree(notes: Note[]): Promise<void> {
         try {
             const json = JSON.stringify(notes, null, 2);
@@ -81,8 +99,10 @@ export class NoteRepository {
     }
 
     /**
-    * Reads the HTML content of a specific note.
-    */
+     * Reads the HTML content of a specific note.
+     * @param note - The note to read content from.
+     * @returns A promise that resolves to the note's HTML content as a string.
+     */
     async readNoteContent(note: Note): Promise<string> {
         const filePath = await getNotePath(this.notesPath, note.name);
         return await readTextFile(filePath);
@@ -90,6 +110,8 @@ export class NoteRepository {
 
     /**
      * Saves the HTML content of a specific note.
+     * @param note - The note to write content to.
+     * @param content - The HTML content to save.
      */
     async writeNoteContent(note: Note | null, content: string): Promise<void> {
         const filePath = await getNotePath(this.notesPath, note.name);
@@ -97,7 +119,8 @@ export class NoteRepository {
     }
 
     /**
-     * Deletes a specific note file.
+     * Deletes specific note files.
+     * @param notes - Array of notes to delete files for.
      */
     async deleteNoteFiles(notes: Note[]): Promise<void> {
         for (const note of notes) {
@@ -125,13 +148,15 @@ export class NoteRepository {
         }
 
         await copyFileToFolder(sourcePath, destination);
-        return [await joinPaths(this.filesPath, filename), filename.replace(/\.[^/.]+$/, "")]; // Return the relative path and filename without extension
+        return [await joinPaths(this.filesPath, filename), filename.replace(/\.[^/.]+$/, "")];
     }
 
     /**
      * Saves an image by copying it from a source path to the files folder and returns the new filename.
      * Handles name collisions by generating a random name using getRandomFileName.
      * The actual copy is delegated to fileUtils.copyImageToFolder.
+     * @param sourcePath - The source path of the image file.
+     * @returns A promise that resolves to an array containing the relative path and filename.
      */
     async saveImage(sourcePath: string): Promise<string[]> {
         return this.saveFileToFilesFolder(sourcePath);
@@ -141,6 +166,8 @@ export class NoteRepository {
      * Saves a PDF by copying it from a source path to the files folder and returns the new filename.
      * Handles name collisions by generating a random name using getRandomFileName.
      * The actual copy is delegated to fileUtils.copyFileToFolder.
+     * @param sourcePath - The source path of the PDF file.
+     * @returns A promise that resolves to an array containing the relative path and filename without extension.
      */
     async savePDF(sourcePath: string): Promise<string[]> {
         return this.saveFileToFilesFolder(sourcePath);

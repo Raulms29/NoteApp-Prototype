@@ -35,8 +35,8 @@
                     :notes="notesStore.currentNote.children as Note[]" @select="notesStore.selectNote($event as Note)"
                     @delete="notesStore.deleteNote($event as Note)" @create="handleCreateNote($event as Note)" />
 
-                <Editor :isLoading="isLoading" @note-change="handleNoteChange"
-                    @note-content-update="handleNoteContentChange" @update:is-loading="handleUpdateLoadingState" />
+                <Editor @note-change="handleNoteChange" @note-content-update="handleNoteContentChange"
+                    @update:is-loading="handleUpdateLoadingState" />
             </div>
         </div>
     </div>

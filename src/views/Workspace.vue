@@ -19,7 +19,7 @@
 <script lang="ts" setup>
 
 import { useRouter } from 'vue-router';
-import { Workspace, WorkspaceI } from '../services/domain/Workspace';
+import { Workspace, WorkspaceI } from '../business/domain/Workspace';
 import { useWorkspaceStore } from '../stores/useWorkspaceStore';
 import { onMounted, ref } from 'vue';
 import { useSettingsStore } from '../stores//useSettingsStore';

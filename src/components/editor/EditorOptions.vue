@@ -36,12 +36,12 @@ import { NDropdown } from 'naive-ui';
 import { useNotesStore } from '../../stores/useNotesStore';
 import DotsHorizontal from 'icons/DotsHorizontal.vue';
 import { JSONContent } from '@tiptap/vue-3';
-import ExportService from '../../services/ExportService';
+import ExportService from '../../business/service/ExportService';
 import { useWorkspaceStore } from '../../stores/useWorkspaceStore';
 import { createEditor } from './createEditor';
-import { Note } from '../../services/domain/Note';
+import { Note } from '../../business/domain/Note';
 import { ref } from 'vue';
-import { Workspace } from '../../services/domain/Workspace';
+import { Workspace } from '../../business/domain/Workspace';
 
 const notesStore = useNotesStore();
 const workspaceStore = useWorkspaceStore();

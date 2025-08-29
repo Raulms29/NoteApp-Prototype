@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { WorkspaceRepository } from '../../../src/services/WorkspaceRepository';
-import { Workspace } from '../../../src/services/domain/Workspace';
+import { WorkspaceRepository } from '../../../src/business/repository/WorkspaceRepository';
+import { Workspace } from '../../../src/business/domain/Workspace';
 import * as fileUtils from '../../../src/utils/fileUtils';
 
 // Mock the electron store API
@@ -65,5 +65,12 @@ describe('WorkspaceRepository', () => {
         // Should check and create .files folder
         expect(mockFolderExists).toHaveBeenCalledWith('/path/2/.notes');
         expect(mockCreateFolder).toHaveBeenCalledWith('/path/2/.notes');
+    });
+
+    it('sets workspace root using the API', async () => {
+        const testPath = '/test/root/path';
+        const mockSetWorkspaceRoot = vi.spyOn(fileUtils, 'setWorkspaceRoot').mockImplementation(async () => { });
+        await repo.setWorkspaceRoot(testPath);
+        expect(mockSetWorkspaceRoot).toHaveBeenCalledWith(testPath);
     });
 });

@@ -1,15 +1,15 @@
 import { JSONContent } from '@tiptap/vue-3';
 import JSZip from 'jszip';
-import { downloadFile, getFilenameFromPath, joinPaths, readBinaryFile, fileExists, getExtensionFromPath, writeFile, getTempDir, exportAsPDFReturnFile, exportAsPDF } from '../utils/fileUtils';
-import { Workspace } from './domain/Workspace';
-import HtmlConverter from './domain/HtmlConverter';
+import { downloadFile, getFilenameFromPath, joinPaths, readBinaryFile, fileExists, getExtensionFromPath, writeFile, getTempDir, exportAsPDFReturnFile, exportAsPDF } from '../../utils/fileUtils';
+import { Workspace } from '../domain/Workspace';
+import HtmlConverter from '../domain/HtmlConverter';
 import { Buffer } from 'buffer';
 // @ts-expect-error // This import is used to include CSS styles for HTML export
 // eslint-disable-next-line import/no-unresolved
-import exportCss from '../styles/export/export.css?raw';
+import exportCss from '../../styles/export/export.css?raw';
 // @ts-expect-error // This import is used to include CSS styles for HTML export
 // eslint-disable-next-line import/no-unresolved
-import exportCssPDF from '../styles/export/exportPDF.css?raw';
+import exportCssPDF from '../../styles/export/exportPDF.css?raw';
 
 
 interface ImageType {

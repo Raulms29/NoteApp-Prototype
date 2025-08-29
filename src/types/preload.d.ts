@@ -1,7 +1,7 @@
 export { };
 
-import { WorkspaceI } from '../services/domain/Workspace';
-import { Settings } from '../services/domain/Settings';
+import { WorkspaceI } from '../business/domain/Workspace';
+import { Settings } from '../business/domain/Settings';
 
 /**
  * Type definitions for the preload scripts used in the application

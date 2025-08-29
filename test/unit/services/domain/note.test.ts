@@ -1,4 +1,4 @@
-import { Note } from '../../../../src/services/domain/Note';
+import { Note } from '../../../../src/business/domain/Note';
 
 describe('GIVEN a Note', () => {
     describe('WHEN it has no children', () => {

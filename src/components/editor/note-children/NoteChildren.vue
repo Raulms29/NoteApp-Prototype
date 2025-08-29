@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Note } from '../../../services/domain/Note';
+import { Note } from '../../../business/domain/Note';
 import NoteChildrenSmall from './NoteChildrenSmall.vue';
 import NoteChildrenBig from './NoteChildrenBig.vue';
 import { useSettingsStore } from '../../../stores/useSettingsStore';

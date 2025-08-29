@@ -1,5 +1,5 @@
-import { Note, RawNote } from "./domain/Note";
-import { fileExists, getNotePath, readTextFile, writeFile, renameFile, getRandomFileName, joinPaths, getFilenameFromPath, getExtensionFromPath, copyFileToFolder, deleteFile } from "../utils/fileUtils";
+import { Note, RawNote } from "../domain/Note";
+import { fileExists, getNotePath, readTextFile, writeFile, renameFile, getRandomFileName, joinPaths, getFilenameFromPath, getExtensionFromPath, copyFileToFolder, deleteFile } from "../../utils/fileUtils";
 
 export class NoteRepository {
     private notesPath: string;

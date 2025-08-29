@@ -1,8 +1,8 @@
 import { setActivePinia, createPinia } from 'pinia';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useNotesStore } from '../../../src/stores/useNotesStore';
-import { Workspace } from '../../../src/services/domain/Workspace';
-import { Note } from '../../../src/services/domain/Note';
+import { Workspace } from '../../../src/business/domain/Workspace';
+import { Note } from '../../../src/business/domain/Note';
 import * as fileUtils from '../../../src/utils/fileUtils';
 
 const mockWriteNoteContent = vi.fn();
@@ -14,7 +14,7 @@ const mockRenameNoteFile = vi.fn();
 const mockSaveImage = vi.fn();
 const mockSavePDF = vi.fn();
 
-vi.mock('../../../src/services/NoteRepository', () => ({
+vi.mock('../../../src/business/repository/NoteRepository', () => ({
     NoteRepository: vi.fn().mockImplementation(() => ({
         writeNoteContent: mockWriteNoteContent,
         loadNoteTree: mockLoadNoteTree,

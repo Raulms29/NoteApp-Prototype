@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import Store from 'electron-store';
-import { Workspace, WorkspaceI } from '../../services/domain/Workspace';
+import { Workspace, WorkspaceI } from '../../business/domain/Workspace';
 
 export type WorkspacesSchema = {
     workspaces: Workspace[];

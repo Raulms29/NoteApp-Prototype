@@ -1,7 +1,7 @@
 import { setActivePinia, createPinia } from 'pinia';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useSettingsStore } from '../../../src/stores/useSettingsStore';
-import { Settings } from '../../../src/services/domain/Settings';
+import { Settings } from '../../../src/business/domain/Settings';
 
 // Mock window.settingsAPI
 globalThis.window = Object.create(window);

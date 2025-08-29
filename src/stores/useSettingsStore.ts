@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import type { Settings } from '../services/domain/Settings';
+import type { Settings } from '../business/domain/Settings';
+import { SettingsService } from '../business/service/SettingsService';
 
 export const useSettingsStore = defineStore('settings', () => {
     const settings = ref<Settings>({
@@ -19,6 +20,8 @@ export const useSettingsStore = defineStore('settings', () => {
 
     const numberSubnotesBigDefault = 5;
 
+    const settingsService = new SettingsService();
+
     /**
      * Initializes the settings store by loading settings from the API.
      */
@@ -27,23 +30,23 @@ export const useSettingsStore = defineStore('settings', () => {
     }
 
     async function loadSettings() {
-        settings.value = await window.settingsAPI.getSettings();
+        settings.value = await settingsService.loadSettings();
     }
 
     /**
      * Saves the current settings to the API.
      */
     async function saveSettings() {
-        await window.settingsAPI.setSettings({
+        await settingsService.saveSettings({
             rememberLastWorkspace: settings.value.rememberLastWorkspace,
             rememberLastNote: settings.value.rememberLastNote,
-            focusMode: settings.value.focusMode,
+            focusMode: false,
             subNotesDisplayType: settings.value.subNotesDisplayType
         });
     }
 
     /**
-     * Updates a specific setting in the store.
+     * Updates a specific setting in the store without persisting the changes.
      * @param key - The key of the setting to update.
      * @param value - The new value for the setting.
      */

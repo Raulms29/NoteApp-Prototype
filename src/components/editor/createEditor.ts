@@ -8,7 +8,7 @@ import { TaskList } from '@tiptap/extension-task-list';
 import { TaskItem } from '@tiptap/extension-task-item';
 import { MarkdownLink } from './extensions/MarkdownLink';
 import { NoteLink } from './extensions/NoteLink';
-import { Note } from '../../services/domain/Note';
+import { Note } from '../../business/domain/Note';
 import { Pdf } from './extensions/PDF';
 import { CustomImage } from './extensions/CustomImage';
 import { common, createLowlight } from 'lowlight';

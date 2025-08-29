@@ -27,7 +27,7 @@ import type { TreeDropInfo, TreeOption } from 'naive-ui'
 import { NIcon, NDropdown, NButton } from 'naive-ui'
 import { h, ref, watch } from 'vue'
 import { useNotesStore } from '../../stores/useNotesStore'
-import { Note } from '../../services/domain/Note'
+import { Note } from '../../business/domain/Note'
 import ChevronRight from 'icons/ChevronRight.vue'
 import Delete from 'icons/Delete.vue'
 import FilePlusOutline from 'icons/FilePlusOutline.vue';

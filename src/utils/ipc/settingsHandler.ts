@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import Store from 'electron-store';
-import { Settings } from '../../services/domain/Settings';
+import { Settings } from '../../business/domain/Settings';
 
 export type SettingsSchema = Settings;
 

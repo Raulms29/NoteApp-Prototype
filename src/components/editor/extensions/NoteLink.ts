@@ -2,7 +2,7 @@ import { Mark, mergeAttributes, InputRule, PasteRule, ExtendedRegExpMatchArray, 
 import { MarkType, Node, Mark as ProseMirrorMark } from '@tiptap/pm/model';
 import { Plugin } from '@tiptap/pm/state';
 import { EditorState, TextSelection } from 'prosemirror-state';
-import { Note } from '../../../services/domain/Note';
+import { Note } from '../../../business/domain/Note';
 
 import type { MarkdownSerializerState } from 'prosemirror-markdown';
 import { Mark as ProseMark } from 'prosemirror-model';
@@ -98,6 +98,7 @@ export const NoteLink = Mark.create({
         return [
             new InputRule({
                 find: noteLinkRegex,
+                // @ts-expect-error There is a problem with some import that is being importted twice, which generates an error with typescript
                 handler: ({ match, state, range }) => replaceWithNoteLink({ match, state, range, type: this.type, options: this.options }),
             }),
         ];
@@ -107,6 +108,7 @@ export const NoteLink = Mark.create({
         return [
             new PasteRule({
                 find: noteLinkRegex,
+                // @ts-expect-error There is a problem with some import that is being importted twice, which generates an error with typescript
                 handler: ({ match, state, range }) => replaceWithNoteLink({ match, state, range, type: this.type, options: this.options }),
             }),
         ];

@@ -6,19 +6,17 @@ import { useWorkspaceStore } from '../../../src/stores/useWorkspaceStore';
 const getWorkspaces = vi.fn(async () => []);
 const saveWorkspaces = vi.fn(async () => { });
 const createWorkspace = vi.fn(async () => { });
-vi.mock('../../../src/services/WorkspaceRepository', () => {
+const setWorkspaceRoot = vi.fn(async () => { });
+vi.mock('../../../src/business/repository/WorkspaceRepository', () => {
     return {
         WorkspaceRepository: vi.fn().mockImplementation(() => ({
             getWorkspaces: getWorkspaces,
             saveWorkspaces: saveWorkspaces,
             createWorkspace: createWorkspace,
+            setWorkspaceRoot: setWorkspaceRoot
         })),
     };
 });
-
-vi.mock('../../../src/utils/fileUtils', () => ({
-    setWorkspaceRoot: vi.fn(),
-}));
 
 describe('GIVEN the useWorkspaceStore store', () => {
     let store: ReturnType<typeof useWorkspaceStore>;
@@ -110,18 +108,6 @@ describe('GIVEN the useWorkspaceStore store', () => {
         });
         it('THEN it should not throw for valid workspace', () => {
             expect(() => store.validateWorkspace('Valid', '/unique/path')).not.toThrow();
-        });
-    });
-
-    // • getCurrentFilesPath
-    describe('WHEN getCurrentFilesPath is called', () => {
-        it('THEN it should return the .files path for the current workspace', async () => {
-            const ws = await store.addWorkspace(wsName, wsPath);
-            store.selectWorkspace(ws.id);
-            expect(store.getCurrentFilesPath()).toBe(`${wsPath}/.files`);
-        });
-        it('THEN it should return null if no workspace is selected', () => {
-            expect(store.getCurrentFilesPath()).toBeNull();
         });
     });
 

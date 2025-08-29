@@ -45,7 +45,7 @@
 <script lang="ts" setup>
 import { useNotesStore } from '../../stores/useNotesStore';
 import { useSettingsStore } from '../../stores/useSettingsStore';
-import { Note } from '../../services/domain/Note';
+import { Note } from '../../business/domain/Note';
 import { ref } from 'vue';
 import debounce from 'debounce';
 import BullseyeIcon from 'icons/Bullseye.vue';

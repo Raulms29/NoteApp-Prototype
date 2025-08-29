@@ -1,8 +1,7 @@
-import { Workspace, WorkspaceI } from "./domain/Workspace";
-import * as fileUtils from '../utils/fileUtils';
+import { Workspace, WorkspaceI } from "../domain/Workspace";
+import * as fileUtils from '../../utils/fileUtils';
 
 export class WorkspaceRepository {
-
     /**
      * Saves the list of workspaces using the workspace API.
      * @param workspaces - Array of workspace objects to save.
@@ -46,5 +45,9 @@ export class WorkspaceRepository {
         if (!await fileUtils.folderExists(filesFolder)) {
             await fileUtils.createFolder(filesFolder);
         }
+    }
+
+    async setWorkspaceRoot(path: string) {
+        await fileUtils.setWorkspaceRoot(path);
     }
 }

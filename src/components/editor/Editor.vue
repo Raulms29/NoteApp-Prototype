@@ -14,7 +14,7 @@
 import { ref, watch, onBeforeMount, onBeforeUnmount } from 'vue';
 import { useNotesStore } from '../../stores/useNotesStore';
 import { Editor, EditorContent } from '@tiptap/vue-3';
-import { Note } from '../../services/domain/Note';
+import { Note } from '../../business/domain/Note';
 import { createEditor } from './createEditor';
 import { EditorView } from '@tiptap/pm/view';
 

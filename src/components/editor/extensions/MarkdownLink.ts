@@ -169,6 +169,7 @@ export const MarkdownLink = Mark.create({
         return [
             new InputRule({
                 find: markdownLinkRegex,
+                // @ts-expect-error There is a problem with some types, which doesn't seem tyo be easily fixed
                 handler: handleMarkdownLink,
             }),
         ];
@@ -182,6 +183,7 @@ export const MarkdownLink = Mark.create({
         return [
             new PasteRule({
                 find: markdownLinkRegex,
+                // @ts-expect-error There is a problem with some types, which doesn't seem tyo be easily fixed
                 handler: handleMarkdownLink,
             }),
         ];

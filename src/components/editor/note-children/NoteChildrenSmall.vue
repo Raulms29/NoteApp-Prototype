@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Note } from '../../../services/domain/Note';
+import { Note } from '../../../business/domain/Note';
 import ChildrenOptions from './ChildrenOptions.vue';
 import DotsHorizontal from 'icons/DotsHorizontal.vue';
 defineProps<{ notes: Note[] }>();

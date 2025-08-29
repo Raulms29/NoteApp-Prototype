@@ -1,7 +1,7 @@
-import ExportService from '../../../../src/services/ExportService';
+import ExportService from '../../../../src/business/service/ExportService';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { Editor, JSONContent } from '@tiptap/vue-3';
-import { Workspace } from '../../../../src/services/domain/Workspace';
+import { Workspace } from '../../../../src/business/domain/Workspace';
 import * as fileUtils from '../../../../src/utils/fileUtils';
 import { createEditor } from '../../../../src/components/editor/createEditor';
 import { useNotesStore } from '../../../../src/stores/useNotesStore';

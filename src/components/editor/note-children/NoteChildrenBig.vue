@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Note } from '../../../services/domain/Note';
+import { Note } from '../../../business/domain/Note';
 defineProps<{ notes: Note[] }>();
 const emit = defineEmits(['select', 'create', 'delete']);
 </script>

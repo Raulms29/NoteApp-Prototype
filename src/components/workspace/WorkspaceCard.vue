@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import { WorkspaceI } from 'src/services/domain/Workspace';
+import { WorkspaceI } from 'src/business/domain/Workspace';
 import WorkspaceMenuItem from './WorkspaceMenuItem.vue'
 import MaterialDesignPencil from 'icons/Pencil.vue'
 import MaterialDesignDelete from 'icons/Delete.vue'

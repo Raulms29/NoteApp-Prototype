@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { Note } from '../services/domain/Note';
-import { NoteRepository } from '../services/NoteRepository';
-import { Workspace } from '../services/domain/Workspace';
+import { Note } from '../business/domain/Note';
+import { Workspace } from '../business/domain/Workspace';
+import { NoteService } from '../business/service/NoteService';
 
 /**
  * Pinia store for managing notes in the application
@@ -11,14 +11,14 @@ export const useNotesStore = defineStore('notes', () => {
     const notes = ref<Note[]>();
     const currentNote = ref<Note | null>(null);
     const firstNoteAccess = ref<boolean>(true);
-    let repo: NoteRepository;
+    let noteService: NoteService;
 
     /**
      * Initializes the note store for the given workspace and loads the note tree.
      * @param workspace - The workspace to initialize the store
      */
     async function init(workspace: Workspace) {
-        repo = new NoteRepository(
+        noteService = new NoteService(
             workspace.path,
             await workspace.notesStructureFilePath(),
             workspace.filesFolder
@@ -27,14 +27,14 @@ export const useNotesStore = defineStore('notes', () => {
     }
 
     function updateNoteTree() {
-        repo.saveNoteTree(notes.value);
+        noteService.saveNoteTree(notes.value);
     }
 
     /**
      * Loads the note tree from the repository into the store.
      */
     async function loadTree(): Promise<void> {
-        notes.value = await repo.loadNoteTree();
+        notes.value = await noteService.loadNoteTree();
     }
 
     /**
@@ -61,7 +61,7 @@ export const useNotesStore = defineStore('notes', () => {
      */
     async function saveNoteContent(note: Note, html: string) {
         if (!currentNote.value) throw new Error('No note selected to save content for.');
-        await repo.writeNoteContent(note, html);
+        await noteService.writeNoteContent(note, html);
     }
 
     /**
@@ -80,7 +80,7 @@ export const useNotesStore = defineStore('notes', () => {
      */
     async function loadNoteContent(note: Note): Promise<string> {
         if (!note) throw new Error('No note provided to load content for.');
-        return await repo.readNoteContent(note);
+        return await noteService.readNoteContent(note);
     }
 
     /**
@@ -95,7 +95,7 @@ export const useNotesStore = defineStore('notes', () => {
         function getNewNoteName(): string {
             let index = 1;
             let newNoteName = newName;
-            const notesFlat = flattenNotes(notes.value);
+            const notesFlat = NoteService.flattenNotes(notes.value);
             while (notesFlat.some(n => n.name === newNoteName)) {
                 newNoteName = `${newName} ${index++}`;
             }
@@ -112,7 +112,7 @@ export const useNotesStore = defineStore('notes', () => {
             notes.value.push(newNote);
         }
 
-        await repo.writeNoteContent(newNote, ''); // Initialize with empty content
+        await noteService.writeNoteContent(newNote, ''); // Initialize with empty content
 
         updateNoteTree();
         return newNote;
@@ -127,11 +127,7 @@ export const useNotesStore = defineStore('notes', () => {
         if (getNoteByName(newName) !== null) {
             throw new Error(`A note with the name "${newName}" already exists.`);
         }
-        const oldName = note.name;
-        // Update the note's name
-        note.name = newName;
-        // Rename the file
-        await repo.renameNoteFile(oldName, note.name);
+        await noteService.renameNote(note, newName);
         updateNoteTree();
     }
 
@@ -153,7 +149,7 @@ export const useNotesStore = defineStore('notes', () => {
         const descendants = noteToDelete.getDescendants();
 
         // Delete the note file
-        repo.deleteNoteFiles([noteToDelete, ...descendants]);
+        noteService.deleteNotes([noteToDelete, ...descendants]);
         if (currentNote.value?.id === noteToDelete.id) {
             currentNote.value = null; // Clear current note if it was the one deleted
         }
@@ -212,7 +208,7 @@ export const useNotesStore = defineStore('notes', () => {
     function reset() {
         notes.value = [];
         currentNote.value = null;
-        repo = null;
+        noteService = null;
     }
 
     /**
@@ -222,7 +218,7 @@ export const useNotesStore = defineStore('notes', () => {
      */
     function getNoteByName(name: string): Note {
         if (!notes.value) return null;
-        const flatNotes = flattenNotes(notes.value);
+        const flatNotes = NoteService.flattenNotes(notes.value);
         return flatNotes.find(note => note.name === name) || null;
     }
 
@@ -233,7 +229,7 @@ export const useNotesStore = defineStore('notes', () => {
      */
     function getNoteById(id: string): Note {
         if (!notes.value) return null;
-        const flatNotes = flattenNotes(notes.value);
+        const flatNotes = NoteService.flattenNotes(notes.value);
         return flatNotes.find(note => note.id === id) || null;
     }
 
@@ -243,11 +239,7 @@ export const useNotesStore = defineStore('notes', () => {
      * @returns An array containing the cleaned file path and file name.
      */
     async function saveImage(sourcePath: string): Promise<string[]> {
-        const [filePath, fileName] = await repo.saveImage(sourcePath);
-        console.log(`Image saved to: ${filePath}, Name: ${fileName}`);
-        const filePathC = preparePath(filePath);
-
-        return [filePathC, fileName];
+        return await noteService.saveImage(sourcePath);
     }
 
     /**
@@ -256,10 +248,7 @@ export const useNotesStore = defineStore('notes', () => {
      * @returns An array containing the cleaned file path and file name.
      */
     async function savePDF(sourcePath: string): Promise<string[]> {
-        const [filePath, fileName] = await repo.savePDF(sourcePath);
-        const filePathC = preparePath(filePath);
-
-        return [filePathC, fileName];
+        return await noteService.savePDF(sourcePath);
     }
 
     /**
@@ -272,7 +261,7 @@ export const useNotesStore = defineStore('notes', () => {
             throw new Error('No note provided to get breadcrumb for.');
         }
         const path: Note[] = [];
-        if (!notes.value || !findBreadCrumb(notes.value, note.id, path)) {
+        if (!notes.value || !NoteService.findBreadCrumb(notes.value, note.id, path)) {
             throw new Error('Note not found in the note tree.');
         }
 
@@ -284,7 +273,7 @@ export const useNotesStore = defineStore('notes', () => {
      * @returns The most recently accessed Note instance or null if none found.
      */
     function getLastNoteAccesed(): Note | null {
-        const allNotes = flattenNotes(notes.value ?? []);
+        const allNotes = NoteService.flattenNotes(notes.value ?? []);
         return allNotes.reduce((last, note) => {
             const lastAccesed = note.lastAccessed;
             if (!lastAccesed) return last;
@@ -335,40 +324,7 @@ export const useNotesStore = defineStore('notes', () => {
         }
     }
 
-    function flattenNotes(notes: Note[]): Note[] {
-        const result: Note[] = [];
 
-        for (const note of notes) {
-            result.push(note);
-            if (note.children && note.children.length > 0) {
-                result.push(...flattenNotes(note.children));
-            }
-        }
-        return result;
-    }
-
-    function preparePath(path: string): string {
-        // Ensure the path uses forward slashes and remove leading slash if present
-        let cleanedPath = path.replace(/\\/g, '/'); // Replace backslashes with forward slashes
-        cleanedPath = cleanedPath.startsWith('/') ? cleanedPath.slice(1) : cleanedPath; // Remove leading slash if present
-        return cleanedPath;
-    }
-
-    function findBreadCrumb(currentNotes: Note[], targetId: string, path: Note[]): boolean {
-        for (const n of currentNotes) {
-            path.push(n);
-            if (n.id === targetId) {
-                return true;
-            }
-            if (n.children && n.children.length > 0) {
-                if (findBreadCrumb(n.children, targetId, path)) {
-                    return true;
-                }
-            }
-            path.pop();
-        }
-        return false;
-    }
 
     return {
         noteTree: notes,

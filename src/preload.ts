@@ -64,8 +64,10 @@ contextBridge.exposeInMainWorld('windowAPI', {
 });
 
 contextBridge.exposeInMainWorld('settingsAPI', {
-    getSettings: () => ipcRenderer.invoke('get-settings'),
-    setSettings: (settings: { theme: string; language: string }) => ipcRenderer.invoke('set-settings', settings),
+    getSettings: () =>
+        ipcRenderer.invoke('get-settings'),
+    setSettings: (settings: { theme: string; language: string }) =>
+        ipcRenderer.invoke('set-settings', settings),
 });
 
 contextBridge.exposeInMainWorld('exportAPI', {

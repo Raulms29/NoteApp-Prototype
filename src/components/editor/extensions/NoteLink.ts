@@ -98,7 +98,6 @@ export const NoteLink = Mark.create({
         return [
             new InputRule({
                 find: noteLinkRegex,
-                // @ts-expect-error There is a problem with some import that is being importted twice, which generates an error with typescript
                 handler: ({ match, state, range }) => replaceWithNoteLink({ match, state, range, type: this.type, options: this.options }),
             }),
         ];
@@ -108,7 +107,6 @@ export const NoteLink = Mark.create({
         return [
             new PasteRule({
                 find: noteLinkRegex,
-                // @ts-expect-error There is a problem with some import that is being importted twice, which generates an error with typescript
                 handler: ({ match, state, range }) => replaceWithNoteLink({ match, state, range, type: this.type, options: this.options }),
             }),
         ];

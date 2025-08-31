@@ -11,7 +11,6 @@ export const CustomImage = Image.extend({
                     state.write(`![${alt}](<${src}>)`);
                     state.closeBlock(node);
                 },
-                // Optionally, add parse for markdown import
             }
         };
     },

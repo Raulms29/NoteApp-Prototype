@@ -1,5 +1,5 @@
 import { Editor } from '@tiptap/vue-3';
-import EHighlight from '@tiptap/extension-highlight';
+import Highlight from '@tiptap/extension-highlight';
 import Typography from '@tiptap/extension-typography';
 import StarterKit from '@tiptap/starter-kit';
 import BubbleMenuExtension from '@tiptap/extension-bubble-menu';
@@ -22,7 +22,7 @@ export function createEditor(notesStore: ReturnType<typeof useNotesStore>, emitN
         extensions: [
             StarterKit.configure({ codeBlock: false }),
             Underline,
-            EHighlight,
+            Highlight,
             Typography,
             Markdown.configure({
                 linkify: false,
@@ -62,7 +62,7 @@ export function createEditor(notesStore: ReturnType<typeof useNotesStore>, emitN
         editorProps: {
             ...editorProps,
             attributes: {
-                class: 'prose w-full border-none max-w-none m-0 outline-none h-full overflow-auto',
+                class: `prose w-full border-none max-w-none m-0 outline-none h-full overflow-auto`,
             },
         },
         content: '',

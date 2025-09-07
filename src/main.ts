@@ -103,6 +103,9 @@ if (!gotTheLock) {
     registerFileHandlers('utf-8');
     registerSettingsHandlers();
     registerExportHandlers();
+
+    // More code...
+
     // Register window handlers and create the browser window
     const mainWindow = createWindow();
     registerWindowHandlers(mainWindow);

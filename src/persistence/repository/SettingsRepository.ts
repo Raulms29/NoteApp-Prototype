@@ -1,4 +1,4 @@
-import { Settings } from "../domain/Settings";
+import { Settings } from "../../business/domain/Settings";
 
 export class SettingsRepository {
 

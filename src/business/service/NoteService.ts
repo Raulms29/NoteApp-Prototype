@@ -1,5 +1,5 @@
 import { Note } from "../domain/Note";
-import { NoteRepository } from "../repository/NoteRepository";
+import { NoteRepository } from "../../persistence/repository/NoteRepository";
 
 
 /**

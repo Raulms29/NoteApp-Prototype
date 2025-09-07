@@ -80,13 +80,19 @@ export const NoteLink = Mark.create({
     parseHTML() {
         return [
             {
-                tag: 'a[data-note-id][data-note-name]',
+                tag: 'a[data-note-id][data-note-name][href]',
             },
         ];
     },
 
     renderHTML({ HTMLAttributes }) {
-        // Compose href for markdown detection, e.g. :noteId or #noteId
+        const href = this.options.getNoteFromId(HTMLAttributes['data-note-id'])?.name;
+        if (href) {
+            HTMLAttributes.href = `${href}.html`;
+        }
+        else {
+            HTMLAttributes.href = '#';
+        }
         return [
             'a',
             mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
@@ -118,6 +124,7 @@ export const NoteLink = Mark.create({
             new Plugin({
                 props: {
                     handleClick: (view, pos) => {
+                        // Finding the mark
                         const resolvedPos = view.state.doc.resolve(pos);
                         const marks = resolvedPos.marks();
                         const mark = marks.find((mark) => mark.type.name === this.name);

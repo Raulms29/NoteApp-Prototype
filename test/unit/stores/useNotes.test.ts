@@ -14,7 +14,7 @@ const mockRenameNoteFile = vi.fn();
 const mockSaveImage = vi.fn();
 const mockSavePDF = vi.fn();
 
-vi.mock('../../../src/business/repository/NoteRepository', () => ({
+vi.mock('../../../src/persistence/repository/NoteRepository', () => ({
     NoteRepository: vi.fn().mockImplementation(() => ({
         writeNoteContent: mockWriteNoteContent,
         loadNoteTree: mockLoadNoteTree,

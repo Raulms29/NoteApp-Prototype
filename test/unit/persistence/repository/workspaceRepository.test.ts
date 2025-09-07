@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { WorkspaceRepository } from '../../../../src/business/repository/WorkspaceRepository';
+import { WorkspaceRepository } from '../../../../src/persistence/repository/WorkspaceRepository';
 import { Workspace } from '../../../../src/business/domain/Workspace';
 import * as fileUtils from '../../../../src/utils/fileUtils';
 

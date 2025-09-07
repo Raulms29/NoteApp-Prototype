@@ -162,7 +162,7 @@ async function exportAsPDF(includeSubnotes: boolean) {
         notesHTML.push(tempEditor.getHTML());
     }
 
-    await exportService.exportNotesAsPDF(notesHTML, notesNames, workspaceStore.currentWorkspace as Workspace);
+    await exportService.exportNotesAsPDF(notesHTML, notesNames);
 
 }
 

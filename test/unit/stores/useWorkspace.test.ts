@@ -7,7 +7,7 @@ const getWorkspaces = vi.fn(async () => []);
 const saveWorkspaces = vi.fn(async () => { });
 const createWorkspace = vi.fn(async () => { });
 const setWorkspaceRoot = vi.fn(async () => { });
-vi.mock('../../../src/business/repository/WorkspaceRepository', () => {
+vi.mock('../../../src/persistence/repository/WorkspaceRepository', () => {
     return {
         WorkspaceRepository: vi.fn().mockImplementation(() => ({
             getWorkspaces: getWorkspaces,

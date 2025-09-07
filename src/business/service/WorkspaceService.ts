@@ -1,5 +1,5 @@
 import { Workspace } from "../domain/Workspace";
-import { WorkspaceRepository } from "../repository/WorkspaceRepository";
+import { WorkspaceRepository } from "../../persistence/repository/WorkspaceRepository";
 
 export class WorkspaceService {
 

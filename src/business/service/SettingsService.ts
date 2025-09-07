@@ -1,5 +1,5 @@
 
-import { SettingsRepository } from "../repository/SettingsRepository";
+import { SettingsRepository } from "../../persistence/repository/SettingsRepository";
 import { Settings } from "../domain/Settings";
 
 

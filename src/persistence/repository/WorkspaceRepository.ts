@@ -1,4 +1,4 @@
-import { Workspace, WorkspaceI } from "../domain/Workspace";
+import { Workspace, WorkspaceI } from "../../business/domain/Workspace";
 import * as fileUtils from '../../utils/fileUtils';
 
 export class WorkspaceRepository {

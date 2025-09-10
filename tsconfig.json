@@ -21,8 +21,9 @@
     "types": [
       "@wdio/globals",
       "@wdio/mocha-framework",
+      "@wdio/globals/types",
       "expect-webdriverio",
-      "vitest/globals"
+      "vitest/globals",
     ]
   }
 }

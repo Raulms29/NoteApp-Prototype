@@ -1,5 +1,6 @@
 import { app, BrowserWindow, powerMonitor, protocol, shell, ipcMain, session } from 'electron';
 import electronSquirrelStartup from 'electron-squirrel-startup';
+import('wdio-electron-service/main');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (electronSquirrelStartup) {

@@ -19,13 +19,14 @@
                     <span class="location-text">Your new workspace will be placed in: <span class="font-medium">{{
                         location
                             }}</span></span>
-                    <GenericButton type="button" class="browse-btn" @click="selectLocation">Browse</GenericButton>
+                    <GenericButton type="button" class="browse-btn" @click="selectLocation" id="browse-btn">Browse
+                    </GenericButton>
                 </div>
             </div>
             <input id="workspace-location" ref="locationInputRef" v-model="location" type="text" class="form-input"
                 style="display:none" tabindex="-1" aria-hidden="true" />
             <div class="form-row center">
-                <GenericButton type="submit" class="create-btn" variant="primary">Create
+                <GenericButton type="submit" class="create-btn" variant="primary" id="create-workspace-btn">Create
                 </GenericButton>
             </div>
         </form>

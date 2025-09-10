@@ -1,5 +1,5 @@
 <template>
-    <div class="workspace-card workspace-card-base" @click="$emit('selectWorkspace', workspace)">
+    <div class="workspace-card workspace-card-base" :id="workspace.id" @click="$emit('selectWorkspace', workspace)">
         <!-- Workspace Info -->
         <div class="workspace-card-info">
             <div class="workspace-name">{{ workspace.name }}</div>

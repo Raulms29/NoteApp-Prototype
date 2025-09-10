@@ -90,3 +90,6 @@ typings/
 
 # Electron-Forge
 out/
+
+# E2E tests Workspaces
+test/e2e/resources/mock-*

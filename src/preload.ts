@@ -4,6 +4,7 @@ console.log('Preload script is being loaded...');
 
 import { contextBridge, ipcRenderer } from 'electron';
 import { WorkspaceI } from './business/domain/Workspace';
+import('wdio-electron-service/preload');
 
 contextBridge.exposeInMainWorld('fileAPI', {
     // This needs to be done since the filesystem cannot be accessed directly from the renderer process

@@ -3,7 +3,7 @@ import JSZip from 'jszip';
 import { downloadFile, getFilenameFromPath, joinPaths, readBinaryFile, writeFile, getTempDir, exportAsPDFReturnFile, exportAsPDF } from '../../utils/fileUtils';
 import { Workspace } from '../domain/Workspace';
 import HtmlConverter from '../domain/HtmlConverter';
-import { Buffer } from 'buffer';
+import { Buffer } from 'node:buffer';
 // @ts-expect-error // This import is used to include CSS styles for HTML export
 // eslint-disable-next-line import/no-unresolved
 import exportCss from '../../styles/export/export.css?raw';

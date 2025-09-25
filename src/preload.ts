@@ -4,6 +4,10 @@ console.log('Preload script is being loaded...');
 
 import { contextBridge, ipcRenderer } from 'electron';
 import { WorkspaceI } from './business/domain/Workspace';
+
+// During tests, we need to import the wdio-electron-service preload script
+// It should not be imported in production
+// The import should not be done while building the application and is intented only for testing
 import('wdio-electron-service/preload');
 
 contextBridge.exposeInMainWorld('fileAPI', {
@@ -79,4 +83,3 @@ contextBridge.exposeInMainWorld('exportAPI', {
 });
 
 console.log('Preload script loaded successfully');
-

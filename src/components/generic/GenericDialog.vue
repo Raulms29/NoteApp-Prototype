@@ -4,7 +4,7 @@
             <div class="generic-dialog-title">{{ title }}</div>
             <div class="generic-dialog-content">
                 <slot name="content">
-                    <div class="generic-dialog-text" v-if="text">{{ text }}</div>
+                    <p class="generic-dialog-text" v-if="text">{{ text }}</p>
                 </slot>
             </div>
             <div class="generic-dialog-actions">

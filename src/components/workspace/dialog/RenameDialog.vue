@@ -1,7 +1,8 @@
 <template>
     <GenericDialog title="Rename Workspace" text="Write the new name for the workspace">
         <template #content>
-            <input v-model="localName" type="text" class="generic-dialog-input" placeholder="New workspace name" />
+            <input v-model="localName" type="text" class="generic-dialog-input" placeholder="New workspace name"
+                id="rename-workspace-input" />
         </template>
         <template #actions>
             <GenericButton variant="secondary" @click="$emit('cancel')">Cancel</GenericButton>

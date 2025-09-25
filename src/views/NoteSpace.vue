@@ -2,7 +2,7 @@
     <div class="note-space-container">
         <splitpanes class="split-theme">
             <pane :min-size="paneMinSize" max-size="50" size="14.5" v-if="!settingsStore.settings.focusMode">
-                <div class="flex-1 truncate pl-3 text-xl font-bold workspace-title select-none m-1">
+                <div class="flex-1 truncate pl-3 text-xl font-bold workspace-title select-none m-1" id="workspaceTitle">
                     <VectorTriangle class="mr-2" />
                     {{ workspaceStore.currentWorkspace?.name }}
                 </div>

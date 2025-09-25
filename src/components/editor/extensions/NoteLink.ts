@@ -62,14 +62,14 @@ export const NoteLink = Mark.create({
         return {
             noteId: {
                 default: null,
-                parseHTML: element => element.getAttribute('data-note-id'),
+                parseHTML: element => element.dataset.noteId,
                 renderHTML: attributes => {
                     return attributes.noteId ? { 'data-note-id': attributes.noteId } : {};
                 },
             },
             noteName: {
                 default: null,
-                parseHTML: element => element.getAttribute('data-note-name'),
+                parseHTML: element => element.dataset.noteName,
                 renderHTML: attributes => {
                     return attributes.noteName ? { 'data-note-name': attributes.noteName } : {};
                 },
@@ -210,7 +210,7 @@ function updateNoteLinkMark(editor: Editor, noteName: string, newNoteId: string,
     doc.descendants((node: Node, pos: number) => {
         if (!node.isText) return;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        node.marks.forEach((mark: ProseMirrorMark) => {
+        for (const mark of node.marks as ProseMirrorMark[]) {
             if (
                 mark.type === markType &&
                 mark.attrs.noteName === noteName &&
@@ -225,7 +225,7 @@ function updateNoteLinkMark(editor: Editor, noteName: string, newNoteId: string,
                     markType.create({ noteName, noteId: newNoteId })
                 );
             }
-        });
+        }
     });
 
     if (tr.docChanged) {

@@ -1,5 +1,5 @@
 import { BrowserWindow, dialog, ipcMain } from "electron";
-import fs from 'fs';
+import fs from 'node:fs';
 import fsPromises from 'fs/promises';
 
 export function registerExportHandlers() {

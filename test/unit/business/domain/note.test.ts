@@ -116,8 +116,8 @@ describe('GIVEN a Note', () => {
             expect(note.name).toBe('Parent Note');
             expect(note.children).toHaveLength(1);
             expect(note.children[0].id).toBe('00000002');
-            expect(note.hasChild(note.children[0])).toBe(true);
-            expect(note.getDescendants()).toHaveLength(2);
+            expect(note.hasNoteChild(note.children[0])).toBe(true);
+            expect(note.getNoteDescendants()).toHaveLength(2);
         });
 
         it('THEN checks descendant by ID', () => {
@@ -132,29 +132,29 @@ describe('GIVEN a Note', () => {
             note.addChild(newChild);
             expect(note.children).toHaveLength(2);
             expect(note.hasDescendantByID('00000003')).toBe(true);
-            expect(note.hasDescendant(newChild)).toBe(true);
+            expect(note.hasNoteDescendant(newChild)).toBe(true);
         });
 
         it('THEN removes child', () => {
             const childNote = note.children[0];
-            expect(note.removeChild(childNote)).toBe(true);
+            expect(note.removeChildNote(childNote)).toBe(true);
             expect(note.children).toHaveLength(0);
-            expect(note.hasDescendant(childNote)).toBe(false);
+            expect(note.hasNoteDescendant(childNote)).toBe(false);
         });
 
         it('THEN removes descendant', () => {
             const childNote = note.children[0];
             const grandChildNote = childNote.children[0];
-            expect(note.removeDescendant(grandChildNote)).toBe(true);
-            expect(note.hasDescendant(grandChildNote)).toBe(false);
+            expect(note.removeDescendantNote(grandChildNote)).toBe(true);
+            expect(note.hasNoteDescendant(grandChildNote)).toBe(false);
             expect(childNote.children).toHaveLength(0);
-            expect(note.hasDescendant(childNote)).toBe(true);
+            expect(note.hasNoteDescendant(childNote)).toBe(true);
         });
 
         it('THEN remove non-existent descendant', () => {
             const nonExistentNote = new Note('Non-existent Note', [], '00000099');
-            expect(note.removeDescendant(nonExistentNote)).toBe(false);
-            expect(note.hasDescendant(nonExistentNote)).toBe(false);
+            expect(note.removeDescendantNote(nonExistentNote)).toBe(false);
+            expect(note.hasNoteDescendant(nonExistentNote)).toBe(false);
         });
     });
 });

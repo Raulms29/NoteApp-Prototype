@@ -44,12 +44,12 @@ export const useNotesStore = defineStore('notes', () => {
     async function selectNote(note: Note) {
         const existingNote = getNoteById(note.id);
         console.log(`Selecting note: ${note.name}`);
-        if (!existingNote) {
-            currentNote.value = null;
-        }
-        else {
+        if (existingNote) {
             note.lastAccessed = new Date();
             currentNote.value = note;
+        }
+        else {
+            currentNote.value = null;
         }
         updateNoteTree();
     }
@@ -105,11 +105,11 @@ export const useNotesStore = defineStore('notes', () => {
         const newNote = new Note(getNewNoteName());
         const parentTree = getNoteById(parent?.id);
 
-        if (parentTree != null) {
-            parentTree.addChild(newNote);
+        if (parentTree === null) {
+            notes.value.push(newNote);
         }
         else {
-            notes.value.push(newNote);
+            parentTree.addChild(newNote);
         }
 
         await noteService.writeNoteContent(newNote, ''); // Initialize with empty content
@@ -146,7 +146,7 @@ export const useNotesStore = defineStore('notes', () => {
             throw new Error(`Note with ID ${noteToDelete.id} not found in the note tree.`);
         }
 
-        const descendants = noteToDelete.getDescendants();
+        const descendants = noteToDelete.getNoteDescendants();
 
         // Delete the note file
         noteService.deleteNotes([noteToDelete, ...descendants]);
@@ -288,8 +288,8 @@ export const useNotesStore = defineStore('notes', () => {
     function removeNoteFromTree(noteToDelete: Note): boolean {
         let removed = false;
         for (const note of notes.value) {
-            if (note.hasDescendant(noteToDelete)) {
-                removed = note.removeDescendant(noteToDelete);
+            if (note.hasNoteDescendant(noteToDelete)) {
+                removed = note.removeDescendantNote(noteToDelete);
                 break;
             }
             if (note.id === noteToDelete.id) {

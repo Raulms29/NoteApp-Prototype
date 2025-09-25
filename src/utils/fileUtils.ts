@@ -165,7 +165,7 @@ export const downloadFile = (content: Blob, fileName: string): void => {
     a.download = fileName;
     document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
+    a.remove();
     URL.revokeObjectURL(url);
 };
 

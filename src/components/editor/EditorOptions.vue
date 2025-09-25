@@ -184,7 +184,7 @@ function getNotes(includeSubnotes: boolean): Note[] {
     const currentNote: Note = notesStore.currentNote as Note;
     let notes: Note[] = [currentNote];
     if (includeSubnotes) {
-        notes.push(...currentNote.getDescendants());
+        notes.push(...currentNote.getNoteDescendants());
     }
     return notes;
 }

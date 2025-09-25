@@ -42,7 +42,7 @@ export class NoteRepository {
 
         // Validate the structure of the parsed data
         if (!Array.isArray(data)) {
-            throw new Error("Invalid note structure: Expected an array.");
+            throw new TypeError("Invalid note structure: Expected an array.");
         }
 
         // Recursively create Note objects from the raw data

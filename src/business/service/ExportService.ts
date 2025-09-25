@@ -39,10 +39,11 @@ export default class ExportService {
     }
 
     const zip = new JSZip();
-    textContent.forEach((text, index) => {
+    for (let index = 0; index < textContent.length; index++) {
+      const text = textContent[index];
       const fileName = `${noteNames[index]}.txt`;
       zip.file(fileName, text);
-    });
+    }
     const content = await zip.generateAsync({ type: 'blob' });
     downloadFile(content, `${noteNames[0]}.zip`);
 
@@ -63,10 +64,11 @@ export default class ExportService {
    */
   async exportNoteAsMarkdown(markdownContent: string[], noteNames: string[], markdownJSON: JSONContent[], currentWorkspace: Workspace): Promise<void> {
     const zip = new JSZip();
-    markdownContent.forEach((text, index) => {
+    for (let index = 0; index < markdownContent.length; index++) {
+      const text = markdownContent[index];
       const fileName = `${noteNames[index]}.md`;
       zip.file(fileName, text);
-    });
+    }
 
     // Recursively process all nodes
     for (let i = 0; i < markdownContent.length; i++) {
@@ -87,11 +89,12 @@ export default class ExportService {
    */
   async exportNotesAsHTML(htmlContent: string[], noteNames: string[], htmlJSONs: JSONContent[], currentWorkspace: Workspace): Promise<void> {
     const zip = new JSZip();
-    htmlContent.forEach((html, index) => {
+    for (let index = 0; index < htmlContent.length; index++) {
+      const html = htmlContent[index];
       const fileName = `${noteNames[index]}.html`;
       const convertedHtml = HtmlConverter.convertToHtml(html, noteNames[index], exportCss);
       zip.file(fileName, convertedHtml);
-    });
+    }
 
     // Recursively process all nodes
     for (let i = 0; i < htmlContent.length; i++) {
@@ -127,10 +130,13 @@ export default class ExportService {
     }
 
     const zip = new JSZip();
-    pdfs.forEach((pdf, index) => {
+
+
+    for (let index = 0; index < pdfs.length; index++) {
+      const pdf = pdfs[index];
       const fileName = `${noteNames[index]}.pdf`;
       zip.file(fileName, pdf);
-    });
+    }
 
     const content = await zip.generateAsync({ type: 'blob' });
     downloadFile(content, `${noteNames[0]}.zip`);

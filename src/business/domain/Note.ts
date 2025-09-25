@@ -40,7 +40,7 @@ export class Note {
     private set id(id: string) {
         id = id.trim();
         if (invalidCharacters.test(id)) {
-            throw new Error('Note ID cannot contain any of these characters: \\ / : * ? " < > |');
+            throw new Error(String.raw`Note ID cannot contain any of these characters: \ / : * ? " < > |`);
         }
         if (id.length !== 8) {
             throw new Error('Note ID must be exactly 8 characters long');
@@ -73,7 +73,7 @@ export class Note {
         newName = newName.trim();
 
         if (invalidCharacters.test(newName)) {
-            throw new Error('Note name cannot contain any of these characters: \\ / : * ? " < > |');
+            throw new Error(String.raw`Note name cannot contain any of these characters: \ / : * ? " < > |`);
         }
 
         if (newName.length === 0) {
@@ -140,7 +140,7 @@ export class Note {
      * @returns True if the descendant exists, false otherwise.
      */
     hasDescendantByID(noteID: string): boolean {
-        if (this.hasChildByID(noteID))
+        if (this.hasNoteChildByID(noteID))
             return true;
 
         for (const child of this._children) {
@@ -157,8 +157,8 @@ export class Note {
      * @param note - The child note to check for.
      * @returns True if the child exists, false otherwise.
      */
-    hasChild(note: Note): boolean {
-        return this.hasChildByID(note._id);
+    hasNoteChild(note: Note): boolean {
+        return this.hasNoteChildByID(note._id);
     }
 
     /**
@@ -166,7 +166,7 @@ export class Note {
      * @param noteID - The ID of the child to check for.
      * @returns True if the child exists, false otherwise.
      */
-    hasChildByID(noteID: string): boolean {
+    hasNoteChildByID(noteID: string): boolean {
         return this._children.some(child => child._id === noteID);
     }
 
@@ -175,7 +175,7 @@ export class Note {
      * @param note - The descendant note to check for.
      * @returns True if the descendant exists, false otherwise.
      */
-    hasDescendant(note: Note): boolean {
+    hasNoteDescendant(note: Note): boolean {
         return this.hasDescendantByID(note.id);
     }
 
@@ -184,7 +184,7 @@ export class Note {
      * @param note - The child note to remove.
      * @returns True if the child was removed, false otherwise.
      */
-    removeChild(note: Note): boolean {
+    removeChildNote(note: Note): boolean {
         const numberOfChildren = this._children.length;
         this._children = this._children.filter(child => child._id !== note._id);
         return this._children.length < numberOfChildren;
@@ -195,11 +195,11 @@ export class Note {
      * @param note - The descendant note to remove.
      * @returns True if the descendant was removed, false otherwise.
      */
-    removeDescendant(note: Note): boolean {
-        if (!(this.removeChild(note))) {
+    removeDescendantNote(note: Note): boolean {
+        if (!(this.removeChildNote(note))) {
             for (const child of this._children) {
-                if (child.hasDescendant(note)) {
-                    child.removeDescendant(note);
+                if (child.hasNoteDescendant(note)) {
+                    child.removeDescendantNote(note);
                     return true; // Note was found and removed
                 }
             }
@@ -212,10 +212,10 @@ export class Note {
      * Retrieves all descendant notes of the current note (children, grandchildren, etc.).
      * @returns An array containing all descendant notes.
      */
-    getDescendants(): Note[] {
+    getNoteDescendants(): Note[] {
         const descendants: Note[] = [];
         for (const child of this._children) {
-            descendants.push(...[child, ...child.getDescendants()]);
+            descendants.push(child, ...child.getNoteDescendants());
         }
         return descendants;
     }

@@ -12,8 +12,8 @@ if (electronSquirrelStartup) {
   app.quit();
 }
 
-import path from 'path';
-import fs from 'fs';
+import path from 'node:path';
+import fs from 'node:fs';
 import contextMenu from "electron-context-menu";
 import { registerNoteHandlers, registerFileHandlers } from './utils/ipc/fileHandler';
 import { registerWorkspaceHandlers } from './utils/ipc/workspaceHandler';
@@ -23,9 +23,7 @@ import { registerExportHandlers } from './utils/ipc/exportHandler';
 
 // Ensure only one instance of the app is running
 const gotTheLock = app.requestSingleInstanceLock();
-if (!gotTheLock) {
-  app.quit();
-} else {
+if (gotTheLock) {
   app.on('second-instance', () => {
     // Focus the main window if a second instance is launched
     const win = BrowserWindow.getAllWindows()[0];
@@ -199,4 +197,7 @@ if (!gotTheLock) {
       createWindow();
     }
   });
+}
+else {
+  app.quit();
 }

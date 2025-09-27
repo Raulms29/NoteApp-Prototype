@@ -3,10 +3,9 @@ import fs from 'fs';
 import fsPromises from 'fs/promises';
 import { ElectronMock } from '@wdio/electron-types';
 import { browser, $, $$ } from '@wdio/globals';
+import POApp from "./PO_App";
 
-
-
-export default class POWorkspace {
+export default class POWorkspace extends POApp {
     private static mockedShowOpenDialog: ElectronMock;
 
     static async createWorkspace(workspaceName = 'My New Workspace', folderNumber: number = 0) {
@@ -93,7 +92,7 @@ export default class POWorkspace {
         return undefined;
     }
 
-    static async changeWorkspace(workspaceName: string) {
+    static async switchWorkspace(workspaceName: string) {
         await $('button[title="Change workspace"]').click();
         await this.selectWorkspace(workspaceName);
         await expect($('#workspaceTitle')).toBeExisting();

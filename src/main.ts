@@ -1,7 +1,7 @@
 import { app, BrowserWindow, powerMonitor, protocol, shell, ipcMain, session } from 'electron';
 import electronSquirrelStartup from 'electron-squirrel-startup';
 
-// During tests, we need to import the wdio-electron-service preload script
+// During tests, we need to import the wdio-electron-service main script
 // It should not be imported in production
 // The import should not be done while building the application and is intented only for testing
 import('wdio-electron-service/main');

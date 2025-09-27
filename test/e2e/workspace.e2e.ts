@@ -2,7 +2,7 @@ import { browser } from '@wdio/globals';
 import POWorkspace from './pageobjects/PO_Workspace';
 describe('Workspace Testing', () => {
 
-    beforeEach(async () => {
+    afterEach(async () => {
         await browser.electron.restoreAllMocks();
         await browser.reloadSession();
     });
@@ -37,6 +37,6 @@ describe('Workspace Testing', () => {
         await POWorkspace.createWorkspace('Mock Workspace-6', 5);
         await POWorkspace.createWorkspace('Mock Workspace-7', 6);
         await POWorkspace.selectWorkspace('Mock Workspace-6');
-        await POWorkspace.changeWorkspace('Mock Workspace-7');
+        await POWorkspace.switchWorkspace('Mock Workspace-7');
     });
 });

@@ -19,7 +19,9 @@ export default class PONoteSpace extends POApp {
     static async createNoteInsideNote(noteNameParent: string, numberRepeatedNewNotes: number = 0) {
         const noteName = `New Note${numberRepeatedNewNotes === 0 ? '' : ' ' + numberRepeatedNewNotes}`;
         const button = $(`//span[contains(@class, 'truncate') and text()='${noteNameParent}']/following-sibling::*[contains(@class, 'sidebar-action-btn')]`);
-        await button.waitForDisplayed();
+        await button.waitForDisplayed({ timeout: 5000 });
+        await button.waitForEnabled({ timeout: 5000 });
+        await browser.pause(100); // Give time for any animation/transition
         await button.moveTo();
         await button.click();
         await $("//div[contains(@class, 'n-popover-shared') and contains(@class, 'n-dropdown')]//div[text()='New Note']").click();

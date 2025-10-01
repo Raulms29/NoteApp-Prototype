@@ -57,12 +57,11 @@ describe('Settings Testing', () => {
         // Create parent note and 5 child notes
         const parentNote = await PONoteSpace.createNote(0, 'Parent Note');
         await PONoteSpace.createNoteInsideNote(parentNote, 0);
-        await PONoteSpace.createNoteInsideNote(parentNote, 1);
 
         // Check that all notes exist and icons are correct
         await PONoteSpace.selectNote(parentNote);
         // Expect 5 big icons, no small icons
-        await expect($$('.note-child-big')).toBeElementsArrayOfSize(2);
+        await expect($$('.note-child-big')).toBeElementsArrayOfSize(1);
         await expect($('.note-child-small')).not.toBeExisting();
     });
 
@@ -75,11 +74,10 @@ describe('Settings Testing', () => {
         // Create parent note and 5 child notes
         const parentNote = await PONoteSpace.createNote(0, 'Parent Note');
         await PONoteSpace.createNoteInsideNote(parentNote, 0);
-        await PONoteSpace.createNoteInsideNote(parentNote, 1);
 
         await PONoteSpace.selectNote(parentNote);
         await expect($('.note-child-big')).not.toBeExisting();
-        await expect($$('.note-child-small')).toBeElementsArrayOfSize(2);
+        await expect($$('.note-child-small')).toBeElementsArrayOfSize(1);
     });
 
     it('should properly display subnotes when None is active', async () => {

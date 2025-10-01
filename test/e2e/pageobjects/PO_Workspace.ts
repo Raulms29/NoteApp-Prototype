@@ -8,8 +8,8 @@ import POApp from "./PO_App";
 export default class POWorkspace extends POApp {
     private static mockedShowOpenDialog: ElectronMock;
 
-    static async createWorkspace(workspaceName = 'My New Workspace', folderNumber: number = 0) {
-        const currentFilePath = await this.prepareWorkspaceCreation(folderNumber);
+    static async createWorkspace(testFileName: string, workspaceName = 'My New Workspace', folderNumber: number = 0) {
+        const currentFilePath = await this.prepareWorkspaceCreation(folderNumber, testFileName);
 
         await $('#new-workspace-card').click();
         await expect($('h2')).toHaveText('Create new Workspace');
@@ -32,8 +32,8 @@ export default class POWorkspace extends POApp {
         await expect(card).toBeExisting();
     }
 
-    static async createWorkspaceExpectError(workspaceName = 'My New Workspace', folderNumber: number = 0) {
-        const currentFilePath = await this.prepareWorkspaceCreation(folderNumber);
+    static async createWorkspaceExpectError(testFileName: string, workspaceName = 'My New Workspace', folderNumber: number = 0) {
+        const currentFilePath = await this.prepareWorkspaceCreation(folderNumber, testFileName);
         await $('#new-workspace-card').click();
         await expect($('h2')).toHaveText('Create new Workspace');
         await $('#workspace-name').setValue(workspaceName);
@@ -99,10 +99,10 @@ export default class POWorkspace extends POApp {
         await expect($('#workspaceTitle')).toHaveText(workspaceName);
     }
 
-    private static async prepareWorkspaceCreation(number: number) {
+    private static async prepareWorkspaceCreation(number: number, testName: string) {
         this.mockedShowOpenDialog = await browser.electron.mock('dialog', 'showOpenDialog');
 
-        const currentFilePath = path.join(__dirname, '../resources', `mock-workspace-${number}`);
+        const currentFilePath = path.join(__dirname, `../resources/${testName}`, `mock-workspace-${number}`);
 
         await this.mockedShowOpenDialog.mockResolvedValue({
             canceled: false,

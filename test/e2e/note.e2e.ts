@@ -3,7 +3,7 @@ import PONoteSpace from './pageobjects/PO_NoteSpace';
 describe('Note Testing', () => {
 
     beforeEach(async () => {
-        await POWorkspace.createWorkspace('Mock Workspace', 0);
+        await POWorkspace.createWorkspace('note', 'Mock Workspace', 0);
         await POWorkspace.selectWorkspace('Mock Workspace');
     });
 

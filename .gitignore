@@ -92,4 +92,4 @@ typings/
 out/
 
 # E2E tests Workspaces
-test/e2e/resources/mock-*
+test/e2e/resources/**/mock-*

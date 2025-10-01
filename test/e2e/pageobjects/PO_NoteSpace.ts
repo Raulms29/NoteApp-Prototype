@@ -2,12 +2,14 @@ import { $ } from '@wdio/globals';
 import POApp from './PO_App';
 
 export default class PONoteSpace extends POApp {
+
     static async createNote(numberRepeatedNewNotes: number = 0, noteName?: string) {
         const tempNoteName = `New Note${numberRepeatedNewNotes === 0 ? '' : ' ' + numberRepeatedNewNotes}`;
         await $('button[title="New Note"]').click();
         await expect($('.note-name-input')).toHaveValue(tempNoteName);
         this.checkNoteExists(tempNoteName);
         if (noteName) {
+            console.log('Renaming note to', noteName);
             await this.renameNote(tempNoteName, noteName);
             return noteName;
         }
@@ -86,6 +88,25 @@ export default class PONoteSpace extends POApp {
         await POApp.setInputValue(`input.n-input__input-el[placeholder="Search"]`, searchText);
         await expect($$(`//div[contains(@class, 'n-tree-node-wrapper')]`)).toBeElementsArrayOfSize(expectedNumberResults);
         await $('button[title="Search"]').click();
+    }
+
+    static async activateFocusMode() {
+        await $('button.focus-mode-icon-btn[title="Enter Focus Mode"]').click();
+        const splitpanes = $('.splitpanes.splitpanes--vertical.split-theme');
+        const children = splitpanes.$$(':scope > *');
+        await expect(children).toBeElementsArrayOfSize(1);
+        const style = await children[0].getAttribute('style');
+        expect(style).toContain('width: 100%');
+        // It must contain a child with id editorPane
+        await expect(children[0].$('#editorPane')).toBeExisting();
+    }
+
+    static async deactivateFocusMode() {
+        await $('button.focus-mode-icon-btn[title="Exit Focus Mode"]').click();
+        const splitpanes = $('.splitpanes.splitpanes--vertical.split-theme');
+        const children = splitpanes.$$(':scope > *');
+        // There must be three children because of the separator between the two panes
+        await expect(children).toBeElementsArrayOfSize(3);
     }
 }
 

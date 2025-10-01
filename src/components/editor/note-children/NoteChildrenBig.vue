@@ -1,13 +1,14 @@
 <template>
     <div class="note-children">
-        <div v-for="note in notes" :key="note.id" class="note-child" @click="$emit('select', note)">
+        <div v-for="note in notes" :key="note.id" class="note-child-big" @click="$emit('select', note)">
             <div class="note-child-img-container">
                 <div class="note-child-top-bar">
                     <ChildrenOptions @create="$emit('create', note)" @delete="$emit('delete', note)" />
                 </div>
                 <img v-if="note.hasChildren()" src="../../../assets/icons/note-children.svg" alt="Note child icon"
-                    class="note-child-icon" />
-                <img v-else src="../../../assets/icons/note-no-children.svg" alt="Note icon" class="note-child-icon" />
+                    class="note-child-icon-big" />
+                <img v-else src="../../../assets/icons/note-no-children.svg" alt="Note icon"
+                    class="note-child-icon-big" />
             </div>
             <p class="text-lg text-gray-700 dark:text-gray-300 text-center w-full">
                 {{ note.name }}
@@ -32,7 +33,7 @@ const emit = defineEmits(['select', 'create', 'delete']);
     margin: 1rem;
 }
 
-.note-child {
+.note-child-big {
     background: var(--background-color);
     cursor: pointer;
     transition: background 0.2s, box-shadow 0.2s;
@@ -44,11 +45,11 @@ const emit = defineEmits(['select', 'create', 'delete']);
     flex-direction: column;
 }
 
-.note-child:hover {
+.note-child-big:hover {
     background: var(--background-hover, #f3f3f3);
 }
 
-.note-child-icon {
+.note-child-icon-big {
     width: 50%;
     height: auto;
     margin-bottom: 0.5rem;

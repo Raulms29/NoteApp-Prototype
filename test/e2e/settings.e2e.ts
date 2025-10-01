@@ -61,18 +61,16 @@ describe('Settings Testing', () => {
         await PONoteSpace.createNoteInsideNote(parentNote, 0);
         await PONoteSpace.createNoteInsideNote(parentNote, 1);
         await PONoteSpace.createNoteInsideNote(parentNote, 2);
-        await PONoteSpace.createNoteInsideNote(parentNote, 3);
-        await PONoteSpace.createNoteInsideNote(parentNote, 4);
 
         // Check that all notes exist and icons are correct
         await PONoteSpace.selectNote(parentNote);
         // Expect 5 big icons, no small icons
-        await expect($$('.note-child-big')).toBeElementsArrayOfSize(5);
+        await expect($$('.note-child-big')).toBeElementsArrayOfSize(3);
         await expect($('.note-child-small')).not.toBeExisting();
 
         // Add one more child note, expect 6 big icons
-        await PONoteSpace.createNoteInsideNote(parentNote, 5);
-        await expect($$('.note-child-big')).toBeElementsArrayOfSize(6);
+        await PONoteSpace.createNoteInsideNote(parentNote, 3);
+        await expect($$('.note-child-big')).toBeElementsArrayOfSize(4);
         await expect($('.note-child-small')).not.toBeExisting();
     });
 

@@ -53,6 +53,8 @@ export default class PONoteSpace extends POApp {
 
     static async deleteNote(noteName: string) {
         const button = $(`//span[contains(@class, 'truncate') and text()='${noteName}']/following-sibling::*[contains(@class, 'sidebar-action-btn')]`);
+        await expect(button).toBeExisting();
+        await expect(button).toBeClickable();
         await button.moveTo();
         await button.click();
         await $("//div[contains(@class, 'n-popover-shared') and contains(@class, 'n-dropdown')]//div[text()='Delete']").click();

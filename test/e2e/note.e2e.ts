@@ -36,7 +36,7 @@ describe('Note Testing', () => {
         await PONoteSpace.moveNoteInsideAnotherNote(childNote, parentNote, level++);
     });
 
-    // making several drag and drop operations may lead to inconsistent results
+    // Making several drag and drop operations may lead to inconsistent results
     // This test will work in most cases, but could fail for no apparent reason
     it.skip('Should properly move a Note inside another Note with several levels', async () => {
         let level = 0;

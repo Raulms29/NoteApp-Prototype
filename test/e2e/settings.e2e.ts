@@ -20,6 +20,7 @@ describe('Settings Testing', () => {
         await POSettings.closeSettings();
     });
 
+    // Works consistently locally (tested on several machines), but gives problems when executed on the CI pipeline
     it('should properly display subnotes when Default is active', async () => {
         // Open settings and select Default subnotes display
         await POSettings.openSettings();
@@ -48,6 +49,7 @@ describe('Settings Testing', () => {
         await expect($$('.note-child-small')).toBeElementsArrayOfSize(6);
     });
 
+    // Works consistently locally (tested on several machines), but gives problems when executed on the CI pipeline
     it('should properly display subnotes when Big Only is active', async () => {
         // Open settings and select Big Only subnotes display
         await POSettings.openSettings();
@@ -57,14 +59,24 @@ describe('Settings Testing', () => {
         // Create parent note and 5 child notes
         const parentNote = await PONoteSpace.createNote(0, 'Parent Note');
         await PONoteSpace.createNoteInsideNote(parentNote, 0);
+        await PONoteSpace.createNoteInsideNote(parentNote, 1);
+        await PONoteSpace.createNoteInsideNote(parentNote, 2);
+        await PONoteSpace.createNoteInsideNote(parentNote, 3);
+        await PONoteSpace.createNoteInsideNote(parentNote, 4);
 
         // Check that all notes exist and icons are correct
         await PONoteSpace.selectNote(parentNote);
         // Expect 5 big icons, no small icons
-        await expect($$('.note-child-big')).toBeElementsArrayOfSize(1);
+        await expect($$('.note-child-big')).toBeElementsArrayOfSize(5);
+        await expect($('.note-child-small')).not.toBeExisting();
+
+        // Add one more child note, expect 6 big icons
+        await PONoteSpace.createNoteInsideNote(parentNote, 5);
+        await expect($$('.note-child-big')).toBeElementsArrayOfSize(6);
         await expect($('.note-child-small')).not.toBeExisting();
     });
 
+    // Works consistently locally (tested on several machines), but gives problems when executed on the CI pipeline
     it('should properly display subnotes when Small Only is active', async () => {
         // Open settings and select Small Only subnotes display
         await POSettings.openSettings();
@@ -74,10 +86,21 @@ describe('Settings Testing', () => {
         // Create parent note and 5 child notes
         const parentNote = await PONoteSpace.createNote(0, 'Parent Note');
         await PONoteSpace.createNoteInsideNote(parentNote, 0);
+        await PONoteSpace.createNoteInsideNote(parentNote, 1);
+        await PONoteSpace.createNoteInsideNote(parentNote, 2);
+        await PONoteSpace.createNoteInsideNote(parentNote, 3);
+        await PONoteSpace.createNoteInsideNote(parentNote, 4);
 
+        // Check that all notes exist and icons are correct
         await PONoteSpace.selectNote(parentNote);
+        // Expect no big icons, 5 small icons
         await expect($('.note-child-big')).not.toBeExisting();
-        await expect($$('.note-child-small')).toBeElementsArrayOfSize(1);
+        await expect($$('.note-child-small')).toBeElementsArrayOfSize(5);
+
+        // Add one more child note, expect 6 small icons
+        await PONoteSpace.createNoteInsideNote(parentNote, 5);
+        await expect($('.note-child-big')).not.toBeExisting();
+        await expect($$('.note-child-small')).toBeElementsArrayOfSize(6);
     });
 
     it('should properly display subnotes when None is active', async () => {
@@ -90,11 +113,18 @@ describe('Settings Testing', () => {
         const parentNote = await PONoteSpace.createNote(0, 'Parent Note');
         await PONoteSpace.createNoteInsideNote(parentNote, 0);
         await PONoteSpace.createNoteInsideNote(parentNote, 1);
-
+        await PONoteSpace.createNoteInsideNote(parentNote, 2);
+        await PONoteSpace.createNoteInsideNote(parentNote, 3);
+        await PONoteSpace.createNoteInsideNote(parentNote, 4);
 
         // Check that all notes exist and icons are correct
         await PONoteSpace.selectNote(parentNote);
         // Expect no big or small icons
+        await expect($('.note-child-big')).not.toBeExisting();
+        await expect($('.note-child-small')).not.toBeExisting();
+
+        // Add one more child note, still expect no icons
+        await PONoteSpace.createNoteInsideNote(parentNote, 5);
         await expect($('.note-child-big')).not.toBeExisting();
         await expect($('.note-child-small')).not.toBeExisting();
     });

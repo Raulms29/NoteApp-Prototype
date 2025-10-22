@@ -43,11 +43,6 @@ describe('Editor Testing', () => {
             await POEditor.writeItalic('Italic Test');
         });
 
-        // TODO must be done viua BubbleMenu
-        // it('Should apply underline using bubble menu button', async () => {
-        //     await POEditor.writeUnderline('Underline Test');
-        // });
-
         it('Should apply strike using bubble menu button', async () => {
             await POEditor.writeStrike('Strike Test');
         });
@@ -78,6 +73,95 @@ describe('Editor Testing', () => {
     describe('Links', () => {
         it('Should create links using markdown', async () => {
             await POEditor.writeLink('My Link', 'https://example.com');
+        });
+    });
+
+    describe('Bubble Menu', () => {
+        describe('Visibility', () => {
+            it('Should show the bubble menu when text is selected', async () => {
+                await POEditor.writeAndSelect('Bubble Test');
+                expect(await POEditor.getBubbleMenu()).toBeExisting();
+            });
+        });
+
+        describe('Formatting', () => {
+            it('Should apply bold via bubble menu', async () => {
+                await POEditor.writeBoldBubble('Bold Bubble');
+            });
+
+            it('Should apply italic via bubble menu', async () => {
+                await POEditor.writeItalicBubble('Italic Bubble');
+            });
+
+            it('Should apply underline via bubble menu', async () => {
+                await POEditor.writeUnderlineBubble('Underline Bubble');
+            });
+
+            it('Should apply strike via bubble menu', async () => {
+                await POEditor.writeStrikeBubble('Strike Bubble');
+            });
+        });
+
+        describe('Block Elements', () => {
+            it('Should apply code block via bubble menu', async () => {
+                await POEditor.writeCodeBlockBubble('Code Bubble');
+            });
+        });
+
+        describe('Links', () => {
+            it('Should open the Add Link dialog and set a valid link', async () => {
+                await POEditor.writeAndSelect('Link Test');
+                await POEditor.openAddLinkDialog();
+                await POEditor.setLink('https://example.com');
+                const link = (await POEditor.getEditor()).$('a');
+                await expect(link).toBeExisting();
+                await expect(await link.getAttribute('href')).toBe('https://example.com');
+            });
+        });
+
+        describe('Dropdown', () => {
+            it('Should change to paragraph type', async () => {
+                await POEditor.writeAndSelect('This is a paragraph.');
+                await POEditor.openBubbleMenuElementDropdown();
+                await POEditor.selectBubbleMenuParagraph();
+                const p = (await POEditor.getEditor()).$('p');
+                await expect(p).toBeExisting();
+                await expect(await p.getText()).toBe('This is a paragraph.');
+            });
+
+            it('Should change to heading levels 1-4', async () => {
+                for (let level = 1; level <= 4; level++) {
+                    await POEditor.writeAndSelect(`This is a heading level ${level}.`);
+                    await POEditor.openBubbleMenuElementDropdown();
+                    await POEditor.selectBubbleMenuHeading(level);
+                    const h = (await POEditor.getEditor()).$(`h${level}`);
+                    await expect(h).toBeExisting();
+                    await expect(await h.getText()).toBe(`This is a heading level ${level}.`);
+                    // Clear editor text for next iteration
+                    await POEditor.clearEditorContents();
+                }
+            });
+            it('Should change to bullet list', async () => {
+                await POEditor.writeAndSelect('This is a bullet list.');
+                await POEditor.openBubbleMenuElementDropdown();
+                await POEditor.selectBubbleMenuBulletList();
+                const ul = (await POEditor.getEditor()).$('ul');
+                await expect(ul).toBeExisting();
+            });
+            it('Should change to ordered list', async () => {
+                await POEditor.writeAndSelect('This is an ordered list.');
+                await POEditor.openBubbleMenuElementDropdown();
+                await POEditor.selectBubbleMenuOrderedList();
+                const ol = (await POEditor.getEditor()).$('ol');
+                await expect(ol).toBeExisting();
+            });
+            it('Should change to todo list', async () => {
+                await POEditor.writeAndSelect('This is a todo list.');
+                await POEditor.openBubbleMenuElementDropdown();
+                await POEditor.selectBubbleMenuTodoList();
+                const checkbox = (await POEditor.getEditor()).$('input[type="checkbox"]');
+                await expect(checkbox).toBeExisting();
+            });
         });
     });
 });

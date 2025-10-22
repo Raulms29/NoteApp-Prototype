@@ -45,29 +45,29 @@ describe('GIVEN a Note', () => {
         });
 
         it('THEN throws error when empty ID', () => {
-            expect(() => new Note('Empty ID Note', [], '')).toThrowError('Note ID must be exactly 8 characters long');
+            expect(() => new Note('Empty ID Note', [], '')).toThrow('Note ID must be exactly 8 characters long');
         });
 
         it('THEN throws error for invalid ID', () => {
-            expect(() => new Note('Invalid ID Note', [], 'invalid/id')).toThrowError('Note ID cannot contain any of these characters: \\ / : * ? " < > |');
+            expect(() => new Note('Invalid ID Note', [], 'invalid/id')).toThrow('Note ID cannot contain any of these characters: \\ / : * ? " < > |');
         });
 
         it('THEN throws error for short/long ID', () => {
-            expect(() => new Note('Short ID Note', [], '1234567')).toThrowError('Note ID must be exactly 8 characters long');
-            expect(() => new Note('Long ID Note', [], '123456789')).toThrowError('Note ID must be exactly 8 characters long');
+            expect(() => new Note('Short ID Note', [], '1234567')).toThrow('Note ID must be exactly 8 characters long');
+            expect(() => new Note('Long ID Note', [], '123456789')).toThrow('Note ID must be exactly 8 characters long');
         });
 
         it('THEN throws error for empty name', () => {
-            expect(() => new Note('', [], '00000001')).toThrowError('Note name cannot be empty.');
+            expect(() => new Note('', [], '00000001')).toThrow('Note name cannot be empty.');
         });
 
         it('THEN throws error for long name', () => {
             const longName = 'a'.repeat(31);
-            expect(() => new Note(longName, [], '00000001')).toThrowError('Note name cannot exceed 30 characters.');
+            expect(() => new Note(longName, [], '00000001')).toThrow('Note name cannot exceed 30 characters.');
         });
         it('THEN throws error for invalid character name', () => {
             const name = 'Invalid/Name';
-            expect(() => new Note(name, [], '00000001')).toThrowError('Note name cannot contain any of these characters: \\ / : * ? " < > |');
+            expect(() => new Note(name, [], '00000001')).toThrow('Note name cannot contain any of these characters: \\ / : * ? " < > |');
         });
     });
 
@@ -90,11 +90,11 @@ describe('GIVEN a Note', () => {
             const childNote = new Note('Child Note', [], '00000002');
             note.addChild(childNote);
 
-            expect(() => note.addChild(childNote)).toThrowError(`Child with ID ${childNote.id} already exists in this note.`);
+            expect(() => note.addChild(childNote)).toThrow(`Child with ID ${childNote.id} already exists in this note.`);
         });
 
         it('THEN throws error for self-child', () => {
-            expect(() => note.addChild(note)).toThrowError(`Cannot add a note as a child of itself.`);
+            expect(() => note.addChild(note)).toThrow(`Cannot add a note as a child of itself.`);
         });
     });
 

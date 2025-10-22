@@ -154,7 +154,7 @@ async function testExportAsMarkdown(content: string[], noteName: string[]) {
 
 // Helper for PDF export
 async function testExportAsPDF(content: string[], noteName: string[]) {
-    await service.exportNotesAsPDF(content, noteName, workspace);
+    await service.exportNotesAsPDF(content, noteName);
     expect(mockGetTempDir).toHaveBeenCalled();
 
     if (content.length === 1) {

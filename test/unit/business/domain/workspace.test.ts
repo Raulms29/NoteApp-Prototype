@@ -25,17 +25,17 @@ describe('GIVEN a Workspace', () => {
     });
 
     it('THEN throws error for empty name', () => {
-        expect(() => new Workspace('', '/p', '12345678')).toThrowError('Workspace name cannot be empty');
+        expect(() => new Workspace('', '/p', '12345678')).toThrow('Workspace name cannot be empty');
     });
 
     it('THEN throws error for name > 25 chars', () => {
         const longName = 'a'.repeat(26);
-        expect(() => new Workspace(longName, '/p', '12345678')).toThrowError('Workspace name cannot exceed 25 characters');
+        expect(() => new Workspace(longName, '/p', '12345678')).toThrow('Workspace name cannot exceed 25 characters');
     });
 
     it('THEN throws error for ID not 8 chars', () => {
-        expect(() => new Workspace('Name', '/p', '1234567')).toThrowError('Workspace ID must be exactly 8 characters long');
-        expect(() => new Workspace('Name', '/p', '123456789')).toThrowError('Workspace ID must be exactly 8 characters long');
+        expect(() => new Workspace('Name', '/p', '1234567')).toThrow('Workspace ID must be exactly 8 characters long');
+        expect(() => new Workspace('Name', '/p', '123456789')).toThrow('Workspace ID must be exactly 8 characters long');
     });
 
     it('THEN filesFolder returns .files', () => {

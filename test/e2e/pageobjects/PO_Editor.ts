@@ -7,6 +7,23 @@ export default class POEditor extends POApp {
         return $("div.tiptap.ProseMirror.prose[contenteditable='true']");
     }
 
+    static async clearEditorContents() {
+        const editor = await POEditor.getEditor();
+        await editor.click();
+        await browser.keys(['Control', 'a']);
+        await browser.keys(['Backspace']);
+    }
+
+    static async getBubbleMenu() {
+        return $('.bubble-menu');
+    }
+
+    static async writeAndSelect(text: string) {
+        await POEditor.write(text);
+        const editor = await POEditor.getEditor();
+        await editor.$(`p=${text}`).doubleClick();
+    }
+
     static async write(text: string, expectedElementAfterWrite = 'p', expectedTextAfterWrite = text) {
         const editor = await POEditor.getEditor();
         await editor.click();
@@ -30,24 +47,21 @@ export default class POEditor extends POApp {
         const editor = await POEditor.getEditor();
         await editor.click();
         await browser.keys(`**${text}**`);
-        await expect(editor.$('strong')).toBeExisting();
-        await expect(editor.$('strong')).toHaveText(text);
+        await POEditor.#assertBold(text);
     }
 
     static async writeItalic(text: string) {
         const editor = await POEditor.getEditor();
         await editor.click();
         await browser.keys(`*${text}*`);
-        await expect(editor.$('em')).toBeExisting();
-        await expect(editor.$('em')).toHaveText(text);
+        await POEditor.#assertItalic(text);
     }
 
     static async writeStrike(text: string) {
         const editor = await POEditor.getEditor();
         await editor.click();
         await browser.keys(`~~${text}~~`);
-        await expect(editor.$('s')).toBeExisting();
-        await expect(editor.$('s')).toHaveText(text);
+        await POEditor.#assertStrike(text);
     }
 
     static async writeBlockquote(text: string) {
@@ -55,8 +69,7 @@ export default class POEditor extends POApp {
         await editor.click();
         await browser.keys(`> ${text}`);
         await browser.keys(['Enter']);
-        await expect(editor.$('blockquote')).toBeExisting();
-        await expect(editor.$('blockquote')).toHaveText(text);
+        await POEditor.#assertElementText('blockquote', text);
     }
 
     static async writeBulletList(items: string[]) {
@@ -105,9 +118,7 @@ export default class POEditor extends POApp {
         await browser.keys('```' + lang);
         await browser.keys(['Enter']);
         await browser.keys(code);
-        const codeBlock = editor.$('pre code');
-        await expect(codeBlock).toBeExisting();
-        await expect(codeBlock).toHaveText(code);
+        await POEditor.#assertCodeBlock(code);
     }
 
     static async writeTaskList(items: string[]) {
@@ -138,5 +149,112 @@ export default class POEditor extends POApp {
         await expect(link).toHaveAttribute('href', url);
     }
 
+    static async writeBoldBubble(text: string) {
+        await POEditor.writeAndSelect(text);
+        await POEditor.clickBubbleButton('Bold');
+        await POEditor.#assertBold(text);
+    }
 
+    static async writeItalicBubble(text: string) {
+        await POEditor.writeAndSelect(text);
+        await POEditor.clickBubbleButton('Italic');
+        await POEditor.#assertItalic(text);
+    }
+
+    static async writeUnderlineBubble(text: string) {
+        await POEditor.writeAndSelect(text);
+        await POEditor.clickBubbleButton('Underline');
+        await POEditor.#assertUnderline(text);
+    }
+
+    static async writeStrikeBubble(text: string) {
+        await POEditor.writeAndSelect(text);
+        await POEditor.clickBubbleButton('Strike');
+        await POEditor.#assertStrike(text);
+    }
+
+    static async writeCodeBlockBubble(code: string) {
+        await POEditor.writeAndSelect(code);
+        await POEditor.clickBubbleButton('Code Block');
+        await POEditor.#assertCodeBlock(code);
+    }
+
+    static async clickBubbleButton(label: string) {
+        // Find button by aria-label inside bubble menu
+        const menu = await POEditor.getBubbleMenu();
+        const btn = menu.$(`.bubble-button span[aria-label="${label}"]`);
+        await btn.parentElement().click();
+    }
+
+    static async #assertElementText(selector: string, expected: string) {
+        const editor = await POEditor.getEditor();
+        const el = editor.$(selector);
+        await expect(el).toBeExisting();
+        await expect(await el.getText()).toBe(expected);
+    }
+
+    static async #assertBold(text: string) {
+        await POEditor.#assertElementText('strong', text);
+    }
+
+    static async #assertItalic(text: string) {
+        await POEditor.#assertElementText('em', text);
+    }
+
+    static async #assertUnderline(text: string) {
+        await POEditor.#assertElementText('u', text);
+    }
+
+    static async #assertStrike(text: string) {
+        await POEditor.#assertElementText('s', text);
+    }
+
+    static async #assertCodeBlock(text: string) {
+        await POEditor.#assertElementText('pre code', text);
+    }
+
+    static async openAddLinkDialog() {
+        const menu = await POEditor.getBubbleMenu();
+        const linkBtn = menu.$('.bubble-button:has(span[aria-label="Link"])');
+        await linkBtn.click();
+    }
+
+    static async setLink(url: string) {
+        const dialog = $('.dropdown-container form');
+        const input = dialog.$('input[type="url"]');
+        await input.setValue(url);
+        const setBtn = dialog.$('button[type="submit"]');
+        await setBtn.click();
+    }
+
+    // Bubble menu: ElementDropdown actions
+    static async openBubbleMenuElementDropdown() {
+        const menu = await POEditor.getBubbleMenu();
+        const dropdownBtn = menu.$('.bubble-button img[alt="Chevron Down"]');
+        await dropdownBtn.parentElement().click();
+    }
+
+    static async clickBubbleMenuDropdownButtonByText(text: string) {
+        await $(`//div[contains(@class,'dropdown-container')]//button[contains(@class,'dropdown-button')][normalize-space(text())='${text}']`).click();
+    }
+
+    static async selectBubbleMenuParagraph() {
+        await POEditor.clickBubbleMenuDropdownButtonByText('Paragraph');
+    }
+
+    static async selectBubbleMenuHeading(level: number) {
+        await POEditor.clickBubbleMenuDropdownButtonByText(`Heading ${level}`);
+    }
+
+    static async selectBubbleMenuBulletList() {
+        await POEditor.clickBubbleMenuDropdownButtonByText('Bullet list');
+    }
+
+    static async selectBubbleMenuOrderedList() {
+        await POEditor.clickBubbleMenuDropdownButtonByText('Ordered list');
+    }
+
+    static async selectBubbleMenuTodoList() {
+        await POEditor.clickBubbleMenuDropdownButtonByText('Todo list');
+    }
 }

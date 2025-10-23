@@ -18,10 +18,11 @@ export default class POEditor extends POApp {
         return $('.bubble-menu');
     }
 
-    static async writeAndSelect(text: string) {
+    static async writeAndSelectAll(text: string) {
         await POEditor.write(text);
         const editor = await POEditor.getEditor();
-        await editor.$(`p=${text}`).doubleClick();
+        await editor.click();
+        await browser.keys(['Control', 'a']);
     }
 
     static async write(text: string, expectedElementAfterWrite = 'p', expectedTextAfterWrite = text) {
@@ -150,31 +151,31 @@ export default class POEditor extends POApp {
     }
 
     static async writeBoldBubble(text: string) {
-        await POEditor.writeAndSelect(text);
+        await POEditor.writeAndSelectAll(text);
         await POEditor.clickBubbleButton('Bold');
         await POEditor.#assertBold(text);
     }
 
     static async writeItalicBubble(text: string) {
-        await POEditor.writeAndSelect(text);
+        await POEditor.writeAndSelectAll(text);
         await POEditor.clickBubbleButton('Italic');
         await POEditor.#assertItalic(text);
     }
 
     static async writeUnderlineBubble(text: string) {
-        await POEditor.writeAndSelect(text);
+        await POEditor.writeAndSelectAll(text);
         await POEditor.clickBubbleButton('Underline');
         await POEditor.#assertUnderline(text);
     }
 
     static async writeStrikeBubble(text: string) {
-        await POEditor.writeAndSelect(text);
+        await POEditor.writeAndSelectAll(text);
         await POEditor.clickBubbleButton('Strike');
         await POEditor.#assertStrike(text);
     }
 
     static async writeCodeBlockBubble(code: string) {
-        await POEditor.writeAndSelect(code);
+        await POEditor.writeAndSelectAll(code);
         await POEditor.clickBubbleButton('Code Block');
         await POEditor.#assertCodeBlock(code);
     }

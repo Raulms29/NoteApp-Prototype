@@ -86,8 +86,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
      * @param name - The name of the workspace.
      * @param path - The file system path of the workspace.
      */
-    function validateWorkspace(name: string, path: string): void {
-        wsService.validateWorkspace(name, path, workspaces.value as Workspace[]);
+    function validateWorkspace(name: string, path: string, isNew = true): void {
+        wsService.validateWorkspace(name, path, workspaces.value as Workspace[], isNew);
     }
 
     /**

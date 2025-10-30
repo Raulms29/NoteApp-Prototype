@@ -51,6 +51,18 @@ export default class PONoteSpace extends POApp {
         this.checkNoteExists(newName);
     }
 
+    static async renameNoteExpectError(oldName: string, newName: string, message?: string) {
+        await this.selectNote(oldName);
+        const noteNameInputSelector = `.note-name-input`;
+        const noteNameInput = $(noteNameInputSelector);
+        await expect(noteNameInput).toHaveValue(oldName);
+        await this.setInputValueAndLoseFocus(noteNameInputSelector, newName);
+
+        const err = $('.generic-error-message');
+        await expect(err).toBeExisting();
+        await expect(err).toHaveText(message);
+    }
+
     static async deleteNote(noteName: string) {
         const button = $(`//span[contains(@class, 'truncate') and text()='${noteName}']/following-sibling::*[contains(@class, 'sidebar-action-btn')]`);
         await expect(button).toBeExisting();

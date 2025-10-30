@@ -24,6 +24,28 @@ describe('Note Testing', () => {
         const noteName = await PONoteSpace.createNote();
         await PONoteSpace.renameNote(noteName, 'Renamed Note');
     });
+
+    it('Should give an error when trying to rename a Note with an existing name', async () => {
+        const firstNoteName = await PONoteSpace.createNote(0, "First Note");
+        const secondNoteName = await PONoteSpace.createNote(0, "Second Note");
+        await PONoteSpace.renameNoteExpectError(secondNoteName, firstNoteName, `A note with the name "${firstNoteName}" already exists.`);
+    });
+
+    it('Should give an error when trying to rename a Note with an empty name', async () => {
+        const firstNoteName = await PONoteSpace.createNote(0, "First Note");
+        await PONoteSpace.renameNoteExpectError(firstNoteName, '', `Note name cannot be empty.`);
+    });
+
+    it('Should give an error when trying to rename a Note with an invald name', async () => {
+        const note = await PONoteSpace.createNote(0, "Valid Note");
+        await PONoteSpace.renameNoteExpectError(note, 'Note/Name', String.raw`Note name cannot contain any of these characters: \ / : * ? " < > |`);
+    });
+
+    it('Should give an error when trying to rename a Note with a long name', async () => {
+        const note = await PONoteSpace.createNote(0, "Valid Note");
+        await PONoteSpace.renameNoteExpectError(note, 'n'.repeat(31), 'Note name cannot exceed 30 characters.');
+    });
+
     it('Should properly delete a Note', async () => {
         const noteName = await PONoteSpace.createNote();
         await PONoteSpace.deleteNote(noteName);

@@ -32,7 +32,7 @@ export default class POWorkspace extends POApp {
         await expect(card).toBeExisting();
     }
 
-    static async createWorkspaceExpectError(testFileName: string, workspaceName = 'My New Workspace', folderNumber: number = 0) {
+    static async createWorkspaceExpectError(testFileName: string, message: string, workspaceName = 'My New Workspace', folderNumber: number = 0) {
         const currentFilePath = await this.prepareWorkspaceCreation(folderNumber, testFileName);
         await $('#new-workspace-card').click();
         await expect($('h2')).toHaveText('Create new Workspace');
@@ -50,7 +50,7 @@ export default class POWorkspace extends POApp {
         );
         await $('#create-workspace-btn').click();
         await expect($('.generic-dialog')).toBeExisting();
-        await expect($('.generic-dialog-text')).toHaveText('A workspace already exists in this location');
+        await expect($('.generic-dialog-text')).toHaveText(message);
     }
 
 
@@ -63,6 +63,19 @@ export default class POWorkspace extends POApp {
         await renameInput.setValue(newName);
         await $('.generic-btn.primary').click();
         await expect($(`.workspace-name=${newName}`)).toBeExisting();
+    }
+
+    static async renameWorkspaceExpectError(oldName: string, newName: string) {
+        await $(`//div[contains(@class, 'workspace-name') and text()='${oldName}']/../following-sibling::div[contains(@class, 'workspace-card-dots')]`).click();
+        await $("//div[contains(@class, 'menu-item')]//span[text()='Rename']").click();
+        const renameInput = $('#rename-workspace-input');
+        await expect(renameInput).toBeExisting();
+        await expect(renameInput).toHaveValue(oldName);
+        await renameInput.setValue(newName);
+        await $('.generic-btn.primary').click();
+        const err = $('.generic-error-message');
+        await expect(err).toBeExisting();
+        await expect(err).toHaveText('Please enter a valid workspace name. It should not exceed 25 characters');
     }
 
     static async removeWorkspace(workspaceName: string) {
@@ -110,14 +123,14 @@ export default class POWorkspace extends POApp {
         });
 
         if (currentFilePath) {
-            if (!fs.existsSync(currentFilePath)) {
-                await fsPromises.mkdir(currentFilePath, { recursive: true });
-            } else {
+            if (fs.existsSync(currentFilePath)) {
                 // Empty the folder
                 const files = await fsPromises.readdir(currentFilePath);
                 for (const file of files) {
                     await fsPromises.rm(path.join(currentFilePath, file), { recursive: true, force: true });
                 }
+            } else {
+                await fsPromises.mkdir(currentFilePath, { recursive: true });
             }
         }
         return currentFilePath;

@@ -34,14 +34,14 @@ export class WorkspaceService {
      * @param name - The name of the workspace.
      * @param path - The file system path of the workspace.
      */
-    validateWorkspace(name: string, path: string, workspaces: Workspace[]): void {
-        if (!name || name.trim() === '' || name.length > 30) {
-            throw new Error('Please enter a valid workspace name. It should not exceed 30 characters.');
+    validateWorkspace(name: string, path: string, workspaces: Workspace[], isNew = true): void {
+        if (!name || name.trim() === '' || name.length > 25) {
+            throw new Error('Please enter a valid workspace name. It should not exceed 25 characters');
         }
         if (!path || path.trim() === '') {
             throw new Error('Workspace location cannot be empty');
         }
-        if (workspaces.some(ws => ws.path === path)) {
+        if (workspaces.some(ws => ws.path === path) && isNew) {
             throw new Error('A workspace already exists in this location');
         }
     }

@@ -50,6 +50,7 @@ function newWorkspace() {
 
 function renameWorkspace(workspace: WorkspaceI, newName: string) {
     try {
+        workspaceStore.validateWorkspace(newName, workspace.path, false);
         workspaceStore.renameWorkspace(workspace.id, newName);
     } catch (e) {
         errorMessage.value = e.message;

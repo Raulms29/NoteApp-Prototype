@@ -34,7 +34,7 @@ describe('Editor Testing', () => {
         });
     });
 
-    describe('Formatting', () => {
+    describe('Inline Formatting', () => {
         it('Should apply bold using markdown', async () => {
             await POEditor.writeBold('Bold Test');
         });
@@ -84,7 +84,7 @@ describe('Editor Testing', () => {
             });
         });
 
-        describe('Formatting', () => {
+        describe('Plain Text Formatting', () => {
             it('Should apply bold via bubble menu', async () => {
                 await POEditor.writeBoldBubble('Bold Bubble');
             });

@@ -54,6 +54,15 @@ export const useSettingsStore = defineStore('settings', () => {
         settings.value[key] = value;
     }
 
+    function restoreDefaultSettings() {
+        settings.value = {
+            rememberLastWorkspace: false,
+            rememberLastNote: false,
+            focusMode: false,
+            subNotesDisplayType: 'DEFAULT'
+        };
+    }
+
     return {
         /**
          * The current settings object.
@@ -70,5 +79,6 @@ export const useSettingsStore = defineStore('settings', () => {
         init,
         saveSettings,
         updateSetting,
+        restoreDefaultSettings
     };
 });

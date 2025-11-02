@@ -126,4 +126,24 @@ describe('Settings Testing', () => {
         await expect($('.note-child-big')).not.toBeExisting();
         await expect($('.note-child-small')).not.toBeExisting();
     });
+
+    it("Should properly restore defaults", async () => {
+        // Change settings from defaults
+        await POSettings.openSettings();
+        await POSettings.selectSubnotesBigOnly();
+        await POSettings.selectRememberWorkspace();
+        await POSettings.selectRememberLastNote();
+        await POSettings.checkNonDefaultValues();
+        await POSettings.closeSettings();
+
+        // Restore defaults and verify
+        await POSettings.openSettings();
+        await POSettings.restoreDefaults();
+        await POSettings.checkDefaultValues();
+        await POSettings.closeSettings();
+
+        // Confirm defaults persist
+        await POSettings.openSettings();
+        await POSettings.checkDefaultValues();
+    });
 });

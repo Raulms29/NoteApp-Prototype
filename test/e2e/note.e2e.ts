@@ -51,6 +51,15 @@ describe('Note Testing', () => {
         await PONoteSpace.deleteNote(noteName);
     });
 
+    it('Should properly delete all subnotes when deleting a Note', async () => {
+        let level = 0;
+        const parentNote = await PONoteSpace.createNote(0, "Parent Note");
+        const childNote = await PONoteSpace.createNote(0, "Child Note");
+        await PONoteSpace.moveNoteInsideAnotherNote(childNote, parentNote, level++);
+
+        await PONoteSpace.deleteNoteWithSubnotes(parentNote, true);
+    });
+
     it('Should properly move a Note inside another Note', async () => {
         let level = 0;
         const parentNote = await PONoteSpace.createNote(0, "Parent Note");

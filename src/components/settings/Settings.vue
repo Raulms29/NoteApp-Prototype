@@ -29,6 +29,7 @@
             </div>
         </template>
         <template #actions>
+            <GenericButton variant="secondary" @click="handleRestoreDefaults">Restore Defaults</GenericButton>
             <GenericButton variant="primary" @click="handleClose">OK</GenericButton>
         </template>
 
@@ -66,6 +67,10 @@ const subNotesOption = computed({
 async function handleClose() {
     await settingsStore.saveSettings();
     emit('close');
+}
+
+async function handleRestoreDefaults() {
+    settingsStore.restoreDefaultSettings();
 }
 </script>
 

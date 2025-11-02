@@ -63,4 +63,24 @@ describe('GIVEN the useSettingsStore store', () => {
             expect(store.settings.rememberLastWorkspace).toBe(true);
         });
     });
+
+    // • restoreDefaultSettings
+    describe('WHEN restoreDefaultSettings is called', () => {
+        it('THEN the settings should be restored to default values', () => {
+            const store = useSettingsStore();
+
+            store.updateSetting('focusMode', true);
+            expect(store.settings.focusMode).toBe(true);
+            store.updateSetting('rememberLastWorkspace', true);
+            expect(store.settings.rememberLastWorkspace).toBe(true);
+            store.updateSetting('subNotesDisplayType', 'BIG_ONLY');
+            expect(store.settings.subNotesDisplayType).toBe('BIG_ONLY');
+
+            store.restoreDefaultSettings();
+            expect(store.settings.focusMode).toBe(false);
+            expect(store.settings.rememberLastWorkspace).toBe(false);
+            expect(store.settings.subNotesDisplayType).toBe('DEFAULT');
+
+        });
+    });
 });

@@ -3,6 +3,7 @@ import POApp from './PO_App';
 
 export default class PONoteSpace extends POApp {
 
+
     static async createNote(numberRepeatedNewNotes: number = 0, noteName?: string) {
         const tempNoteName = `New Note${numberRepeatedNewNotes === 0 ? '' : ' ' + numberRepeatedNewNotes}`;
         await $('button[title="New Note"]').click();
@@ -71,6 +72,16 @@ export default class PONoteSpace extends POApp {
         await button.click();
         await $("//div[contains(@class, 'n-popover-shared') and contains(@class, 'n-dropdown')]//div[text()='Delete']").click();
         await this.checkNoteDoesNotExist(noteName);
+    }
+
+    static async deleteNoteWithSubnotes(noteName: string, deleteSubnotes: boolean) {
+        const button = $(`//span[contains(@class, 'truncate') and text()='${noteName}']/following-sibling::*[contains(@class, 'sidebar-action-btn')]`);
+        await expect(button).toBeExisting();
+        await button.moveTo();
+        await expect(button).toBeClickable();
+        await button.click();
+        await $("//div[contains(@class, 'n-popover-shared') and contains(@class, 'n-dropdown')]//div[text()='Delete']").click();
+        return deleteSubnotes;
     }
 
     static async moveNoteInsideAnotherNote(sourceNote: string, targetNote: string, parentLevel: number = 0) {

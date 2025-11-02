@@ -124,7 +124,7 @@ export class Note {
      * @param child - The child note to add.
      * @throws Will throw an error if the child already exists or if the child is the same as the parent.
      */
-    addChild(child: Note): void {
+    addChildNote(child: Note): void {
         if (this.children.some(existingChild => existingChild.id === child.id)) {
             throw new Error(`Child with ID ${child.id} already exists in this note.`);
         }
@@ -132,51 +132,6 @@ export class Note {
             throw new Error(`Cannot add a note as a child of itself.`);
         }
         this._children.push(child);
-    }
-
-    /**
-     * Checks if the note has a descendant with the specified ID.
-     * @param noteID - The ID of the descendant to check for.
-     * @returns True if the descendant exists, false otherwise.
-     */
-    hasDescendantByID(noteID: string): boolean {
-        if (this.hasNoteChildByID(noteID))
-            return true;
-
-        for (const child of this._children) {
-            if (child.hasDescendantByID(noteID)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Checks if the note has the specified child.
-     * @param note - The child note to check for.
-     * @returns True if the child exists, false otherwise.
-     */
-    hasNoteChild(note: Note): boolean {
-        return this.hasNoteChildByID(note._id);
-    }
-
-    /**
-     * Checks if the note has a child with the specified ID.
-     * @param noteID - The ID of the child to check for.
-     * @returns True if the child exists, false otherwise.
-     */
-    hasNoteChildByID(noteID: string): boolean {
-        return this._children.some(child => child._id === noteID);
-    }
-
-    /**
-     * Checks if the note has the specified descendant.
-     * @param note - The descendant note to check for.
-     * @returns True if the descendant exists, false otherwise.
-     */
-    hasNoteDescendant(note: Note): boolean {
-        return this.hasDescendantByID(note.id);
     }
 
     /**
@@ -209,6 +164,59 @@ export class Note {
     }
 
     /**
+     * Checks if the note has the specified child.
+     * @param note - The child note to check for.
+     * @returns True if the child exists, false otherwise.
+     */
+    hasChildNote(note: Note): boolean {
+        return this.hasChildNoteByID(note._id);
+    }
+
+    /**
+     * Checks if the note has a child with the specified ID.
+     * @param noteID - The ID of the child to check for.
+     * @returns True if the child exists, false otherwise.
+     */
+    hasChildNoteByID(noteID: string): boolean {
+        return this._children.some(child => child._id === noteID);
+    }
+
+    /**
+     * Checks if the note has any child notes.
+     * @returns True if the note has one or more children, false otherwise.
+     */
+    hasChildren(): boolean {
+        return this._children.length > 0;
+    }
+
+    /**
+     * Checks if the note has a descendant with the specified ID.
+     * @param noteID - The ID of the descendant to check for.
+     * @returns True if the descendant exists, false otherwise.
+     */
+    hasDescendantNoteByID(noteID: string): boolean {
+        if (this.hasChildNoteByID(noteID))
+            return true;
+
+        for (const child of this._children) {
+            if (child.hasDescendantNoteByID(noteID)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if the note has the specified descendant.
+     * @param note - The descendant note to check for.
+     * @returns True if the descendant exists, false otherwise.
+     */
+    hasNoteDescendant(note: Note): boolean {
+        return this.hasDescendantNoteByID(note.id);
+    }
+
+    /**
      * Retrieves all descendant notes of the current note (children, grandchildren, etc.).
      * @returns An array containing all descendant notes.
      */
@@ -218,13 +226,5 @@ export class Note {
             descendants.push(child, ...child.getNoteDescendants());
         }
         return descendants;
-    }
-
-    /**
-     * Checks if the note has any child notes.
-     * @returns True if the note has one or more children, false otherwise.
-     */
-    hasChildren(): boolean {
-        return this._children.length > 0;
     }
 }

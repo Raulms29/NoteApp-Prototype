@@ -109,7 +109,7 @@ export const useNotesStore = defineStore('notes', () => {
             notes.value.push(newNote);
         }
         else {
-            parentTree.addChild(newNote);
+            parentTree.addChildNote(newNote);
         }
 
         await noteService.writeNoteContent(newNote, ''); // Initialize with empty content
@@ -167,7 +167,7 @@ export const useNotesStore = defineStore('notes', () => {
         preMoveNote(noteToMove);
 
         // Add the note to the new parent
-        targetNote.addChild(noteToMove);
+        targetNote.addChildNote(noteToMove);
 
         updateNoteTree();
     }

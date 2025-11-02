@@ -79,7 +79,7 @@ describe('GIVEN a Note', () => {
 
         it('THEN adds child with padded ID', () => {
             const childNote = new Note('Child Note', [], '00000002');
-            note.addChild(childNote);
+            note.addChildNote(childNote);
 
             expect(note.children).toHaveLength(1);
             expect(note.children[0].id).toBe('00000002');
@@ -88,13 +88,13 @@ describe('GIVEN a Note', () => {
 
         it('THEN throws error for duplicate child', () => {
             const childNote = new Note('Child Note', [], '00000002');
-            note.addChild(childNote);
+            note.addChildNote(childNote);
 
-            expect(() => note.addChild(childNote)).toThrow(`Child with ID ${childNote.id} already exists in this note.`);
+            expect(() => note.addChildNote(childNote)).toThrow(`Child with ID ${childNote.id} already exists in this note.`);
         });
 
         it('THEN throws error for self-child', () => {
-            expect(() => note.addChild(note)).toThrow(`Cannot add a note as a child of itself.`);
+            expect(() => note.addChildNote(note)).toThrow(`Cannot add a note as a child of itself.`);
         });
     });
 
@@ -104,7 +104,7 @@ describe('GIVEN a Note', () => {
         beforeEach(() => {
             const childNote = new Note('Child Note', [], '00000002');
             const grandChildNote = new Note('Grandchild Note', [], '00000010');
-            childNote.addChild(grandChildNote);
+            childNote.addChildNote(grandChildNote);
             note = new Note('Parent Note', [childNote], '00000001');
         });
 
@@ -116,22 +116,22 @@ describe('GIVEN a Note', () => {
             expect(note.name).toBe('Parent Note');
             expect(note.children).toHaveLength(1);
             expect(note.children[0].id).toBe('00000002');
-            expect(note.hasNoteChild(note.children[0])).toBe(true);
+            expect(note.hasChildNote(note.children[0])).toBe(true);
             expect(note.getNoteDescendants()).toHaveLength(2);
         });
 
         it('THEN checks descendant by ID', () => {
-            expect(note.hasDescendantByID('00000003')).toBe(false);
-            expect(note.hasDescendantByID('00000001')).toBe(false);
-            expect(note.hasDescendantByID(`00000002`)).toBe(true);
-            expect(note.hasDescendantByID('00000010')).toBe(true);
+            expect(note.hasDescendantNoteByID('00000003')).toBe(false);
+            expect(note.hasDescendantNoteByID('00000001')).toBe(false);
+            expect(note.hasDescendantNoteByID(`00000002`)).toBe(true);
+            expect(note.hasDescendantNoteByID('00000010')).toBe(true);
         });
 
         it('THEN adds second child', () => {
             const newChild = new Note('New Child Note', [], '00000003');
-            note.addChild(newChild);
+            note.addChildNote(newChild);
             expect(note.children).toHaveLength(2);
-            expect(note.hasDescendantByID('00000003')).toBe(true);
+            expect(note.hasDescendantNoteByID('00000003')).toBe(true);
             expect(note.hasNoteDescendant(newChild)).toBe(true);
         });
 

@@ -1,8 +1,8 @@
 {
-  "name": "project-template",
-  "productName": "MyProjectTemplate",
+  "name": "slate",
+  "productName": "Slate",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Just another notes app",
   "main": ".vite/build/main.js",
   "scripts": {
     "dev": "echo Starting App... 🔋 && electron-forge start",
@@ -29,6 +29,7 @@
     "@electron-forge/maker-rpm": "^7.3.0",
     "@electron-forge/maker-squirrel": "^7.3.0",
     "@electron-forge/maker-zip": "^7.3.0",
+    "@electron-forge/maker-dmg": "^7.3.0",
     "@electron-forge/plugin-auto-unpack-natives": "^7.3.0",
     "@electron-forge/plugin-fuses": "^7.2.0",
     "@electron-forge/plugin-vite": "^7.3.0",

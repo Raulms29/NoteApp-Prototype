@@ -111,6 +111,6 @@ onMounted(async () => {
     justify-content: flex-start;
     overflow-y: auto;
     padding: 1rem 1rem;
-    max-height: 55vh;
+    max-height: 56vh;
 }
 </style>

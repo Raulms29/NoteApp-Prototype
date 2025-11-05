@@ -62,8 +62,8 @@ contextBridge.exposeInMainWorld('windowAPI', {
         ipcRenderer.invoke('unmaximize-window'),
     minimizeWindow: () =>
         ipcRenderer.invoke('minimize-window'),
-    changeWindowSize: (height: number, width: number) =>
-        ipcRenderer.invoke('change-window-size', height, width),
+    changeWindowSize: () =>
+        ipcRenderer.invoke('change-window-size'),
     isMaximized: () =>
         ipcRenderer.invoke('is-maximized'),
 });

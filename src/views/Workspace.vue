@@ -1,8 +1,8 @@
 <template>
     <header class="flex items-center justify-center mb-4">
-        <div class="flex items-center mb-4 mt-6">
-            <div class="logo">📓</div>
-            <h1 class="text-7xl font-bold mb-0">Notes App</h1>
+        <div class="flex items-center mb-4 mt-6 gap-4">
+            <img src="../assets/app-icon/png/1024x1024.png" class="logo" />
+            <h1 class="text-7xl font-bold mb-0">Slate</h1>
         </div>
     </header>
     <main class="workspace-list">
@@ -70,7 +70,7 @@ async function setWindowSize() {
     if (isMaximized) {
         await window.windowAPI.unmaximizeWindow();
     }
-    await window.windowAPI.changeWindowSize(600, 800);
+    await window.windowAPI.changeWindowSize();
     await window.windowAPI.setResizable(false);
 }
 onMounted(async () => {
@@ -90,8 +90,8 @@ onMounted(async () => {
 
 <style scoped>
 .logo {
-    font-size: 64px;
-    margin-right: 0.75rem;
+    width: 95px;
+
 }
 
 .workspace-list {

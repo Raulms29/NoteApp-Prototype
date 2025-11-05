@@ -2,14 +2,13 @@
     <div class="sidebar-container">
         <SidebarButtons @search="toggleSearch" />
 
-        <transition name="fade-slide">
-            <div v-if="showSearch" class="ml-2 mr-2">
-                <n-input v-model:value="pattern" placeholder="Search" style="--n-border-hover: 1px solid #1976d2; --n-border-focus: 1px solid #1976d2; --n-caret-color: #1976d2; --n-loading-color: #1976d2;
-                --n-box-shadow-focus: 0 0 0 2px rgba(25, 118, 210, 0.2);" />
-            </div>
-        </transition>
-
         <div class="sidebar-tree-scroll">
+            <transition name="fade-slide">
+                <div v-if="showSearch" class="ml-2 mr-2 mb-2">
+                    <n-input v-model:value="pattern" placeholder="Search" style="--n-border-hover: 1px solid #1976d2; --n-border-focus: 1px solid #1976d2; --n-caret-color: #1976d2; --n-loading-color: #1976d2;
+                --n-box-shadow-focus: 0 0 0 2px rgba(25, 118, 210, 0.2);" />
+                </div>
+            </transition>
             <n-tree block-line draggable :data="data" :render-label="renderLabel" :expanded-keys="expandedKeys"
                 @drop="handleDrop" @update:expanded-keys="handleExpandedKeysChange"
                 :override-default-node-click-behavior="selectNote" :render-switcher-icon="renderSwitcherIcon"
@@ -245,15 +244,13 @@ function toggleSearch() {
 .sidebar-container {
     display: flex;
     flex-direction: column;
-    height: auto;
+    justify-content: space-between;
+    height: 100%;
 }
 
 .sidebar-tree-scroll {
-    flex: 1 1 auto;
     overflow-y: auto;
-    max-height: 88vh;
-    min-height: 0;
-    height: 88vh;
+    height: 87.5vh;
 }
 
 ::v-deep(.n-tree-node) {
@@ -376,7 +373,7 @@ function toggleSearch() {
 
 @media (max-height: 600px) {
     .sidebar-tree-scroll {
-        height: 78.5vh;
+        height: 77.5vh;
     }
 }
 

@@ -8,7 +8,7 @@ describe('Workspace Testing', () => {
     });
 
     it('Should properly create a Workspace', async () => {
-        expect(await browser.getTitle()).toBe('Note App');
+        expect(await browser.getTitle()).toBe('Slate');
 
         await POWorkspace.createWorkspace('workspace', 'Mock Workspace', 0);
     });

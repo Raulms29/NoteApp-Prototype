@@ -2,8 +2,9 @@
     <div class="note-space-container">
         <splitpanes class="split-theme">
             <pane :min-size="paneMinSize" max-size="50" size="14.5" v-if="!settingsStore.settings.focusMode">
-                <div class="flex-1 truncate pl-3 text-xl font-bold workspace-title select-none m-1" id="workspaceTitle">
-                    <VectorTriangle class="mr-2" />
+                <div id="workspaceTitle"
+                    class="flex items-center gap-2 flex-1 truncate pl-3 text-xl font-bold select-none m-1">
+                    <img src="../assets/app-icon/png/1024x1024.png" class="w-10"></img>
                     {{ workspaceStore.currentWorkspace?.name }}
                 </div>
                 <hr class="sidebar-separator" />
@@ -27,7 +28,6 @@ import { Splitpanes, Pane } from 'splitpanes';
 import { useWorkspaceStore } from '../stores/useWorkspaceStore';
 import { useSettingsStore } from '../stores/useSettingsStore';
 import { useNotesStore } from '../stores/useNotesStore';
-import VectorTriangle from 'icons/VectorTriangle.vue';
 import { ref, onMounted, onUnmounted } from 'vue';
 
 const workspaceStore = useWorkspaceStore();
@@ -66,7 +66,7 @@ onUnmounted(() => {
 
 <style scoped>
 .note-space-container {
-    height: 100vh;
+    height: 100%;
     overflow: hidden;
 }
 
@@ -79,18 +79,10 @@ onUnmounted(() => {
 .sidebar-pane {
     background-color: var(--background-color);
     height: 100%;
-    display: flex;
-    flex-direction: column;
 }
 
 .sidebar-separator {
     border-top: 2px solid var(--sidebar-text-separator-color);
     border-radius: 6px;
-}
-
-.workspace-title {
-    color: var(--sidebar-text-separator-color);
-    display: flex;
-    align-items: start;
 }
 </style>

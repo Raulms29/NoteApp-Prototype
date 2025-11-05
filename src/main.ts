@@ -21,6 +21,9 @@ import { registerWindowHandlers } from './utils/ipc/windowHandler';
 import { registerSettingsHandlers } from './utils/ipc/settingsHandler';
 import { registerExportHandlers } from './utils/ipc/exportHandler';
 
+const width = 800;
+const height = 610;
+
 // Ensure only one instance of the app is running
 const gotTheLock = app.requestSingleInstanceLock();
 if (gotTheLock) {
@@ -47,8 +50,8 @@ if (gotTheLock) {
       opacity: 1,
       center: true,
       resizable: true,
-      width: 800,
-      height: 600,
+      width: width,
+      height: height,
       autoHideMenuBar: true,
       webPreferences: {
         preload: path.join(__dirname, 'preload.js'),
@@ -57,7 +60,7 @@ if (gotTheLock) {
       show: false,
     });
 
-    mainWindow.setMinimumSize(800, 600);
+    mainWindow.setMinimumSize(width, height);
 
     mainWindow.webContents.session.setSpellCheckerLanguages(['en-US', 'es']);
 
@@ -109,7 +112,7 @@ if (gotTheLock) {
 
     // Register window handlers and create the browser window
     const mainWindow = createWindow();
-    registerWindowHandlers(mainWindow);
+    registerWindowHandlers(mainWindow, width, height);
     let workspaceRoot: string | null = null;
 
     ipcMain.handle('set-workspace-root', (_, rootPath: string) => {

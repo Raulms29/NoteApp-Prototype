@@ -37,7 +37,7 @@ declare global {
             maximizeWindow: () => Promise<void>;
             unmaximizeWindow: () => Promise<void>;
             minimizeWindow: () => Promise<void>;
-            changeWindowSize: (height = 800, width = 600) => Promise<void>;
+            changeWindowSize: () => Promise<void>;
             isMaximized: () => Promise<boolean>;
         },
         settingsAPI: {

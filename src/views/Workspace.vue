@@ -1,7 +1,7 @@
 <template>
     <header class="flex items-center justify-center mb-4">
         <div class="flex items-center mb-4 mt-6 gap-4">
-            <img src="../assets/app-icon/png/1024x1024.png" class="logo" />
+            <img src="../assets/app-icon/png/1024x1024.png" class="logo" alt="App icon" />
             <h1 class="text-7xl font-bold mb-0">Slate</h1>
         </div>
     </header>

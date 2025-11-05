@@ -153,11 +153,12 @@ export const useNotesStore = defineStore('notes', () => {
         noteService.deleteNotes(notesToDelete);
 
         // Clear current note if it was deleted
-        notesToDelete.forEach(n => {
+        for (const n of notesToDelete) {
             if (currentNote.value?.id === n.id) {
                 currentNote.value = null;
+                break;
             }
-        });
+        }
 
         // Update the note tree after deletion
         updateNoteTree();

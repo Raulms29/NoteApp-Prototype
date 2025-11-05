@@ -58,6 +58,7 @@ if (gotTheLock) {
       },
       // have no visual flash (1)
       show: false,
+      icon: path.join(__dirname, 'assets/app-icon/icon.png')
     });
 
     mainWindow.setMinimumSize(width, height);

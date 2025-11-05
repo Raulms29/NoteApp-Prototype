@@ -20,7 +20,7 @@ const config: ForgeConfig = {
     new MakerDMG({ icon: './src/assets/app-icon/icon.icns', }),
     new MakerZIP({}, ['darwin']),
     new MakerRpm({}),
-    new MakerDeb({})],
+    new MakerDeb({ options: { icon: './src/assets/app-icon/icon.png', }, })],
   plugins: [
     new VitePlugin({
       // `build` can specify multiple entry builds, which can be Main process, Preload scripts, Worker process, etc.

@@ -1,10 +1,9 @@
 <p align="center">
-  <img src="./docs/resources/images/app.png" alt="Slate Note App Screenshot" width="650" style="border: 1px solid #e1e4e8; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+  <img src="./docs/resources/images/app.png" alt="Slate Note App Screenshot" width="650">
 </p>
 
 <p align="center">
-  <img src="./src/assets/app-icon/png/128x128.png" alt="Slate App Icon" width="64" style="vertical-align: middle;">
-  <span style="font-size: 52px; font-weight: 600; color: #3b82f6; margin-left: 16px; vertical-align: middle; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;">Slate</span>
+  <img src="./docs/resources/images/slate-title.svg" alt="Slate" height="100">
 </p>
 
 <p align="center"> 
@@ -31,7 +30,7 @@ Developed as a Bachelor's Thesis project at the University of Oviedo.
 Built with Electron, Vue 3, and TypeScript for Windows, macOS, and Linux.
 </p>
 
-<hr style="height: 2px; background-color: #e1e4e8; border: none; margin: 20px 0;">
+---
 
 <p align="center">
   <a href="#-quick-start-guide">Quick Start Guide</a> • 
@@ -41,7 +40,7 @@ Built with Electron, Vue 3, and TypeScript for Windows, macOS, and Linux.
   <a href="#-project-structure">Project Structure</a>
 </p>
 
-<hr style="height: 2px; background-color: #e1e4e8; border: none; margin: 20px 0;">
+---
 
 ## 📥 Quick Start Guide
 

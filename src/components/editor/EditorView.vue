@@ -1,4 +1,5 @@
 <template>
+    <LoadingOverlay v-if="isLoading"></LoadingOverlay>
     <div class="editor-wrapper">
         <div class="options">
             <button class="focus-mode-icon-btn" @click.stop="toggleFocusMode" v-if="notesStore.currentNote"
@@ -7,10 +8,19 @@
                 <BullseyeArrowIcon v-else :size="20" />
             </button>
 
-            <EditorOptions v-if="notesStore.currentNote && editor" :editor="editor.editor" />
+            <EditorOptions v-if="notesStore.currentNote" @update:is-loading="handleUpdateLoadingState" />
         </div>
 
         <div class="editor-container" v-if="notesStore.currentNote">
+            <div class="breadcrumb">
+                <n-breadcrumb>
+                    <n-breadcrumb-item v-for="(item) in notesStore.getNoteBreadcrumb(notesStore.currentNote as Note)"
+                        @click="notesStore.selectNote(item)">
+                        {{ item.name }}
+                    </n-breadcrumb-item>
+                </n-breadcrumb>
+            </div>
+
             <div class="note-name">
                 <GenericErrorMessage v-if="renameError" :message="renameError" />
 
@@ -19,7 +29,15 @@
                 <span class="note-name-underline" :class="{ active: isFocused }"></span>
             </div>
 
-            <Editor ref="editor" @note-change="handleNoteChange" @note-content-update="handleNoteContentChange" />
+            <div>
+                <NoteChildren
+                    v-if="notesStore.currentNote && notesStore.currentNote.hasChildren() && settingsStore.settings.subNotesDisplayType !== 'NONE'"
+                    :notes="notesStore.currentNote.children as Note[]" @select="notesStore.selectNote($event as Note)"
+                    @delete="notesStore.deleteNote($event as Note)" @create="handleCreateNote($event as Note)" />
+
+                <Editor @note-change="handleNoteChange" @note-content-update="handleNoteContentChange"
+                    @update:is-loading="handleUpdateLoadingState" />
+            </div>
         </div>
     </div>
 </template>
@@ -27,7 +45,7 @@
 <script lang="ts" setup>
 import { useNotesStore } from '../../stores/useNotesStore';
 import { useSettingsStore } from '../../stores/useSettingsStore';
-import { Note } from '../../services/domain/Note';
+import { Note } from '../../business/domain/Note';
 import { ref } from 'vue';
 import debounce from 'debounce';
 import BullseyeIcon from 'icons/Bullseye.vue';
@@ -36,14 +54,16 @@ import Editor from './Editor.vue';
 
 const notesStore = useNotesStore();
 const settingsStore = useSettingsStore();
-const editor = ref<typeof Editor | null>(null);
 
 const noteName = ref<string>(notesStore.currentNote ? notesStore.currentNote.name : '');
 const isFocused = ref(false);
 const renameError = ref<string | null>(null);
 
+const isLoading = ref(false);
+
 
 const debouncedSave = debounce(async (content: string) => {
+    console.log("Saving note debounced")
     notesStore.saveNoteContent(notesStore.currentNote as Note, content);
 }, 500);
 
@@ -62,6 +82,8 @@ async function handleNoteRename() {
 async function handleNoteChange(previousNote: Note, previousNoteContent: string) {
     if (previousNote != null) {
         debouncedSave.clear();
+        console.log("Saving note changed")
+
         await notesStore.saveNoteContent(previousNote, previousNoteContent);
     }
     noteName.value = notesStore.currentNote.name;
@@ -82,7 +104,17 @@ function toggleFocusMode() {
     settingsStore.updateSetting('focusMode', !settingsStore.settings.focusMode);
 }
 
+async function handleCreateNote(note: Note) {
+    const createdNote = await notesStore.createNote(undefined, note);
+    notesStore.selectNote(createdNote);
+}
+
+function handleUpdateLoadingState(loading: boolean) {
+    isLoading.value = loading;
+}
+
 import '../../styles/editor.css';
+import NoteChildren from './note-children/NoteChildren.vue';
 </script>
 
 <style scoped>
@@ -177,5 +209,39 @@ import '../../styles/editor.css';
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+.note-children {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    margin: 1rem;
+}
+
+.note-child {
+    background: var(--background-color);
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    min-width: 120px;
+    min-height: 48px;
+    border-radius: 8px;
+    flex-direction: column;
+}
+
+.note-child:hover {
+    background: var(--background-hover, #f3f3f3);
+}
+
+.note-child-icon {
+    width: 50%;
+    height: auto;
+    margin-bottom: 0.5rem;
+}
+
+.breadcrumb {
+    display: flex;
+    justify-content: center;
 }
 </style>

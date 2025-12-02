@@ -1,6 +1,6 @@
 import { ipcMain, BrowserWindow } from 'electron';
 
-export function registerWindowHandlers(mainWindow: BrowserWindow | null) {
+export function registerWindowHandlers(mainWindow: BrowserWindow | null, defaultWidth: number, defaultHeight: number) {
     ipcMain.handle('set-resizable', (_event, resizable: boolean) => {
         if (mainWindow) mainWindow.setResizable(resizable);
     });
@@ -13,7 +13,7 @@ export function registerWindowHandlers(mainWindow: BrowserWindow | null) {
     ipcMain.handle('minimize-window', () => {
         if (mainWindow) mainWindow.minimize();
     });
-    ipcMain.handle('change-window-size', (_, height = 800, width = 600) => {
+    ipcMain.handle('change-window-size', (_, height = defaultHeight, width = defaultWidth) => {
         if (mainWindow) mainWindow.setSize(width, height, true);
     });
     ipcMain.handle('is-maximized', () => {

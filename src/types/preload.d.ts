@@ -1,8 +1,12 @@
 export { };
 
-import { WorkspaceI } from '../services/domain/Workspace';
-import { Settings } from '../services/domain/Settings';
+import { WorkspaceI } from '../business/domain/Workspace';
+import { Settings } from '../business/domain/Settings';
 
+/**
+ * Type definitions for the preload scripts used in the application
+ * This file declares global types and APIs exposed to the renderer process via preload.
+ */
 declare global {
     interface Window {
         fileAPI: {
@@ -33,16 +37,16 @@ declare global {
             maximizeWindow: () => Promise<void>;
             unmaximizeWindow: () => Promise<void>;
             minimizeWindow: () => Promise<void>;
-            changeWindowSize: (height = 800, width = 600) => Promise<void>;
+            changeWindowSize: () => Promise<void>;
             isMaximized: () => Promise<boolean>;
         },
         settingsAPI: {
             getSettings: () => Promise<Settings>;
             setSettings: (settings: Settings) => Promise<void>;
-            updateSetting: <K extends keyof Settings>(key: K, value: Settings[K]) => Promise<void>;
         },
         exportAPI: {
             exportAsPDF(tempHTMLFilePath: string, fileName: string): Promise<void>;
+            exportAsPDFReturnFile(tempHTMLFilePath: string): Promise<Buffer>;
         }
     }
 }

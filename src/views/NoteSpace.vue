@@ -1,9 +1,10 @@
 <template>
-    <div v-if="!settingsStore.settings.focusMode" class="note-space-container">
+    <div class="note-space-container">
         <splitpanes class="split-theme">
-            <pane min-size="12.5" max-size="50" size="14.5">
-                <div class="flex-1 truncate pl-3 text-xl font-bold workspace-title select-none m-1">
-                    <VectorTriangle class="mr-2" />
+            <pane :min-size="paneMinSize" max-size="50" size="14.5" v-if="!settingsStore.settings.focusMode">
+                <div id="workspaceTitle"
+                    class="flex items-center gap-2 flex-1 truncate pl-3 text-xl font-bold select-none m-1">
+                    <img src="../assets/app-icon/png/1024x1024.png" class="w-10" alt="App icon"></img>
                     {{ workspaceStore.currentWorkspace?.name }}
                 </div>
                 <hr class="sidebar-separator" />
@@ -18,9 +19,6 @@
             </pane>
         </splitpanes>
     </div>
-    <div v-else class="focus-mode-editor-pane">
-        <EditorView />
-    </div>
 </template>
 
 <script setup lang="ts">
@@ -29,15 +27,46 @@ import '../styles/splitpanes.css';
 import { Splitpanes, Pane } from 'splitpanes';
 import { useWorkspaceStore } from '../stores/useWorkspaceStore';
 import { useSettingsStore } from '../stores/useSettingsStore';
-import VectorTriangle from 'icons/VectorTriangle.vue';
+import { useNotesStore } from '../stores/useNotesStore';
+import { ref, onMounted, onUnmounted } from 'vue';
 
 const workspaceStore = useWorkspaceStore();
 const settingsStore = useSettingsStore();
+const notesStore = useNotesStore();
+
+
+const smallScreenPaneMinSize = 20;
+const largeScreenPaneMinSize = 12.5;
+const paneMinSize = ref(largeScreenPaneMinSize);
+
+function updateMinSize() {
+    if (window.innerWidth < 1200) {
+        paneMinSize.value = smallScreenPaneMinSize;
+    } else {
+        paneMinSize.value = largeScreenPaneMinSize;
+    }
+}
+
+onMounted(() => {
+    updateMinSize();
+    window.addEventListener('resize', updateMinSize);
+
+    const lastNoteAccessed = notesStore.getLastNoteAccesed();
+    if (notesStore.firstNoteAccess && settingsStore.settings.rememberLastNote && lastNoteAccessed !== null) {
+        notesStore.selectNote(lastNoteAccessed);
+    }
+    notesStore.firstNoteAccess = true;
+});
+
+onUnmounted(() => {
+    window.removeEventListener('resize', updateMinSize);
+});
+
 </script>
 
 <style scoped>
 .note-space-container {
-    height: 100vh;
+    height: 100%;
     overflow: hidden;
 }
 
@@ -45,14 +74,6 @@ const settingsStore = useSettingsStore();
     overflow-y: auto;
     background-color: var(--background-color);
     height: 98vh;
-}
-
-.focus-mode-editor-pane {
-    position: relative;
-    height: 100vh;
-    background-color: var(--background-color);
-    display: flex;
-    flex-direction: column;
 }
 
 .sidebar-pane {
@@ -63,11 +84,5 @@ const settingsStore = useSettingsStore();
 .sidebar-separator {
     border-top: 2px solid var(--sidebar-text-separator-color);
     border-radius: 6px;
-}
-
-.workspace-title {
-    color: var(--sidebar-text-separator-color);
-    display: flex;
-    align-items: start;
 }
 </style>

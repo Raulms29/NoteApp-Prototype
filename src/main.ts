@@ -1,5 +1,14 @@
 import { app, BrowserWindow, powerMonitor, protocol, shell, ipcMain, session } from 'electron';
 import electronSquirrelStartup from 'electron-squirrel-startup';
+import dotenv from 'dotenv';
+
+// During tests, we need to import the wdio-electron-service main script
+// It should not be imported in production
+// The import should not be done while building the application and is intented only for testing
+dotenv.config();
+if (process.env.ENABLE_WDIO === 'true') {
+  import('wdio-electron-service/main');
+}
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (electronSquirrelStartup) {
@@ -7,8 +16,8 @@ if (electronSquirrelStartup) {
   app.quit();
 }
 
-import path from 'path';
-import fs from 'fs';
+import path from 'node:path';
+import fs from 'node:fs';
 import contextMenu from "electron-context-menu";
 import { registerNoteHandlers, registerFileHandlers } from './utils/ipc/fileHandler';
 import { registerWorkspaceHandlers } from './utils/ipc/workspaceHandler';
@@ -16,11 +25,12 @@ import { registerWindowHandlers } from './utils/ipc/windowHandler';
 import { registerSettingsHandlers } from './utils/ipc/settingsHandler';
 import { registerExportHandlers } from './utils/ipc/exportHandler';
 
+const width = 800;
+const height = 610;
+
 // Ensure only one instance of the app is running
 const gotTheLock = app.requestSingleInstanceLock();
-if (!gotTheLock) {
-  app.quit();
-} else {
+if (gotTheLock) {
   app.on('second-instance', () => {
     // Focus the main window if a second instance is launched
     const win = BrowserWindow.getAllWindows()[0];
@@ -44,17 +54,18 @@ if (!gotTheLock) {
       opacity: 1,
       center: true,
       resizable: true,
-      width: 800,
-      height: 600,
+      width: width,
+      height: height,
       autoHideMenuBar: true,
       webPreferences: {
         preload: path.join(__dirname, 'preload.js'),
       },
       // have no visual flash (1)
       show: false,
+      icon: path.join(__dirname, 'assets/app-icon/icon.png')
     });
 
-    mainWindow.setMinimumSize(800, 600);
+    mainWindow.setMinimumSize(width, height);
 
     mainWindow.webContents.session.setSpellCheckerLanguages(['en-US', 'es']);
 
@@ -103,8 +114,10 @@ if (!gotTheLock) {
     registerFileHandlers('utf-8');
     registerSettingsHandlers();
     registerExportHandlers();
+
     // Register window handlers and create the browser window
-    registerWindowHandlers(createWindow());
+    const mainWindow = createWindow();
+    registerWindowHandlers(mainWindow, width, height);
     let workspaceRoot: string | null = null;
 
     ipcMain.handle('set-workspace-root', (_, rootPath: string) => {
@@ -121,11 +134,12 @@ if (!gotTheLock) {
       const url = new URL(request.url);
       console.log('Decoded URL pathname:', url.pathname);
       let filePath = decodeURIComponent(url.pathname);
-      console.log('Relative path:', filePath);
 
       if (process.platform === 'win32' && filePath.startsWith('/')) {
         filePath = filePath.slice(1);
       }
+
+      console.log('Final file path:', filePath);
 
       if (!fs.existsSync(filePath)) {
         return new Response('File not found', { status: 404 });
@@ -189,4 +203,7 @@ if (!gotTheLock) {
       createWindow();
     }
   });
+}
+else {
+  app.quit();
 }

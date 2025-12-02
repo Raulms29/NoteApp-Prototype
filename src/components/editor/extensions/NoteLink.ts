@@ -2,7 +2,11 @@ import { Mark, mergeAttributes, InputRule, PasteRule, ExtendedRegExpMatchArray, 
 import { MarkType, Node, Mark as ProseMirrorMark } from '@tiptap/pm/model';
 import { Plugin } from '@tiptap/pm/state';
 import { EditorState, TextSelection } from 'prosemirror-state';
-import { Note } from '../../../services/domain/Note';
+import { Note } from '../../../business/domain/Note';
+
+import type { MarkdownSerializerState } from 'prosemirror-markdown';
+import { Mark as ProseMark } from 'prosemirror-model';
+
 
 const nonExistingId = '_______NonExistingID_______';
 
@@ -11,6 +15,24 @@ const noteLinkRegex = /\[\[([^\]]{1,32})\]\]/g;
 
 export const NoteLink = Mark.create({
     name: 'noteLink',
+
+    addStorage() {
+        return {
+            markdown: {
+                serialize: {
+                    open() {
+                        return '![';
+                    },
+                    close(_: MarkdownSerializerState, mark: ProseMark) {
+                        const note = this.options.getNoteFromId(mark.attrs.noteId);
+                        const noteName = mark.attrs.text || '';
+                        return `${noteName}](<${note.name}.md>)`;
+                    }
+                },
+                parse: {}
+            }
+        };
+    },
 
     addOptions() {
         return {
@@ -40,14 +62,14 @@ export const NoteLink = Mark.create({
         return {
             noteId: {
                 default: null,
-                parseHTML: element => element.getAttribute('data-note-id'),
+                parseHTML: element => element.dataset.noteId,
                 renderHTML: attributes => {
                     return attributes.noteId ? { 'data-note-id': attributes.noteId } : {};
                 },
             },
             noteName: {
                 default: null,
-                parseHTML: element => element.getAttribute('data-note-name'),
+                parseHTML: element => element.dataset.noteName,
                 renderHTML: attributes => {
                     return attributes.noteName ? { 'data-note-name': attributes.noteName } : {};
                 },
@@ -58,14 +80,21 @@ export const NoteLink = Mark.create({
     parseHTML() {
         return [
             {
-                tag: 'span[data-note-id][data-note-name]',
+                tag: 'a[data-note-id][data-note-name][href]',
             },
         ];
     },
 
     renderHTML({ HTMLAttributes }) {
+        const href = this.options.getNoteFromId(HTMLAttributes['data-note-id'])?.name;
+        if (href) {
+            HTMLAttributes.href = `${href}.html`;
+        }
+        else {
+            HTMLAttributes.href = '#';
+        }
         return [
-            'span',
+            'a',
             mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
             0
         ];
@@ -95,6 +124,7 @@ export const NoteLink = Mark.create({
             new Plugin({
                 props: {
                     handleClick: (view, pos) => {
+                        // Finding the mark
                         const resolvedPos = view.state.doc.resolve(pos);
                         const marks = resolvedPos.marks();
                         const mark = marks.find((mark) => mark.type.name === this.name);
@@ -180,7 +210,7 @@ function updateNoteLinkMark(editor: Editor, noteName: string, newNoteId: string,
     doc.descendants((node: Node, pos: number) => {
         if (!node.isText) return;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        node.marks.forEach((mark: ProseMirrorMark) => {
+        for (const mark of node.marks as ProseMirrorMark[]) {
             if (
                 mark.type === markType &&
                 mark.attrs.noteName === noteName &&
@@ -195,7 +225,7 @@ function updateNoteLinkMark(editor: Editor, noteName: string, newNoteId: string,
                     markType.create({ noteName, noteId: newNoteId })
                 );
             }
-        });
+        }
     });
 
     if (tr.docChanged) {

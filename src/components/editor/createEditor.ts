@@ -1,5 +1,5 @@
 import { Editor } from '@tiptap/vue-3';
-import EHighlight from '@tiptap/extension-highlight';
+import Highlight from '@tiptap/extension-highlight';
 import Typography from '@tiptap/extension-typography';
 import StarterKit from '@tiptap/starter-kit';
 import BubbleMenuExtension from '@tiptap/extension-bubble-menu';
@@ -8,7 +8,7 @@ import { TaskList } from '@tiptap/extension-task-list';
 import { TaskItem } from '@tiptap/extension-task-item';
 import { MarkdownLink } from './extensions/MarkdownLink';
 import { NoteLink } from './extensions/NoteLink';
-import { Note } from '../../services/domain/Note';
+import { Note } from '../../business/domain/Note';
 import { Pdf } from './extensions/PDF';
 import { CustomImage } from './extensions/CustomImage';
 import { common, createLowlight } from 'lowlight';
@@ -17,12 +17,12 @@ import Underline from '@tiptap/extension-underline';
 import CharacterCount from '@tiptap/extension-character-count';
 import type { useNotesStore } from '../../stores/useNotesStore';
 
-export function createEditor(notesStore: ReturnType<typeof useNotesStore>, emitNoteContentUpdate: () => void) {
-    return new Editor({
+export function createEditor(notesStore: ReturnType<typeof useNotesStore>, emitNoteContentUpdate: () => void, editorProps = {}) {
+    const editor = new Editor({
         extensions: [
             StarterKit.configure({ codeBlock: false }),
             Underline,
-            EHighlight,
+            Highlight,
             Typography,
             Markdown.configure({
                 linkify: false,
@@ -60,8 +60,9 @@ export function createEditor(notesStore: ReturnType<typeof useNotesStore>, emitN
             Pdf,
         ],
         editorProps: {
+            ...editorProps,
             attributes: {
-                class: 'prose w-full border-none max-w-none m-0 outline-none h-full overflow-auto',
+                class: `prose w-full border-none max-w-none m-0 outline-none h-full overflow-auto`,
             },
         },
         content: '',
@@ -69,4 +70,5 @@ export function createEditor(notesStore: ReturnType<typeof useNotesStore>, emitN
             emitNoteContentUpdate();
         },
     });
+    return editor;
 }

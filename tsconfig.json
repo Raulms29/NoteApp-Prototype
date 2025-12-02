@@ -10,6 +10,7 @@
     "baseUrl": ".",
     "outDir": "dist",
     "moduleResolution": "node",
+    "ignoreDeprecations": "6.0",
     "resolveJsonModule": true,
     "lib": [
       "es5",
@@ -20,8 +21,9 @@
     "types": [
       "@wdio/globals",
       "@wdio/mocha-framework",
+      "@wdio/globals/types",
       "expect-webdriverio",
-      "vitest/globals"
-    ],
-  },
+      "vitest/globals",
+    ]
+  }
 }

@@ -2,21 +2,23 @@
     <div class="sidebar-container">
         <SidebarButtons @search="toggleSearch" />
 
-        <transition name="fade-slide">
-            <div v-if="showSearch" class="ml-2 mr-2">
-                <n-input v-model:value="pattern" placeholder="Search" style="--n-border-hover: 1px solid #1976d2; --n-border-focus: 1px solid #1976d2; --n-caret-color: #1976d2; --n-loading-color: #1976d2;
-                --n-box-shadow-focus: 0 0 0 2px rgba(25, 118, 210, 0.2);" />
-            </div>
-        </transition>
-
         <div class="sidebar-tree-scroll">
+            <transition name="fade-slide">
+                <div v-if="showSearch" class="ml-2 mr-2 mb-2">
+                    <n-input v-model:value="pattern" placeholder="Search" style="--n-border-hover: 1px solid #1976d2; --n-border-focus: 1px solid #1976d2; --n-caret-color: #1976d2; --n-loading-color: #1976d2;
+                --n-box-shadow-focus: 0 0 0 2px rgba(25, 118, 210, 0.2);" />
+                </div>
+            </transition>
             <n-tree block-line draggable :data="data" :render-label="renderLabel" :expanded-keys="expandedKeys"
                 @drop="handleDrop" @update:expanded-keys="handleExpandedKeysChange"
                 :override-default-node-click-behavior="selectNote" :render-switcher-icon="renderSwitcherIcon"
                 :pattern="pattern" :selected-keys="selectedKeys" :show-irrelevant-nodes="false"
                 style="--n-drop-mark-color: #1976d2;" />
         </div>
+        <SidebarSettings />
     </div>
+
+
 </template>
 
 <script lang="ts" setup>
@@ -24,10 +26,12 @@ import type { TreeDropInfo, TreeOption } from 'naive-ui'
 import { NIcon, NDropdown, NButton } from 'naive-ui'
 import { h, ref, watch } from 'vue'
 import { useNotesStore } from '../../stores/useNotesStore'
-import { Note } from '../../services/domain/Note'
+import { Note } from '../../business/domain/Note'
 import ChevronRight from 'icons/ChevronRight.vue'
 import Delete from 'icons/Delete.vue'
+import FilePlusOutline from 'icons/FilePlusOutline.vue';
 import DotsHorizontal from 'icons/DotsHorizontal.vue'
+import { getNIcon } from '../../utils/icons';
 
 const store = useNotesStore()
 
@@ -59,11 +63,6 @@ watch(
     { immediate: true }
 )
 
-// --- Icon helpers ---
-function getNIcon(icon: any) {
-    return () => h(NIcon, null, { default: () => h(icon) })
-}
-
 // --- Tree option helpers ---
 function noteToTreeOption(note: Note): TreeOption {
     let noteChildren = note.children?.map(noteToTreeOption)
@@ -80,6 +79,11 @@ function noteToTreeOption(note: Note): TreeOption {
 
 function getMenuOptions(option: TreeOption) {
     return [
+        {
+            label: 'New Note',
+            key: 'new',
+            icon: getNIcon(FilePlusOutline),
+        },
         {
             label: 'Delete',
             key: 'delete',
@@ -147,6 +151,9 @@ function handleMenuSelect(option: TreeOption) {
         if (key === 'delete' && option.rawNote) {
             store.deleteNote(option.rawNote as Note)
         }
+        if (key === 'new' && option.rawNote) {
+            store.createNote(undefined, option.rawNote as Note);
+        }
     }
 }
 
@@ -174,7 +181,7 @@ function renderLabel({ option }: { option: TreeOption }) {
             h('span', { class: 'truncate' }, typeof option.label === 'string' && option.label.length > 0 ? option.label : 'Untitled'),
             h(NDropdown, {
                 options: getMenuOptions(option),
-                trigger: 'click',
+                trigger: 'hover',
                 onSelect: handleMenuSelect(option),
                 placement: 'bottom-end',
                 onClick: (e: MouseEvent) => e.stopPropagation()
@@ -183,10 +190,12 @@ function renderLabel({ option }: { option: TreeOption }) {
                     h(
                         NButton,
                         {
-                            class: 'sidebar-action-btn',
+                            class: 'note-options-trigger-btn sidebar-action-btn',
                             size: 'tiny',
                             quaternary: true,
-                            style: 'margin-left: 8px;',
+                            style: `margin-left: 8px;
+                            --n-color-hover: var(--primary-color, #007bff);;
+                            --n-text-color-hover: white;`,
                             onClick: (e: MouseEvent) => e.stopPropagation()
                         },
                         { default: getNIcon(DotsHorizontal) }
@@ -235,14 +244,13 @@ function toggleSearch() {
 .sidebar-container {
     display: flex;
     flex-direction: column;
-    height: auto;
+    justify-content: space-between;
+    height: 100%;
 }
 
 .sidebar-tree-scroll {
-    flex: 1 1 0%;
-    min-height: 0;
     overflow-y: auto;
-    max-height: 90vh;
+    height: 87.5vh;
 }
 
 ::v-deep(.n-tree-node) {
@@ -319,5 +327,65 @@ function toggleSearch() {
     top: 0;
     right: 0;
     z-index: 1;
+}
+
+@media (max-height: 950px) {
+    .sidebar-tree-scroll {
+        height: 86.5vh;
+    }
+}
+
+@media (max-height: 900px) {
+    .sidebar-tree-scroll {
+        height: 86.5vh;
+    }
+}
+
+@media (max-height: 850px) {
+    .sidebar-tree-scroll {
+        height: 85.5vh;
+    }
+}
+
+@media (max-height: 800px) {
+    .sidebar-tree-scroll {
+        height: 83.5vh;
+    }
+}
+
+@media (max-height: 750px) {
+    .sidebar-tree-scroll {
+        height: 81.5vh;
+    }
+}
+
+@media (max-height: 700px) {
+    .sidebar-tree-scroll {
+        height: 79.5vh;
+    }
+}
+
+@media (max-height: 650px) {
+    .sidebar-tree-scroll {
+        height: 78.5vh;
+    }
+}
+
+@media (max-height: 600px) {
+    .sidebar-tree-scroll {
+        height: 77.5vh;
+    }
+}
+
+@media (max-height: 550px) {
+    .sidebar-tree-scroll {
+        height: 74.5vh;
+    }
+}
+
+@media (max-height: 500px) {
+    .sidebar-tree-scroll {
+        height: 72.5vh;
+    }
 }
 </style>

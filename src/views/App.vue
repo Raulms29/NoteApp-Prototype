@@ -14,8 +14,11 @@ import GenericDialog from '../components/generic/GenericDialog.vue';
 import GenericButton from '../components/generic/GenericButton.vue';
 import { useGlobalError } from '../stores/useGlobalError';
 import { computed } from 'vue';
+import { useSettingsStore } from '../stores/useSettingsStore';
 const errorStore = useGlobalError();
 const globalError = computed(() => errorStore.globalError);
+
+useSettingsStore().init();
 
 function closeApp() {
     window.close();

@@ -3,8 +3,9 @@
         <div class="generic-dialog">
             <div class="generic-dialog-title">{{ title }}</div>
             <div class="generic-dialog-content">
-                <div class="generic-dialog-text">{{ text }}</div>
-                <slot name="content" />
+                <slot name="content">
+                    <p class="generic-dialog-text" v-if="text">{{ text }}</p>
+                </slot>
             </div>
             <div class="generic-dialog-actions">
                 <slot name="actions" />
@@ -17,7 +18,7 @@
 
 defineProps<{
     title: string,
-    text: string
+    text?: string
 }>()
 </script>
 
@@ -36,7 +37,7 @@ defineProps<{
     background: #fff;
     border-radius: 0.75rem;
     box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.18);
-    min-width: 22rem;
+    min-width: 30rem;
     max-width: 40vw;
     padding: 1rem;
     display: flex;

@@ -3,7 +3,12 @@
 console.log('Preload script is being loaded...');
 
 import { contextBridge, ipcRenderer } from 'electron';
-import { WorkspaceI } from './services/domain/Workspace';
+import { WorkspaceI } from './business/domain/Workspace';
+
+// During tests, we need to import the wdio-electron-service preload script
+// It should not be imported in production
+// The import should not be done while building the application and is intented only for testing
+import('wdio-electron-service/preload');
 
 contextBridge.exposeInMainWorld('fileAPI', {
     // This needs to be done since the filesystem cannot be accessed directly from the renderer process
@@ -25,7 +30,8 @@ contextBridge.exposeInMainWorld('fileAPI', {
         ipcRenderer.invoke('folder-exists', folderPath),
     renameFile: (oldPath: string, newPath: string) =>
         ipcRenderer.invoke('rename-file', oldPath, newPath),
-    joinPaths: (...args: string[]) => ipcRenderer.invoke('join-paths', ...args),
+    joinPaths: (...args: string[]) =>
+        ipcRenderer.invoke('join-paths', ...args),
     copyFileToFolder: (sourcePath: string, destinationFolder: string) =>
         ipcRenderer.invoke('copy-file-to-folder', sourcePath, destinationFolder),
     getFilenameFromPath: (filePath: string) =>
@@ -56,22 +62,24 @@ contextBridge.exposeInMainWorld('windowAPI', {
         ipcRenderer.invoke('unmaximize-window'),
     minimizeWindow: () =>
         ipcRenderer.invoke('minimize-window'),
-    changeWindowSize: (height: number, width: number) =>
-        ipcRenderer.invoke('change-window-size', height, width),
+    changeWindowSize: () =>
+        ipcRenderer.invoke('change-window-size'),
     isMaximized: () =>
         ipcRenderer.invoke('is-maximized'),
 });
 
 contextBridge.exposeInMainWorld('settingsAPI', {
-    getSettings: () => ipcRenderer.invoke('get-settings'),
-    setSettings: (settings: { theme: string; language: string }) => ipcRenderer.invoke('set-settings', settings),
-    updateSetting: (key: string, value: string) => ipcRenderer.invoke('update-setting', key, value),
+    getSettings: () =>
+        ipcRenderer.invoke('get-settings'),
+    setSettings: (settings: { theme: string; language: string }) =>
+        ipcRenderer.invoke('set-settings', settings),
 });
 
 contextBridge.exposeInMainWorld('exportAPI', {
     exportAsPDF: (tempHTMLFilePath: string, fileName: string) =>
         ipcRenderer.invoke('export-as-pdf', tempHTMLFilePath, fileName),
+    exportAsPDFReturnFile: (tempHTMLFilePath: string) =>
+        ipcRenderer.invoke('export-as-pdf-return-file', tempHTMLFilePath),
 });
 
 console.log('Preload script loaded successfully');
-

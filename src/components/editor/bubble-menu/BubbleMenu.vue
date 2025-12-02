@@ -49,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { BubbleMenu, Editor } from '@tiptap/vue-3';
+import { Editor, BubbleMenu } from '@tiptap/vue-3';
 import { onBeforeUnmount, onMounted, Ref, ref } from 'vue';
 import BoldIcon from 'icons/FormatBold.vue';
 import ItalicIcon from 'icons/FormatItalic.vue';
@@ -60,6 +60,13 @@ import ImageIcon from 'icons/ImageOutline.vue';
 import PDFIcon from 'icons/FilePdfBox.vue';
 
 const emit = defineEmits(['image-upload', 'pdf-upload']);
+
+const elementDropdown = ref(null)
+
+const props = defineProps({
+    editor: Editor,
+});
+
 
 function toggleItalic() {
     props.editor.chain().focus().toggleItalic().run();
@@ -76,13 +83,6 @@ function toggleUnderline() {
 function toggleCodeBlock() {
     props.editor.chain().focus().toggleCodeBlock().run();
 }
-
-const elementDropdown = ref(null)
-
-
-const props = defineProps({
-    editor: Editor,
-});
 
 const open: Ref<boolean> = ref(false);
 const linkDialogOpen = ref(false);

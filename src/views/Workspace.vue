@@ -1,8 +1,8 @@
 <template>
     <header class="flex items-center justify-center mb-4">
-        <div class="flex items-center mb-4 mt-6">
-            <div class="logo">📓</div>
-            <h1 class="text-7xl font-bold mb-0">Notes App</h1>
+        <div class="flex items-center mb-4 mt-6 gap-4">
+            <img src="../assets/app-icon/png/1024x1024.png" class="logo" alt="App icon" />
+            <h1 class="text-7xl font-bold mb-0">Slate</h1>
         </div>
     </header>
     <main class="workspace-list">
@@ -19,24 +19,29 @@
 <script lang="ts" setup>
 
 import { useRouter } from 'vue-router';
-import { WorkspaceI } from '../services/domain/Workspace';
+import { Workspace, WorkspaceI } from '../business/domain/Workspace';
 import { useWorkspaceStore } from '../stores/useWorkspaceStore';
 import { onMounted, ref } from 'vue';
+import { useSettingsStore } from '../stores//useSettingsStore';
+import { useNotesStore } from '../stores/useNotesStore';
 
 const router = useRouter();
 
 const workspaceStore = useWorkspaceStore();
 const errorMessage = ref<string>(null);
+const settingsStore = useSettingsStore();
+const notesStore = useNotesStore();
 
-workspaceStore.init()
+async function selectWorkspace(workspace: WorkspaceI) {
+    const ws = await workspaceStore.selectWorkspace(workspace.id);
+    await notesStore.init(ws as Workspace);
+    resizeWindowAndNavigate();
+}
 
-function selectWorkspace(workspace: WorkspaceI) {
+function resizeWindowAndNavigate() {
     window.windowAPI.setResizable(true)
     window.windowAPI.maximizeWindow();
-
-    workspaceStore.selectWorkspace(workspace.id);
     router.replace({ name: 'noteSpace' });
-
 }
 
 function newWorkspace() {
@@ -45,6 +50,7 @@ function newWorkspace() {
 
 function renameWorkspace(workspace: WorkspaceI, newName: string) {
     try {
+        workspaceStore.validateWorkspace(newName, workspace.path, false);
         workspaceStore.renameWorkspace(workspace.id, newName);
     } catch (e) {
         errorMessage.value = e.message;
@@ -64,12 +70,19 @@ async function setWindowSize() {
     if (isMaximized) {
         await window.windowAPI.unmaximizeWindow();
     }
-    await window.windowAPI.changeWindowSize(600, 800);
+    await window.windowAPI.changeWindowSize();
     await window.windowAPI.setResizable(false);
 }
-
-onMounted(() => {
-    setWindowSize();
+onMounted(async () => {
+    await workspaceStore.init();
+    const lastWorkspaceAccesed = workspaceStore.getLastWorkspaceAccesed();
+    if (workspaceStore.firstWorkspaceAccess && settingsStore.settings.rememberLastWorkspace && lastWorkspaceAccesed !== null) {
+        selectWorkspace(lastWorkspaceAccesed);
+    }
+    else {
+        setWindowSize();
+        workspaceStore.firstWorkspaceAccess = false;
+    }
 })
 
 
@@ -77,8 +90,8 @@ onMounted(() => {
 
 <style scoped>
 .logo {
-    font-size: 64px;
-    margin-right: 0.75rem;
+    width: 95px;
+
 }
 
 .workspace-list {
@@ -98,6 +111,6 @@ onMounted(() => {
     justify-content: flex-start;
     overflow-y: auto;
     padding: 1rem 1rem;
-    max-height: 55vh;
+    max-height: 56vh;
 }
 </style>

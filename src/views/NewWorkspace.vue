@@ -19,13 +19,14 @@
                     <span class="location-text">Your new workspace will be placed in: <span class="font-medium">{{
                         location
                             }}</span></span>
-                    <GenericButton type="button" class="browse-btn" @click="selectLocation">Browse</GenericButton>
+                    <GenericButton type="button" class="browse-btn" @click="selectLocation" id="browse-btn">Browse
+                    </GenericButton>
                 </div>
             </div>
             <input id="workspace-location" ref="locationInputRef" v-model="location" type="text" class="form-input"
                 style="display:none" tabindex="-1" aria-hidden="true" />
             <div class="form-row center">
-                <GenericButton type="submit" class="create-btn" variant="primary">Create
+                <GenericButton type="submit" class="create-btn" variant="primary" id="create-workspace-btn">Create
                 </GenericButton>
             </div>
         </form>
@@ -49,7 +50,6 @@ import GenericButton from '../components/generic/GenericButton.vue'
 import LoadingOverlay from '../components/loading/LoadingOverlay.vue'
 import GenericDialog from '../components/generic/GenericDialog.vue'
 import { useWorkspaceStore } from '../stores/useWorkspaceStore'
-import { Workspace } from '../services/domain/Workspace'
 import { useRouter } from 'vue-router'
 
 const name = ref('')
@@ -74,7 +74,7 @@ async function selectLocation() {
     }
 }
 
-function handleCreate() {
+async function handleCreate() {
     try {
         workspaceStore.validateWorkspace(name.value, location.value);
     } catch (e) {
@@ -82,7 +82,7 @@ function handleCreate() {
         return;
     }
 
-    workspaceStore.addWorkspace(new Workspace(name.value.trim(), location.value.trim()));
+    await workspaceStore.addWorkspace(name.value.trim(), location.value.trim());
     router.push({ name: 'workspace' });
 }
 

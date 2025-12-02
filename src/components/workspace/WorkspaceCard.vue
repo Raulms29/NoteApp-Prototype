@@ -1,5 +1,5 @@
 <template>
-    <div class="workspace-card workspace-card-base" @click="$emit('selectWorkspace', workspace)">
+    <div class="workspace-card workspace-card-base" :id="workspace.id" @click="$emit('selectWorkspace', workspace)">
         <!-- Workspace Info -->
         <div class="workspace-card-info">
             <div class="workspace-name">{{ workspace.name }}</div>
@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import { WorkspaceI } from 'src/services/domain/Workspace';
+import { WorkspaceI } from 'src/business/domain/Workspace';
 import WorkspaceMenuItem from './WorkspaceMenuItem.vue'
 import MaterialDesignPencil from 'icons/Pencil.vue'
 import MaterialDesignDelete from 'icons/Delete.vue'

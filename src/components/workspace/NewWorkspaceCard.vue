@@ -1,6 +1,6 @@
 <template>
-    <div class="workspace-create-new-card workspace-card-base ">
-        <span class="plus">+</span>
+    <div class="workspace-create-new-card workspace-card-base" id="new-workspace-card">
+        <span class=" plus">+</span>
         Create new workspace…
     </div>
 </template>

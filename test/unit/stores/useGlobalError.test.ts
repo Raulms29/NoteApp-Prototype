@@ -8,6 +8,7 @@ describe('GIVEN the useGlobalError store', () => {
         setActivePinia(createPinia());
     });
 
+    // • store initialization
     describe('WHEN the store is initialized', () => {
         it('THEN globalError should be null by default', () => {
             const store = useGlobalError();
@@ -15,6 +16,7 @@ describe('GIVEN the useGlobalError store', () => {
         });
     });
 
+    // • setError
     describe('WHEN setError is called with an Error object', () => {
         it('THEN globalError should be set to the error message', () => {
             const store = useGlobalError();
@@ -23,6 +25,7 @@ describe('GIVEN the useGlobalError store', () => {
         });
     });
 
+    // • clearError
     describe('WHEN the error is cleared', () => {
         it('THEN globalError should be null', () => {
             const store = useGlobalError();

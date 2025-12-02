@@ -1,10 +1,14 @@
 import { app, BrowserWindow, powerMonitor, protocol, shell, ipcMain, session } from 'electron';
 import electronSquirrelStartup from 'electron-squirrel-startup';
+import dotenv from 'dotenv';
 
 // During tests, we need to import the wdio-electron-service main script
 // It should not be imported in production
 // The import should not be done while building the application and is intented only for testing
-import('wdio-electron-service/main');
+dotenv.config();
+if (process.env.ENABLE_WDIO === 'true') {
+  import('wdio-electron-service/main');
+}
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (electronSquirrelStartup) {

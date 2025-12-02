@@ -45,4 +45,6 @@ jobs:
           node-version: "22.x"
 
       - name: Run E2E tests with WebdriverIO
+        env:
+          ENABLE_WDIO: true
         run: npm run test:e2e

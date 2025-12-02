@@ -3,7 +3,8 @@
 </p>
 
 <p align="center">
-  <img src="./docs/resources/images/slate-title.svg" alt="Slate" height="100">
+  <img src="./src/assets/app-icon/png/128x128.png" alt="Slate App Icon" width="80">
+  <img src="./docs/resources/images/slate-title.svg" alt="Slate" height="80">
 </p>
 
 <p align="center"> 

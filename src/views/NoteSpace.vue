@@ -4,7 +4,7 @@
             <pane :min-size="paneMinSize" max-size="50" size="14.5" v-if="!settingsStore.settings.focusMode">
                 <div id="workspaceTitle"
                     class="flex items-center gap-2 flex-1 truncate pl-3 text-xl font-bold select-none m-1">
-                    <img src="../assets/app-icon/png/1024x1024.png" class="w-10" alt="App icon"></img>
+                    <img src="../assets/app-icon/png/1024x1024.png" class="h-8" alt="App icon"></img>
                     {{ workspaceStore.currentWorkspace?.name }}
                 </div>
                 <hr class="sidebar-separator" />

@@ -489,6 +489,8 @@ If you want to reset all settings to their original values:
 
 ## 10. Keyboard Shortcuts
 
+Most of the editing actions in Slate can be performed using keyboard shortcuts. Below is a comprehensive list of available shortcuts:
+
 ### Text Formatting
 
 | Action | Windows/Linux | macOS |

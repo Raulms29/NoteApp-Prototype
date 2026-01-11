@@ -1,4 +1,4 @@
-import { app, BrowserWindow, powerMonitor, protocol, shell, ipcMain, session } from 'electron';
+import { app, BrowserWindow, powerMonitor, protocol, shell, ipcMain, session, globalShortcut } from 'electron';
 import electronSquirrelStartup from 'electron-squirrel-startup';
 import dotenv from 'dotenv';
 
@@ -183,6 +183,16 @@ if (gotTheLock) {
         callback({});
       }
     });
+
+    // Open user manual when F1 is pressed
+    globalShortcut.register('F1', () => {
+      shell.openExternal('https://github.com/Raulms29/Slate-Note-App/blob/master/docs/USER_MANUAL.md');
+    });
+  });
+
+  // Unregister shortcuts when app is going to close
+  app.on('will-quit', () => {
+    globalShortcut.unregisterAll();
   });
 
   // Quit when all windows are closed, except on macOS. There, it's common

@@ -495,15 +495,6 @@ If you want to reset all settings to their original values:
 
 ## 10. Keyboard Shortcuts
 
-### General
-
-| Action | Windows/Linux | macOS |
-|--------|---------------|-------|
-| New Note | `Ctrl+N` | `Cmd+N` |
-| Save Note | `Ctrl+S` | `Cmd+S` |
-| Search Notes | `Ctrl+F` | `Cmd+F` |
-| Settings | `Ctrl+,` | `Cmd+,` |
-
 ### Text Formatting
 
 | Action | Windows/Linux | macOS |

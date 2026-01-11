@@ -22,7 +22,7 @@ import { ref } from 'vue';
 const showSettings = ref(false);
 
 function showHelp() {
-    window.open("https://example.com", '_blank');
+    window.open("https://github.com/Raulms29/Slate-Note-App/blob/master/docs/USER_MANUAL.md", '_blank');
 }
 </script>
 

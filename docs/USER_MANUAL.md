@@ -4,8 +4,9 @@
 
 - [1. What is Slate?](#1-what-is-slate)
 - [2. Workspaces](#2-workspaces)
-  - [2.1 Renaming a Workspace](#21-renaming-a-workspace)
-  - [2.2 Deleting a Workspace](#22-deleting-a-workspace)
+  - [2.1 Changing Workspaces](#21-changing-workspaces)
+  - [2.2 Renaming a Workspace](#22-renaming-a-workspace)
+  - [2.3 Deleting a Workspace](#23-deleting-a-workspace)
 - [3. Working with Notes](#3-working-with-notes)
   - [3.1 Creating Notes](#31-creating-notes)
   - [3.2 Selecting and Viewing Notes](#32-selecting-and-viewing-notes)
@@ -24,12 +25,10 @@
 - [5. Multimedia Content](#5-multimedia-content)
   - [5.1 Inserting Images](#51-inserting-images)
   - [5.2 Embedding PDFs](#52-embedding-pdfs)
-  - [5.3 Managing Multimedia Files](#53-managing-multimedia-files)
 - [6. Linking Notes](#6-linking-notes)
-  - [6.1 Creating Note Links](#61-creating-note-links)
-- [7. Exporting Notes](#7-exporting-notes)
+- [7. Note Export](#7-note-export)
   - [7.1 Export Formats](#71-export-formats)
-  - [7.2 Exporting Single Notes](#72-exporting-single-notes)
+  - [7.2 Exporting Notes](#72-exporting-notes)
 - [8. Focus Mode](#8-focus-mode)
   - [8.1 Enabling Focus Mode](#81-enabling-focus-mode)
 - [9. Settings](#9-settings)
@@ -54,24 +53,28 @@ Slate is a cross-platform desktop note-taking application designed to enhance yo
 
 ## 2. Workspaces
 
+Workspaces in Slate are folders on your computer that contain your notes and related files. Each workspace is independent, allowing you to organize notes for different projects or ideas.
+
+### 2.1 Changing Workspaces
+
 1. Click the **Change workspace** button 📁 in the sidebar.
 2. In the workspaces list, click the workspace card you want to open.
 
 > **Note**: When changing workspaces, any unsaved changes in a note will be automatically saved before switching.
 
-### 2.1 Renaming a Workspace
+### 2.2 Renaming a Workspace
 
 **To rename a workspace:**
 
 1. Open the workspace selection dialog
-2. Click the trhee-dot menu (⋯) on the workspace you want to rename
+2. Click the three-dot menu (⋯) on the workspace you want to rename
 3. Click the **edit icon** (✏️)
 4. Enter the new name
 5. Click **Rename** or **Cancel** to discard changes
 
 > **Important**: Renaming a workspace does not change the folder location on your computer.
 
-### 2.2 Deleting a Workspace
+### 2.3 Deleting a Workspace
 
 **To remove a workspace from Slate:**
 
@@ -91,7 +94,7 @@ Slate is a cross-platform desktop note-taking application designed to enhance yo
 There are several ways to create a new note in Slate:
 
 **Method 1: Using the New Note Button**
-1. Click the **"New Note"** button in the top right of the sidebar
+1. Click the **"New Note"** button on the top right of the sidebar
 2. A new note will be created at the root level and selected
  
 
@@ -133,8 +136,6 @@ Slate supports hierarchical note organization, allowing you to create notes insi
 
 > **Note**: This helps you keep your sidebar organized when working with many notes
 
-- Depending on your settings, sub-notes may be shown as large icons or compact list items when you are editing.
-
 ### 3.4 Renaming Notes
 
 **To rename a note:**
@@ -151,7 +152,7 @@ You can reorganize your notes by moving them within the hierarchy using drag and
 
 **To move a note:**
 
-1. Click and hold on the note you want to move
+1. Click and hold on to the note you want to move
 2. Drag it to the desired location:
    - **Inside another note**: Drop on the target note to make it a sub-note
    - **Before a note**: Drop in the space above a note
@@ -169,13 +170,11 @@ You can reorganize your notes by moving them within the hierarchy using drag and
 
 **To delete a note:**
 
-**Method 1: Context Menu**
-1. Right-click on the note you want to delete
+1. Click or hover over the three-dot menu (⋯) next to an existing note in the sidebar
 2. Select **"Delete"**
-3. Confirm the deletion in the dialog box
+3. Confirm the deletion in the dialog box (not required if the note has no sub-notes)
 
-
-> **Warning**: This action cannot be undone from within the application, but the files remain in your recycle bin/trash.
+> **Warning**: This action cannot be undone from within the application, but the files remain in your recycling bin/trash.
 
 ### 3.7 Searching Notes
 
@@ -246,12 +245,13 @@ You can create links to external web pages using standard Markdown syntax:
 - **Syntax:** `[link text](url)`
 - **Example:** `[Example website](https://example.com)`
 
-When you click on the link it will open in your default web browser.
+You can also use the link button in the Bubble menu to insert links.
 
+When you click on the link it will open in your default web browser.
 
 ### 4.3 Working with Lists
 
-**Bulleted Lists:**
+**Bullet Lists:**
 1. Click the bullet list button in the Bubble menu, or
 2. Type `- ` (dash and space) at the start of a line
 3. Press **Enter** to create a new bullet point
@@ -270,7 +270,7 @@ When you click on the link it will open in your default web browser.
 3. Click the checkbox to mark tasks as complete
 4. Press **Enter** to add more tasks
 
-> **Tip**: You can mix list types by indenting different types of lists within each other.
+> **Tip**: You can mix list types by using different types of lists within each other.
 
 ### 4.4 Headings and Structure
 
@@ -291,7 +291,7 @@ For longer code snippets or preserving formatting:
 4. The code block preserves indentation and formatting
 
 **Inline Code:**
-- For short code snippets within text, use the inline code format (single backticks in Markdown, or the inline code button)
+- For short code snippets within text, use the inline code format with single backticks (`)
 
 <p align="center">
   <img src="resources/images/code-blocks.gif" alt="Code Blocks">
@@ -301,22 +301,31 @@ For longer code snippets or preserving formatting:
 ### 4.6 Undo and Redo
 
 **Undo:**
-- Click the **Undo** button, or
 - Use `Ctrl+Z` (Windows/Linux) or `Cmd+Z` (macOS)
 
 **Redo:**
-- Click the **Redo** button, or
 - Use `Ctrl+Y` (Windows/Linux) or `Cmd+Shift+Z` (macOS)
 
-> **Note**: The undo/redo history is maintained for the current editing session.
+> **Note**: The undo/redo history is maintained for the currently selected note. If you switch notes, the history for the previous note is removed.
 
 ---
 
 ## 5. Multimedia Content
 
+All multimedia files (images and PDFs) are stored in the `.files` directory within your workspace folder:
+
+```
+Your Workspace Folder/
+├── .notes/
+└── .files/
+    ├── image1.png
+    ├── document.pdf
+    └── photo.jpg
+```
+
 ### 5.1 Inserting Images
 
-Add images to your notes to enhance visual documentation:
+Add images to your notes:
 
 **To insert an image:**
 
@@ -326,7 +335,7 @@ Add images to your notes to enhance visual documentation:
 3. The image will be inserted at your cursor position
 
 **Method 2: Paste web image from Clipboard**
-1. Copy an image link (url) to your clipboard
+1. Copy an image link (URL) to your clipboard
 2. Paste (`Ctrl+V` or `Cmd+V`) into the editor
 
 <p align="center">
@@ -346,24 +355,9 @@ View PDF documents directly within your notes:
   <img src="resources/images/insert-pdf.gif" alt="Insert PDF">
 </p>
 
-### 5.3 Managing Multimedia Files
-
-All multimedia files (images and PDFs) are stored in the `.files` directory within your workspace folder:
-
-```
-Your Workspace Folder/
-├── .notes/
-└── .files/
-    ├── image1.png
-    ├── document.pdf
-    └── photo.jpg
-```
-
 ---
 
 ## 6. Linking Notes
-
-### 6.1 Creating Note Links
 
 Link notes together to create connections and improve navigation:
 
@@ -381,20 +375,20 @@ Link notes together to create connections and improve navigation:
 
 ---
 
-## 7. Exporting Notes
+## 7. Note Export
 
 ### 7.1 Export Formats
 
 Slate supports exporting your notes to multiple formats:
 
-| Format | Extension | Best For |
-|--------|-----------|----------|
-| **Plain Text** | `.txt` | Simple text backup, email |
-| **Markdown** | `.md` | Version control, other Markdown editors |
-| **HTML** | `.html` | Web viewing, sharing online |
-| **PDF** | `.pdf` | Printing, professional sharing, archiving |
+| Format | Best For |
+|--------|----------|
+| **Plain Text** | Simple text backup, email |
+| **Markdown** | Version control, other Markdown editors |
+| **HTML** | Web viewing, sharing online |
+| **PDF** | Printing, professional sharing, archiving |
 
-### 7.2 Exporting Single Notes
+### 7.2 Exporting Notes
 
 **To export the current note:**
 
@@ -506,7 +500,7 @@ If you want to reset all settings to their original values:
 | Strike-through | `Ctrl+Shift+X` | `Cmd+Shift+X` |
 | Blockquote | `Ctrl+>` | `Cmd+>` |
 | Code block | `Ctrl+Alt+C` | `Cmd+Alt+C` |
-| Insert horizontal rule | `Ctrl+-` | `Cmd+-` |
+| Horizontal rule | `Ctrl+-` | `Cmd+-` |
 
 ### Editing
 

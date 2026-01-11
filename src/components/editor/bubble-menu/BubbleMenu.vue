@@ -1,5 +1,5 @@
 <template>
-    <bubble-menu :editor="editor" :tippy-options="{ duration: 300, maxWidth: 800 }" v-if="editor"
+    <bubble-menu :editor="editor" :tippy-options="{ duration: 300, maxWidth: 800, appendTo: 'parent' }" v-if="editor"
         class="bubble-menu gap-0">
 
         <!-- Dropdown for selecting headings and lists -->
@@ -19,6 +19,11 @@
             <button :class="{ 'is-active': editor.isActive('underline') }" class="bubble-button"
                 @click="toggleUnderline()">
                 <UnderLineIcon title="Underline"></UnderLineIcon>
+            </button>
+            <!-- Highlight -->
+            <button :class="{ 'is-active': editor.isActive('highlight') }" class="bubble-button"
+                @click="toggleHighlight()">
+                <MarkerIcon title="Highlight"></MarkerIcon>
             </button>
             <!-- Strike -->
             <button :class="{ 'is-active': editor.isActive('strike') }" class="bubble-button" @click="toggleStrike()">
@@ -58,6 +63,7 @@ import StrikeIcon from 'icons/FormatStrikethrough.vue';
 import CodeIcon from 'icons/CodeTags.vue';
 import ImageIcon from 'icons/ImageOutline.vue';
 import PDFIcon from 'icons/FilePdfBox.vue';
+import MarkerIcon from 'icons/Marker.vue';
 
 const emit = defineEmits(['image-upload', 'pdf-upload']);
 
@@ -82,6 +88,9 @@ function toggleUnderline() {
 }
 function toggleCodeBlock() {
     props.editor.chain().focus().toggleCodeBlock().run();
+}
+function toggleHighlight() {
+    props.editor.chain().focus().toggleHighlight().run();
 }
 
 const open: Ref<boolean> = ref(false);
@@ -132,11 +141,13 @@ function emitFileUpload(event: Event, type: 'image' | 'pdf') {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
+    console.log('Selected file:', file);
     if (type === 'image') {
         emit('image-upload', file.path);
     } else if (type === 'pdf') {
         emit('pdf-upload', file.path);
     }
+    input.value = '';
 }
 
 const handleLinkDialogOpenChange = (newValue: boolean) => {

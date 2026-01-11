@@ -51,7 +51,7 @@
     "@wdio/mocha-framework": "^9.11.0",
     "@wdio/spec-reporter": "^9.11.0",
     "autoprefixer": "^10.4.21",
-    "electron": "^35.7.5",
+    "electron": "^31.7.7",
     "electron-context-menu": "^4.0.5",
     "eslint": "^8.57.1",
     "eslint-plugin-import": "^2.25.0",

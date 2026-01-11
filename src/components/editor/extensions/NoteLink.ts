@@ -48,7 +48,7 @@ export const NoteLink = Mark.create({
                 return;
             },
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            getNoteIdFromName: () => (noteName: string): string => {
+            getNoteIdFromName: (noteName: string): string => {
                 return '';
             },
             // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -1,6 +1,6 @@
 <template>
     <div class="sidebar-settings-buttons">
-        <button class="sidebar-btn m-1" title="Help">
+        <button class="sidebar-btn m-1" title="Help" @click="showHelp">
             <HelpCircleOutline />
         </button>
         <button class="sidebar-btn m-1" title="Settings" @click="showSettings = true">
@@ -20,6 +20,10 @@ import CogOutline from 'icons/CogOutline.vue';
 import { ref } from 'vue';
 
 const showSettings = ref(false);
+
+function showHelp() {
+    window.open("https://example.com", '_blank');
+}
 </script>
 
 <style scoped>

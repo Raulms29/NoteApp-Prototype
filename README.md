@@ -19,6 +19,9 @@
     <img src="https://sonarcloud.io/api/project_badges/measure?project=Raulms29_Slate_NoteApp&metric=security_rating" alt="Coverage">
   </a>
   <br>
+  <a href="https://github.com/Raulms29/Slate-Note-App/blob/master/docs/USER_MANUAL.md">
+    <img src="https://img.shields.io/badge/User%20Manual-View-blue" alt="User Manual">
+  </a>
   <img src="https://img.shields.io/badge/Node.js-24.11.1+-green" alt="Node">
 </p>
 
@@ -38,7 +41,8 @@ Built with Electron, Vue 3, and TypeScript for Windows, macOS, and Linux.
   <a href="#%EF%B8%8F-running-the-application">Running the Application</a> • 
   <a href="#-testing">Testing</a> • 
   <a href="#-scripts">Scripts</a> • 
-  <a href="#-project-structure">Project Structure</a>
+  <a href="#-project-structure">Project Structure</a> • 
+  <a href="https://github.com/Raulms29/Slate-Note-App/blob/master/docs/USER_MANUAL.md">User Manual</a>
 </p>
 
 ---

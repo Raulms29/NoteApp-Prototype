@@ -1,4 +1,4 @@
-import { ipcMain, dialog, app } from 'electron';
+import { ipcMain, dialog, app, shell } from 'electron';
 import fs from 'fs';
 import path from 'path';
 
@@ -72,7 +72,9 @@ export function registerFileHandlers(fileEncoding: BufferEncoding = 'utf-8') {
     });
 
     ipcMain.handle('delete-file', async (_, filePath: string) => {
-        fs.promises.unlink(filePath);
+        shell.trashItem(filePath).catch(() => {
+            fs.promises.unlink(filePath);
+        });
     });
 
     ipcMain.handle('get-temp-dir', async () => {

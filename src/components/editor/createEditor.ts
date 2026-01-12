@@ -17,7 +17,7 @@ import Underline from '@tiptap/extension-underline';
 import CharacterCount from '@tiptap/extension-character-count';
 import type { useNotesStore } from '../../stores/useNotesStore';
 
-export function createEditor(notesStore: ReturnType<typeof useNotesStore>, emitNoteContentUpdate: () => void, editorProps = {}) {
+export function createEditor(notesStore: ReturnType<typeof useNotesStore>, emitNoteContentUpdate: () => void, editorProps = {}, initialContent = ''): Editor {
     const editor = new Editor({
         extensions: [
             StarterKit.configure({ codeBlock: false }),
@@ -65,7 +65,7 @@ export function createEditor(notesStore: ReturnType<typeof useNotesStore>, emitN
                 class: `prose w-full border-none max-w-none m-0 outline-none h-full overflow-auto`,
             },
         },
-        content: '',
+        content: initialContent,
         onUpdate: () => {
             emitNoteContentUpdate();
         },

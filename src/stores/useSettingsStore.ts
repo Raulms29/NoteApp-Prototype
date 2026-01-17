@@ -8,7 +8,8 @@ export const useSettingsStore = defineStore('settings', () => {
         rememberLastWorkspace: false,
         rememberLastNote: false,
         focusMode: false,
-        subNotesDisplayType: 'DEFAULT'
+        subNotesDisplayType: 'DEFAULT',
+        showFloatingMenu: true
     });
 
     const subNotesOptions = [
@@ -41,7 +42,8 @@ export const useSettingsStore = defineStore('settings', () => {
             rememberLastWorkspace: settings.value.rememberLastWorkspace,
             rememberLastNote: settings.value.rememberLastNote,
             focusMode: false,
-            subNotesDisplayType: settings.value.subNotesDisplayType
+            subNotesDisplayType: settings.value.subNotesDisplayType,
+            showFloatingMenu: settings.value.showFloatingMenu
         });
     }
 
@@ -59,7 +61,8 @@ export const useSettingsStore = defineStore('settings', () => {
             rememberLastWorkspace: false,
             rememberLastNote: false,
             focusMode: false,
-            subNotesDisplayType: 'DEFAULT'
+            subNotesDisplayType: 'DEFAULT',
+            showFloatingMenu: true
         };
     }
 

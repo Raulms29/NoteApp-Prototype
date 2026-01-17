@@ -13,8 +13,8 @@
                 </div>
             </pane>
             <pane>
-                <div class="editor-pane" id="editorPane">
-                    <EditorView />
+                <div class="editor-pane" id="editorPane" @click="onEditorPaneClick">
+                    <EditorView ref="editorViewRef" />
                 </div>
             </pane>
         </splitpanes>
@@ -38,6 +38,7 @@ const notesStore = useNotesStore();
 const smallScreenPaneMinSize = 20;
 const largeScreenPaneMinSize = 12.5;
 const paneMinSize = ref(largeScreenPaneMinSize);
+const editorViewRef = ref<any>(null);
 
 function updateMinSize() {
     if (window.innerWidth < 1200) {
@@ -61,6 +62,10 @@ onMounted(() => {
 onUnmounted(() => {
     window.removeEventListener('resize', updateMinSize);
 });
+
+function onEditorPaneClick(event: MouseEvent) {
+    editorViewRef.value?.handleEditorWrapperClick?.(event);
+}
 
 </script>
 

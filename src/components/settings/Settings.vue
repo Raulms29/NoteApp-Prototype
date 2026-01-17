@@ -11,6 +11,10 @@
                 <GenericSwitch v-model="rememberLastNote" :checked-text="''" :unchecked-text="''" />
             </div>
             <div class="settings-option">
+                Show floating menu on empty line:
+                <GenericSwitch v-model="showFloatingMenu" :checked-text="''" :unchecked-text="''" />
+            </div>
+            <div class="settings-option">
                 <span class="mr-3">Subnotes display:
                 </span>
                 <n-radio-group v-model:value="subNotesOption" name="subnotes-display-group" style="
@@ -61,6 +65,13 @@ const subNotesOption = computed({
     get: () => settingsStore.settings.subNotesDisplayType,
     set: (value: string) => {
         settingsStore.updateSetting('subNotesDisplayType', value as 'DEFAULT' | 'BIG_ONLY' | 'SMALL_ONLY' | 'NONE');
+    }
+});
+
+const showFloatingMenu = computed({
+    get: () => settingsStore.settings.showFloatingMenu,
+    set: (value: boolean) => {
+        settingsStore.updateSetting('showFloatingMenu', value);
     }
 });
 

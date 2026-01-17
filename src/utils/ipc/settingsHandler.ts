@@ -12,6 +12,7 @@ const defaults: SettingsSchema = {
     rememberLastNote: false,
     focusMode: false,
     subNotesDisplayType: 'DEFAULT',
+    showFloatingMenu: true
 };
 
 /**

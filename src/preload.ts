@@ -7,8 +7,10 @@ import { WorkspaceI } from './business/domain/Workspace';
 
 // During tests, we need to import the wdio-electron-service preload script
 // It should not be imported in production
-// The import should not be done while building the application and is intented only for testing
-import('wdio-electron-service/preload');
+// The import should not be done while building the application and is intented only for testing.
+if (process.env.ENABLE_WDIO === 'true') {
+        import('wdio-electron-service/preload');
+}
 
 contextBridge.exposeInMainWorld('fileAPI', {
     // This needs to be done since the filesystem cannot be accessed directly from the renderer process

@@ -11,7 +11,8 @@ window.settingsAPI = {
             rememberLastWorkspace: true,
             rememberLastNote: true,
             focusMode: true,
-            subNotesDisplayType: 'DEFAULT'
+            subNotesDisplayType: 'DEFAULT',
+            showFloatingMenu: true
         };
         return settings;
     }),
@@ -30,6 +31,7 @@ describe('GIVEN the useSettingsStore store', () => {
             const store = useSettingsStore();
             expect(store.settings.rememberLastWorkspace).toBe(false);
             expect(store.settings.focusMode).toBe(false);
+            expect(store.settings.showFloatingMenu).toBe(true);
         });
     });
 
@@ -41,6 +43,7 @@ describe('GIVEN the useSettingsStore store', () => {
             expect(window.settingsAPI.getSettings).toHaveBeenCalled();
             expect(store.settings.rememberLastWorkspace).toBe(true);
             expect(store.settings.focusMode).toBe(true);
+            expect(store.settings.showFloatingMenu).toBe(true);
         });
     });
 
@@ -61,6 +64,8 @@ describe('GIVEN the useSettingsStore store', () => {
             expect(store.settings.focusMode).toBe(true);
             store.updateSetting('rememberLastWorkspace', true);
             expect(store.settings.rememberLastWorkspace).toBe(true);
+            store.updateSetting('showFloatingMenu', true);
+            expect(store.settings.showFloatingMenu).toBe(true);
         });
     });
 
@@ -75,11 +80,14 @@ describe('GIVEN the useSettingsStore store', () => {
             expect(store.settings.rememberLastWorkspace).toBe(true);
             store.updateSetting('subNotesDisplayType', 'BIG_ONLY');
             expect(store.settings.subNotesDisplayType).toBe('BIG_ONLY');
+            store.updateSetting('showFloatingMenu', true);
+            expect(store.settings.showFloatingMenu).toBe(true);
 
             store.restoreDefaultSettings();
             expect(store.settings.focusMode).toBe(false);
             expect(store.settings.rememberLastWorkspace).toBe(false);
             expect(store.settings.subNotesDisplayType).toBe('DEFAULT');
+            expect(store.settings.showFloatingMenu).toBe(true);
 
         });
     });

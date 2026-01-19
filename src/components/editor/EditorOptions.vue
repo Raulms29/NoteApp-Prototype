@@ -2,8 +2,8 @@
     <NDropdown v-if="notesStore.currentNote" class="editor-dropdown" :options="dropdownOptions"
         @select="handleDropdownSelect">
         <template #default>
-            <button class="dropdown-trigger-btn" title="More options">
-                <DotsHorizontal />
+            <button class="dropdown-trigger-btn" title="Export">
+                <ExportVariant />
             </button>
         </template>
     </NDropdown>
@@ -34,14 +34,18 @@
 import GenericSwitch from '../generic/switch/GenericSwitch.vue';
 import { NDropdown } from 'naive-ui';
 import { useNotesStore } from '../../stores/useNotesStore';
-import DotsHorizontal from 'icons/DotsHorizontal.vue';
+import ExportVariant from 'icons/ExportVariant.vue';
 import { JSONContent } from '@tiptap/vue-3';
 import ExportService from '../../business/service/ExportService';
 import { useWorkspaceStore } from '../../stores/useWorkspaceStore';
 import { createEditor } from './createEditor';
 import { Note } from '../../business/domain/Note';
-import { ref } from 'vue';
+import { h, ref } from 'vue';
 import { Workspace } from '../../business/domain/Workspace';
+import PDFIcon from 'icons/FilePdfBox.vue';
+import TextBoxOutlineIcon from 'icons/TextBoxOutline.vue';
+import MarkdownIcon from '../../assets/icons/Markdown.vue';
+import HTMLIcon from '../../assets/icons/HTML.vue';
 
 const notesStore = useNotesStore();
 const workspaceStore = useWorkspaceStore();
@@ -56,11 +60,27 @@ const currentOption = ref<string | null>(null);
 const includeSubnotes = ref(false);
 
 const dropdownOptions = [
-    { label: 'Export as Text', key: 'export-text' },
-    { label: 'Export as Markdown', key: 'export-markdown' },
-    { label: 'Export as HTML', key: 'export-html' },
-    { label: 'Export as PDF', key: 'export-pdf' }
-];
+    {
+        label: 'Export as Text',
+        key: 'export-text',
+        icon: () => h(TextBoxOutlineIcon),
+    },
+    {
+        label: 'Export as Markdown',
+        key: 'export-markdown',
+        icon: () => h(MarkdownIcon),
+    },
+    {
+        label: 'Export as HTML',
+        key: 'export-html',
+        icon: () => h(HTMLIcon),
+    },
+    {
+        label: 'Export as PDF',
+        key: 'export-pdf',
+        icon: () => h(PDFIcon),
+    },
+]
 
 function handleDropdownSelect(key: string) {
     if (dropdownOptions.some(option => option.key === key)) {

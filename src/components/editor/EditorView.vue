@@ -1,11 +1,11 @@
 <template>
     <LoadingOverlay v-if="isLoading"></LoadingOverlay>
-    <div class="editor-wrapper">
+    <div class="editor-wrapper" @click="handleEditorWrapperClick">
         <div class="options">
             <button class="focus-mode-icon-btn" @click.stop="toggleFocusMode" v-if="notesStore.currentNote"
                 :title="settingsStore.settings.focusMode ? 'Exit Focus Mode' : 'Enter Focus Mode'">
-                <BullseyeIcon v-if="!settingsStore.settings.focusMode" :size="20" />
-                <BullseyeArrowIcon v-else :size="20" />
+                <DockLeftIcon v-if="!settingsStore.settings.focusMode" :size="20" />
+                <DockLeftNoFillIcon v-else :size="20" />
             </button>
 
             <EditorOptions v-if="notesStore.currentNote" @update:is-loading="handleUpdateLoadingState" />
@@ -34,8 +34,7 @@
                     v-if="notesStore.currentNote && notesStore.currentNote.hasChildren() && settingsStore.settings.subNotesDisplayType !== 'NONE'"
                     :notes="notesStore.currentNote.children as Note[]" @select="notesStore.selectNote($event as Note)"
                     @delete="notesStore.deleteNote($event as Note)" @create="handleCreateNote($event as Note)" />
-
-                <Editor @note-change="handleNoteChange" @note-content-update="handleNoteContentChange"
+                <Editor ref="editorComp" @note-change="handleNoteChange" @note-content-update="handleNoteContentChange"
                     @update:is-loading="handleUpdateLoadingState" />
             </div>
         </div>
@@ -48,9 +47,11 @@ import { useSettingsStore } from '../../stores/useSettingsStore';
 import { Note } from '../../business/domain/Note';
 import { ref } from 'vue';
 import debounce from 'debounce';
-import BullseyeIcon from 'icons/Bullseye.vue';
-import BullseyeArrowIcon from 'icons/BullseyeArrow.vue';
+import DockLeftIcon from 'icons/DockLeft.vue';
+import DockLeftNoFillIcon from '../../assets/icons/DockLeftNoFill.vue';
 import Editor from './Editor.vue';
+import NoteChildren from './note-children/NoteChildren.vue';
+
 
 const notesStore = useNotesStore();
 const settingsStore = useSettingsStore();
@@ -60,6 +61,7 @@ const isFocused = ref(false);
 const renameError = ref<string | null>(null);
 
 const isLoading = ref(false);
+const editorComp = ref<any>(null);
 
 
 const debouncedSave = debounce(async (content: string) => {
@@ -100,6 +102,17 @@ function handleNoteContentChange(content: string) {
     debouncedSave(content);
 }
 
+function handleEditorWrapperClick(event: MouseEvent) {
+    if (!editorComp.value) return;
+    const target = event.target as HTMLElement | null;
+    if (target && (target.closest('.note-name') || target.closest('.options'))) {
+        return; // ignore clicks inside note-name or options
+    }
+    editorComp.value.handleParentClick();
+}
+
+defineExpose({ handleEditorWrapperClick });
+
 function toggleFocusMode() {
     settingsStore.updateSetting('focusMode', !settingsStore.settings.focusMode);
 }
@@ -114,7 +127,6 @@ function handleUpdateLoadingState(loading: boolean) {
 }
 
 import '../../styles/editor.css';
-import NoteChildren from './note-children/NoteChildren.vue';
 </script>
 
 <style scoped>

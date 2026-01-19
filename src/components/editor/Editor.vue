@@ -3,6 +3,8 @@
         <editor-content :editor="editor as any" />
         <BubbleMenu v-if="editor" :editor="editor as any" @image-upload="handleImageUpload"
             @pdf-upload="handlePdfUpload" />
+        <FloatingMenu v-show="editor && settingsStore.settings.showFloatingMenu" :editor="editor as any"
+            @image-upload="handleImageUpload" @pdf-upload="handlePdfUpload" />
         <div class="editor-info" v-if="editor">
             <span>{{ editor.storage?.characterCount?.words() || 0 }} words</span>
             <span>{{ editor.storage?.characterCount?.characters() || 0 }} characters</span>
@@ -23,6 +25,8 @@ const notesStore = useNotesStore();
 const editor = ref<Editor>(null);
 const currentNote = ref<Note | null>(null);
 const isEditorChanging = ref(false);
+import { useSettingsStore } from '../../stores/useSettingsStore';
+const settingsStore = useSettingsStore();
 
 function emitNoteChange(previousNote: Note, previousNoteContent: string) {
     emit('note-change', previousNote, previousNoteContent);
@@ -123,4 +127,14 @@ onBeforeMount(() => {
 onBeforeUnmount(() => {
     editor.value?.destroy();
 });
+
+function handleParentClick() {
+    if (!editor.value) return;
+    const text = editor.value.getText ? editor.value.getText() : '';
+    if (text.trim().length === 0) {
+        editor.value.commands.focus(0, { scrollIntoView: false });
+    }
+}
+
+defineExpose({ handleParentClick });
 </script>

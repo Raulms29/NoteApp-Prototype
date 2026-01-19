@@ -10,4 +10,5 @@ export interface Settings {
      * - 'NONE': Sub-notes are hidden in the editor.
      */
     subNotesDisplayType: 'DEFAULT' | 'BIG_ONLY' | 'SMALL_ONLY' | 'NONE';
+    showFloatingMenu: boolean;
 }

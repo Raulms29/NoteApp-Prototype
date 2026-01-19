@@ -131,6 +131,7 @@ describe('Settings Testing', () => {
         // Change settings from defaults
         await POSettings.openSettings();
         await POSettings.selectSubnotesBigOnly();
+        await POSettings.selectShowFloatingMenu('false');
         await POSettings.selectRememberWorkspace();
         await POSettings.selectRememberLastNote();
         await POSettings.checkNonDefaultValues();

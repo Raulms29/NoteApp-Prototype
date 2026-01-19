@@ -15,6 +15,7 @@ declare module 'vue' {
     EditorOptions: typeof import('./src/components/editor/EditorOptions.vue')['default']
     EditorView: typeof import('./src/components/editor/EditorView.vue')['default']
     ElementDropdown: typeof import('./src/components/editor/bubble-menu/ElementDropdown.vue')['default']
+    FloatingMenu: typeof import('./src/components/editor/floating-menu/FloatingMenu.vue')['default']
     GenericButton: typeof import('./src/components/generic/GenericButton.vue')['default']
     GenericDialog: typeof import('./src/components/generic/GenericDialog.vue')['default']
     GenericErrorMessage: typeof import('./src/components/generic/GenericErrorMessage.vue')['default']

@@ -8,40 +8,43 @@
         <div class="separator"></div>
         <div class="button-group">
             <!-- Bold -->
-            <button :class="{ 'is-active': editor.isActive('bold') }" class="bubble-button" @click="toggleBold()">
-                <BoldIcon title="Bold"></BoldIcon>
+            <button :class="{ 'is-active': editor.isActive('bold') }" class="bubble-button" @click="toggleBold()"
+                title="Bold">
+                <BoldIcon></BoldIcon>
             </button>
             <!-- Italic -->
-            <button :class="{ 'is-active': editor.isActive('italic') }" class="bubble-button" @click="toggleItalic()">
-                <ItalicIcon title="Italic"></ItalicIcon>
+            <button :class="{ 'is-active': editor.isActive('italic') }" class="bubble-button" @click="toggleItalic()"
+                title="Italic">
+                <ItalicIcon></ItalicIcon>
             </button>
             <!-- Underline -->
             <button :class="{ 'is-active': editor.isActive('underline') }" class="bubble-button"
-                @click="toggleUnderline()">
-                <UnderLineIcon title="Underline"></UnderLineIcon>
+                @click="toggleUnderline()" title="Underline">
+                <UnderLineIcon></UnderLineIcon>
             </button>
             <!-- Highlight -->
             <button :class="{ 'is-active': editor.isActive('highlight') }" class="bubble-button"
-                @click="toggleHighlight()">
-                <MarkerIcon title="Highlight"></MarkerIcon>
+                @click="toggleHighlight()" title="Highlight">
+                <MarkerIcon></MarkerIcon>
             </button>
             <!-- Strike -->
-            <button :class="{ 'is-active': editor.isActive('strike') }" class="bubble-button" @click="toggleStrike()">
-                <StrikeIcon title="Strike"></StrikeIcon>
+            <button :class="{ 'is-active': editor.isActive('strike') }" class="bubble-button" @click="toggleStrike()"
+                title="Strike">
+                <StrikeIcon></StrikeIcon>
             </button>
             <!-- Code Block -->
             <button :class="{ 'is-active': editor.isActive('codeBlock') }" class="bubble-button"
-                @click="toggleCodeBlock()">
-                <CodeIcon title="Code Block"></CodeIcon>
+                @click="toggleCodeBlock()" title="Code Block">
+                <CodeIcon></CodeIcon>
             </button>
             <!-- Add Image Button -->
-            <button class="bubble-button" @click="triggerImageInput">
-                <ImageIcon title="Image"></ImageIcon>
+            <button class="bubble-button" @click="triggerImageInput" title="Image">
+                <ImageIcon></ImageIcon>
                 <input ref="imageInput" type="file" accept="image/*" style="display:none" @change="handleImageUpload" />
             </button>
             <!-- Add PDF Button -->
-            <button class="bubble-button" @click="triggerPdfInput">
-                <PDFIcon title="PDF"></PDFIcon>
+            <button class="bubble-button" @click="triggerPdfInput" title="PDF">
+                <PDFIcon></PDFIcon>
                 <input ref="pdfInput" type="file" accept=".pdf" style="display:none" @change="handlePdfUpload" />
             </button>
             <!-- Link -->
@@ -73,22 +76,26 @@ const props = defineProps({
     editor: Editor,
 });
 
-
 function toggleItalic() {
     props.editor.chain().focus().toggleItalic().run();
 }
+
 function toggleBold() {
     props.editor.chain().focus().toggleBold().run();
 }
+
 function toggleStrike() {
     props.editor.chain().focus().toggleStrike().run();
 }
+
 function toggleUnderline() {
     props.editor.chain().focus().toggleUnderline().run();
 }
+
 function toggleCodeBlock() {
     props.editor.chain().focus().toggleCodeBlock().run();
 }
+
 function toggleHighlight() {
     props.editor.chain().focus().toggleHighlight().run();
 }
@@ -110,16 +117,6 @@ function handleClickOutside(event: MouseEvent, refElement: Ref<HTMLElement | { $
         state.value = false; // Close the dropdown/dialog if clicked outside
     }
 }
-
-onMounted(() => {
-    document.addEventListener('click', (event) => handleClickOutside(event, elementDropdown, open));
-    document.addEventListener('click', (event) => handleClickOutside(event, linkDialog, linkDialogOpen));
-});
-
-onBeforeUnmount(() => {
-    document.removeEventListener('click', (event) => handleClickOutside(event, elementDropdown, open));
-    document.removeEventListener('click', (event) => handleClickOutside(event, linkDialog, linkDialogOpen));
-});
 
 function triggerImageInput() {
     imageInput.value?.click();
@@ -153,8 +150,17 @@ function emitFileUpload(event: Event, type: 'image' | 'pdf') {
 const handleLinkDialogOpenChange = (newValue: boolean) => {
     linkDialogOpen.value = newValue;
 };
-</script>
 
+onMounted(() => {
+    document.addEventListener('click', (event) => handleClickOutside(event, elementDropdown, open));
+    document.addEventListener('click', (event) => handleClickOutside(event, linkDialog, linkDialogOpen));
+});
+
+onBeforeUnmount(() => {
+    document.removeEventListener('click', (event) => handleClickOutside(event, elementDropdown, open));
+    document.removeEventListener('click', (event) => handleClickOutside(event, linkDialog, linkDialogOpen));
+});
+</script>
 <style>
 .bubble-menu {
     display: flex;

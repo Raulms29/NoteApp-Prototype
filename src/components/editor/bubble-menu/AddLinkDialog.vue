@@ -1,8 +1,9 @@
 <template>
     <div class="relative inline-block text-left">
         <!-- Trigger -->
-        <button @click="emit('update:open', !open)" class="inline-flex items-center px-3 py-2 bg-white bubble-button">
-            <LinkIcon title="Link"></LinkIcon>
+        <button @click="emit('update:open', !open)" class="inline-flex items-center px-3 py-2 bg-white bubble-button"
+            title="Link">
+            <LinkIcon></LinkIcon>
         </button>
 
         <!-- Dropdown Content -->

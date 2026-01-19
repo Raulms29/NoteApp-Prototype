@@ -30,21 +30,30 @@ export default class POSettings extends POApp {
         await $("//div[@class='n-radio__label' and text()='None']").click();
     }
 
-
     static async restoreDefaults() {
         await $(`//button[contains(@class, 'generic-btn') and contains(@class, 'secondary') and text()='Restore Defaults']`).click();
     }
 
-
     static getLatWorkspaceSwitch() {
         return $("//div[contains(@class, 'settings-option')][.//text()[contains(., 'Remember last workspace:')]]//div[@role='switch']");
     }
+    
     static getRememberLastNoteSwitch() {
         return $("//div[contains(@class, 'settings-option')][.//text()[contains(., 'Remember last note:')]]//div[@role='switch']");
     }
 
+    static getShowFloatingMenuSwitch() {
+        return $("//div[contains(@class, 'settings-option')][.//text()[contains(., 'Show floating menu on empty line:')]]//div[@role='switch']");
+    }
+
     static async selectRememberLastNote(expectedValue: string = 'true') {
         const switchDiv = this.getRememberLastNoteSwitch();
+        await switchDiv.click();
+        await expect(switchDiv).toHaveAttribute('aria-checked', expectedValue);
+    }
+
+    static async selectShowFloatingMenu(expectedValue: string = 'true') {
+        const switchDiv = this.getShowFloatingMenuSwitch();
         await switchDiv.click();
         await expect(switchDiv).toHaveAttribute('aria-checked', expectedValue);
     }
@@ -70,6 +79,7 @@ export default class POSettings extends POApp {
     static async checkDefaultValuesHelper() {
         const lastNoteSwitch = this.getRememberLastNoteSwitch();
         const lastWorkspaceSwitch = this.getLatWorkspaceSwitch();
+        const showFloatingSwitch = this.getShowFloatingMenuSwitch();
         const subnotesDefaultRadioValue = this.getSubnotesDisplayRadioValue();
 
         let isDefault = true;
@@ -81,6 +91,11 @@ export default class POSettings extends POApp {
 
         const lastWorkspaceChecked = await lastWorkspaceSwitch.getAttribute('aria-checked');
         if (lastWorkspaceChecked !== 'false') {
+            isDefault = false;
+        }
+
+        const showFloatingChecked = await showFloatingSwitch.getAttribute('aria-checked');
+        if (showFloatingChecked !== 'true') {
             isDefault = false;
         }
 

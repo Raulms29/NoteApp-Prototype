@@ -24,7 +24,7 @@ app.config.errorHandler = (error: Error) => {
 
 window.addEventListener('error', (event) => {
     // Only show dialog for non-split errors, since there is no way to avoid them
-    if (!event.filename.includes('split') && !event.filename.includes('404'))
+    if (!event.filename.includes('split') && !event.message.includes("reading 'max'") && !event.filename.includes('404'))
         errorStore.setError(event.error || event.message);
     console.error('Window error event:', event);
     console.error('Error filename:', event.filename);

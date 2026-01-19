@@ -20,7 +20,8 @@ export class SettingsRepository {
             rememberLastWorkspace: settings.rememberLastWorkspace,
             rememberLastNote: settings.rememberLastNote,
             focusMode: settings.focusMode,
-            subNotesDisplayType: settings.subNotesDisplayType
+            subNotesDisplayType: settings.subNotesDisplayType,
+            showFloatingMenu: settings.showFloatingMenu
         });
     }
 

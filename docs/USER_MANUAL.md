@@ -118,7 +118,7 @@ There are several ways to create a new note in Slate:
 - Click any note name in the breadcrumb to navigate to that note
 
 <p align="center">
-  <img src="resources/images/breadcrumb-navigation.png" alt="Breadcrumb Navigation">
+  <img src="resources/images/breadcrumb-navigation.gif" alt="Breadcrumb Navigation">
 </p>
 
 ### 3.3 Hierarchical Organization

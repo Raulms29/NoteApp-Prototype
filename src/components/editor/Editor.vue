@@ -3,7 +3,7 @@
         <editor-content :editor="editor as any" />
         <BubbleMenu v-if="editor" :editor="editor as any" @image-upload="handleImageUpload"
             @pdf-upload="handlePdfUpload" />
-        <FloatingMenu v-if="editor && settingsStore.settings.showFloatingMenu" :editor="editor as any"
+        <FloatingMenu v-show="editor && settingsStore.settings.showFloatingMenu" :editor="editor as any"
             @image-upload="handleImageUpload" @pdf-upload="handlePdfUpload" />
         <div class="editor-info" v-if="editor">
             <span>{{ editor.storage?.characterCount?.words() || 0 }} words</span>

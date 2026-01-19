@@ -2,7 +2,7 @@
     <NDropdown v-if="notesStore.currentNote" class="editor-dropdown" :options="dropdownOptions"
         @select="handleDropdownSelect">
         <template #default>
-            <button class="dropdown-trigger-btn" title="More options">
+            <button class="dropdown-trigger-btn" title="Export">
                 <ExportVariant />
             </button>
         </template>
@@ -60,26 +60,26 @@ const currentOption = ref<string | null>(null);
 const includeSubnotes = ref(false);
 
 const dropdownOptions = [
-  {
-    label: 'Export as Text',
-    key: 'export-text',
-    icon: () => h(TextBoxOutlineIcon),
-  },
-  {
-    label: 'Export as Markdown',
-    key: 'export-markdown',
-    icon: () => h(MarkdownIcon),
-  },
-  {
-    label: 'Export as HTML',
-    key: 'export-html',
-    icon: () => h(HTMLIcon),
-  },
-  {
-    label: 'Export as PDF',
-    key: 'export-pdf',
-    icon: () => h(PDFIcon),
-  },
+    {
+        label: 'Export as Text',
+        key: 'export-text',
+        icon: () => h(TextBoxOutlineIcon),
+    },
+    {
+        label: 'Export as Markdown',
+        key: 'export-markdown',
+        icon: () => h(MarkdownIcon),
+    },
+    {
+        label: 'Export as HTML',
+        key: 'export-html',
+        icon: () => h(HTMLIcon),
+    },
+    {
+        label: 'Export as PDF',
+        key: 'export-pdf',
+        icon: () => h(PDFIcon),
+    },
 ]
 
 function handleDropdownSelect(key: string) {

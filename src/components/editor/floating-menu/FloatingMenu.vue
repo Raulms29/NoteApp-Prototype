@@ -3,52 +3,54 @@
         <div class="button-group">
             <!-- Heading 1 -->
             <button :class="{ 'is-active': editor.isActive('heading', { level: 1 }) }" class="floating-button"
-                @click="toggleHeading(1)">
+                @click="toggleHeading(1)" title="Heading 1">
                 <Header1Icon />
             </button>
             <!-- Heading 2 -->
             <button :class="{ 'is-active': editor.isActive('heading', { level: 2 }) }" class="floating-button"
-                @click="toggleHeading(2)">
+                @click="toggleHeading(2)" title="Heading 2">
                 <Header2Icon />
             </button>
             <!-- Bullet list -->
             <button :class="{ 'is-active': editor.isActive('bulletList') }" class="floating-button"
-                @click="toggleBulletList">
+                @click="toggleBulletList" title="Bullet List">
                 <BulletListIcon />
             </button>
             <!-- Ordered list -->
             <button :class="{ 'is-active': editor.isActive('orderedList') }" class="floating-button"
-                @click="toggleOrderedList">
+                @click="toggleOrderedList" title="Ordered List">
                 <OrderedListIcon />
             </button>
 
             <div class="separator"></div>
 
             <!-- Bold -->
-            <button :class="{ 'is-active': editor.isActive('bold') }" class="floating-button" @click="toggleBold()">
-                <BoldIcon title="Bold"></BoldIcon>
+            <button :class="{ 'is-active': editor.isActive('bold') }" class="floating-button" @click="toggleBold()"
+                title="Bold">
+                <BoldIcon></BoldIcon>
             </button>
             <!-- Italic -->
-            <button :class="{ 'is-active': editor.isActive('italic') }" class="floating-button" @click="toggleItalic()">
-                <ItalicIcon title="Italic"></ItalicIcon>
+            <button :class="{ 'is-active': editor.isActive('italic') }" class="floating-button" @click="toggleItalic()"
+                title="Italic">
+                <ItalicIcon></ItalicIcon>
             </button>
             <!-- Code block -->
             <button :class="{ 'is-active': editor.isActive('codeBlock') }" class="floating-button"
-                @click="toggleCodeBlock()">
-                <CodeIcon title="Code Block"></CodeIcon>
+                @click="toggleCodeBlock()" title="Code Block">
+                <CodeIcon></CodeIcon>
             </button>
 
             <div class="separator"></div>
 
             <!-- Add Image Button -->
-            <button class="floating-button" @click="triggerImageInput">
-                <ImageIcon title="Image"></ImageIcon>
+            <button class="floating-button" @click="triggerImageInput" title="Image">
+                <ImageIcon></ImageIcon>
                 <input ref="imageInput" type="file" accept="image/*" style="display:none" @change="handleImageUpload" />
             </button>
 
             <!-- Add PDF Button -->
-            <button class="floating-button" @click="triggerPdfInput">
-                <PDFIcon title="PDF"></PDFIcon>
+            <button class="floating-button" @click="triggerPdfInput" title="PDF">
+                <PDFIcon></PDFIcon>
                 <input ref="pdfInput" type="file" accept=".pdf" style="display:none" @change="handlePdfUpload" />
             </button>
         </div>

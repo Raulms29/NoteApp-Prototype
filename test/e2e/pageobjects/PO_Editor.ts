@@ -181,10 +181,10 @@ export default class POEditor extends POApp {
     }
 
     static async clickBubbleButton(label: string) {
-        // Find button by aria-label inside bubble menu
+        // Find button by title attribute on the bubble button
         const menu = await POEditor.getBubbleMenu();
-        const btn = menu.$(`.bubble-button span[aria-label="${label}"]`);
-        await btn.parentElement().click();
+        const btn = menu.$(`.bubble-button[title="${label}"]`);
+        await btn.click();
     }
 
     static async #assertElementText(selector: string, expected: string) {
@@ -216,7 +216,7 @@ export default class POEditor extends POApp {
 
     static async openAddLinkDialog() {
         const menu = await POEditor.getBubbleMenu();
-        const linkBtn = menu.$('.bubble-button:has(span[aria-label="Link"])');
+        const linkBtn = menu.$('.bubble-button[title="Link"]');
         await linkBtn.click();
     }
 

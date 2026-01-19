@@ -200,6 +200,7 @@ The Slate editor uses a WYSIWYG (What You See Is What You Get) approach, meaning
 **Editor Layout:**
 - **Breadcrumb Bar**: Shows the note's position in the hierarchy
 - **Bubble menu**: Access formatting options and editor actions
+- **Floating menu**: A compact menu that appears on empty lines near the cursor to quickly insert lists, headings, or multimedia
 - **Content Area**: Where you write and edit your notes
 - **Focus Mode Toggle**: Switch to distraction-free writing
 
@@ -393,7 +394,7 @@ Slate supports exporting your notes to multiple formats:
 **To export the current note:**
 
 1. Make sure the note you want to export is open in the editor
-2. Click the **More options** button (⋯) in the editor toolbar
+2. Click the **Export** button in the editor toolbar
 3. Choose the export format:
    - Plain Text
    - Markdown
@@ -489,7 +490,7 @@ If you want to reset all settings to their original values:
 
 ## 10. Keyboard Shortcuts
 
-Most of the editing actions in Slate can be performed using keyboard shortcuts. Below is a comprehensive list of available shortcuts:
+Most of the editing actions in Slate can be performed using keyboard shortcuts. Below is a comprehensive list of all available shortcuts:
 
 ### Text Formatting
 

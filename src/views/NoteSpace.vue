@@ -20,7 +20,7 @@
                             <div class="empty-message">This seems quite empty...</div>
                         </div>
                         <GenericButton variant="primary" @click="handleNewNote">
-                            <FilePlusOutline /> Create Note
+                            <FilePlusOutline /> New Note
                         </GenericButton>
                     </div>
                 </div>

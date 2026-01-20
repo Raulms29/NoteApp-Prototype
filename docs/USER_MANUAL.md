@@ -431,11 +431,11 @@ ExportedNote.zip
 Focus Mode provides a distraction-free writing environment by hiding the sidebar and minimizing interface elements.
 
 **To enable Focus Mode:**
-1. Click the **Focus Mode** button (🎯) in the editor toolbar
+1. Click the **Focus Mode** button in the editor toolbar
 2. The sidebar disappears, giving you more space to write
 
 **To Exit Focus Mode:**
-- Click the **Exit Focus Mode** button (🎯)
+- Click the **Exit Focus Mode** button
 
 <p align="center">
   <img src="resources/images/focus-mode.gif" alt="Focus Mode">
@@ -472,6 +472,13 @@ Controls how sub-notes are displayed in the editor:
 - **Small Only**: All sub-notes are shown as compact list items
 - **None**: Sub-notes are hidden when editing
 
+**Show Floating Menu**
+
+Controls whether a compact floating menu appears on empty lines near the cursor. When enabled, the floating menu offers quick insertions (lists, headings, images, etc.) without needing to select text.
+
+**To change this setting:**
+1. Open **Settings**
+2. Toggle **Show floating menu on empty line**
 
 ### 9.4 Restoring Defaults
 

@@ -24,6 +24,7 @@ import { registerWorkspaceHandlers } from './utils/ipc/workspaceHandler';
 import { registerWindowHandlers } from './utils/ipc/windowHandler';
 import { registerSettingsHandlers } from './utils/ipc/settingsHandler';
 import { registerExportHandlers } from './utils/ipc/exportHandler';
+import { createAppMenu } from './utils/appMenu';
 
 const width = 800;
 const height = 610;
@@ -64,6 +65,8 @@ if (gotTheLock) {
       show: false,
       icon: path.join(__dirname, 'assets/app-icon/icon.png')
     });
+
+    createAppMenu();
 
     mainWindow.setMinimumSize(width, height);
 

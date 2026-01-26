@@ -101,7 +101,6 @@ export class NoteService {
      */
     async saveImage(sourcePath: string) {
         const [filePath, fileName] = await this.repo.saveImage(sourcePath);
-        console.log(`Image saved to: ${filePath}, Name: ${fileName}`);
         const filePathC = this.preparePath(filePath);
 
         return [filePathC, fileName];

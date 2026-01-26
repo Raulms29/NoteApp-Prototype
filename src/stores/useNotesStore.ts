@@ -43,7 +43,6 @@ export const useNotesStore = defineStore('notes', () => {
      */
     async function selectNote(note: Note) {
         const existingNote = getNoteById(note.id);
-        console.log(`Selecting note: ${note.name}`);
         if (existingNote) {
             note.lastAccessed = new Date();
             currentNote.value = note;

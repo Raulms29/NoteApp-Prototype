@@ -10,7 +10,6 @@ export default class PONoteSpace extends POApp {
         await expect($('.note-name-input')).toHaveValue(tempNoteName);
         this.checkNoteExists(tempNoteName);
         if (noteName) {
-            console.log('Renaming note to', noteName);
             await this.renameNote(tempNoteName, noteName);
             return noteName;
         }

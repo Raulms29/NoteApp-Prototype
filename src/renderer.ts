@@ -37,4 +37,16 @@ window.addEventListener('unhandledrejection', (event) => {
 // Mounting the main app
 app.mount('#app');
 
-console.log('👋 This message is being logged by renderer.ts');
+console.log('👋 Renderer is ready. Welcome to Slate');
+
+const art = String.raw`
+███████╗██╗      █████╗ ████████╗███████╗
+██╔════╝██║     ██╔══██╗╚══██╔══╝██╔════╝
+███████╗██║     ███████║   ██║   █████╗  
+╚════██║██║     ██╔══██║   ██║   ██╔══╝  
+███████║███████╗██║  ██║   ██║   ███████╗
+╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝
+`;
+
+// %c tells the console to apply the CSS style provided in the second argument
+console.log(`%c${art}`, 'color: #1976d2;');

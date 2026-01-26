@@ -39,7 +39,6 @@ function emitLoadingState(isLoading: boolean) {
 }
 
 async function handleImageUpload(filePath: string) {
-    console.log('Handling image upload for file:', filePath);
     const [imagePath, imageName] = await notesStore.saveImage(filePath);
     const { state } = editor.value!;
     const { to } = state.selection;

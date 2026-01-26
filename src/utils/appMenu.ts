@@ -55,7 +55,8 @@ export function createAppMenu() {
     {
       label: 'View',
       submenu: [
-        { role: 'togglefullscreen' }
+        { role: 'togglefullscreen' },
+        { role: 'toggleDevTools' }
       ]
     },
 

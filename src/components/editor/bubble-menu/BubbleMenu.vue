@@ -138,7 +138,6 @@ function emitFileUpload(event: Event, type: 'image' | 'pdf') {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
-    console.log('Selected file:', file);
     if (type === 'image') {
         emit('image-upload', file.path);
     } else if (type === 'pdf') {

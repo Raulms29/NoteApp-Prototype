@@ -14,7 +14,6 @@ export const useWorkspaceStore = defineStore('workspace', () => {
      */
     async function init() {
         workspaces.value = await wsService.getWorkspaces();
-        console.log('Workspaces loaded:', workspaces.value);
     }
 
     /**

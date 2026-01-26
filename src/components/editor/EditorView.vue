@@ -65,7 +65,6 @@ const editorComp = ref<any>(null);
 
 
 const debouncedSave = debounce(async (content: string) => {
-    console.log("Saving note debounced")
     notesStore.saveNoteContent(notesStore.currentNote as Note, content);
 }, 500);
 
@@ -84,7 +83,6 @@ async function handleNoteRename() {
 async function handleNoteChange(previousNote: Note, previousNoteContent: string) {
     if (previousNote != null) {
         debouncedSave.clear();
-        console.log("Saving note changed")
 
         await notesStore.saveNoteContent(previousNote, previousNoteContent);
     }

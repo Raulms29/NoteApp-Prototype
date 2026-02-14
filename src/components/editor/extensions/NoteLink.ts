@@ -21,7 +21,7 @@ export const NoteLink = Mark.create({
             markdown: {
                 serialize: {
                     open() {
-                        return '![';
+                        return '[';
                     },
                     close(_: MarkdownSerializerState, mark: ProseMark) {
                         const note = this.options.getNoteFromId(mark.attrs.noteId);
